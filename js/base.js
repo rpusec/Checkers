@@ -31,7 +31,7 @@ $(document).ready(function(){
 
 	window.deactivateModalLogin = function(){
 		$('#modal-login').off('hidden.bs.modal');
-			$('#modal-login').modal('hide');
+		$('#modal-login').modal('hide');
 	}
 
 	function isUserLoggedHandler(data){

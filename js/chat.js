@@ -60,6 +60,7 @@ $(document).on('ready', function(){
 
 			var msgDOM = document.createElement('div');
 			msgDOM.setAttribute('class', 'user-message');
+			msgDOM.setAttribute('style', 'background-color: rgb(' + message.chatColorR + ',' + message.chatColorG + ',' + message.chatColorB + ');');
 			msgDOM.innerHTML = '<span><b>' + message.firstName + ' says: </b>' + message.message + '</span>';
 			lastMessageID = message.messageID;
 
