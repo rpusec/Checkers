@@ -2,8 +2,20 @@
 
 require_once('BaseController.class.php');
 
+/**
+ * Handles functionality for users. 
+ * @author Roman Pusec
+ */
 class UsersController extends BaseController
 {
+	/**
+	 * Registers users to the database. 
+	 * @param  String $firstname First name of the user. 
+	 * @param  String $lastname  Last name of the user. 
+	 * @param  String $username  User's username. 
+	 * @param  String $password  User's password. 
+	 * @return Array             Affected rows. 
+	 */
 	public static function registerUser($firstname, $lastname, $username, $password)
 	{
 		parent::startConnection();
@@ -20,11 +32,17 @@ class UsersController extends BaseController
 		);
 	}
 
+	/**
+	 * Logs the user in. 
+	 * @param  String $username User's username. 
+	 * @param  String $password User's password.
+	 * @return Array            Array with a flag, indicating whether the authentication procedure was successful. 
+	 */
 	public static function loginUser($username, $password)
 	{
 		parent::startConnection();
 		$results = DB::query("SELECT userID, username, password FROM user WHERE username = %s AND password = %s", $username, $password);
-		$res = false;
+		$flag = false;
 
 		if(count($results) === 1)
 		{
@@ -33,6 +51,7 @@ class UsersController extends BaseController
 			{
 				$arrRandColor = self::getRandomColor(CHAT_COLOR_BRIGHTNESS);
 
+				//changes the user's chat colors upon login
 				DB::update('user', array(
 					'chatColorR' => $arrRandColor['red'],
 					'chatColorG' => $arrRandColor['green'],
@@ -41,17 +60,25 @@ class UsersController extends BaseController
 
 				session_start();
 				$_SESSION["userID"] = $targetUser['userID'];
-				$res = true;
+				$flag = true;
 			}
 		}
 
-		return array('success' => $res);
+		return array('success' => $flag);
 	}
 
+	/**
+	 * Checks whether the user is logged. 
+	 * @return Array Array which contains a flag, indicating whether the user is logged or not. 
+	 */
 	public static function isUserLogged(){
 		return array('isLogged' => parent::isUserLogged());
 	}
 
+	/**
+	 * Logs the user out. 
+	 * @return Array A two item array, with a success flag, indicating whether the user was logged out, and a message explaining the user's logout status. 
+	 */
 	public static function logoutUser()
 	{
 		if(!parent::isUserLogged())

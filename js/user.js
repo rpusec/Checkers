@@ -12,6 +12,9 @@ $(document).on('ready', function(){
 		loginUser();
 	}
 
+	/**
+	 * Logs the user inside of the application. 
+	 */
 	function loginUser(){
 		var form = $('#modal-login').find('form').eq(0);
 		var username = form.find('#username').val();
@@ -48,6 +51,7 @@ $(document).on('ready', function(){
 		});
 	}
 
+	//fetches the signup modal window's submit button, handles registration process
 	$('#modal-signup').find('button[name="submit-btn"]').on('click', function(){
 
 		var form = $('#modal-signup').find('form').eq(0);

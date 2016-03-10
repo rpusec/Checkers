@@ -1,7 +1,11 @@
 $(document).on('ready', function(){
+
+	//executes an anonymous function when the chat input is focused
 	$('#main-container').find('#chat-input').on('keypress', function(e){
 		var key = e.which || e.keyCode;
 		
+		//ends the function if the enter key wasn't pressed or if the 
+		//chat input field is empty 
 		if(key !== 13 || $(this).val() === '')
 			return;
 
@@ -29,6 +33,7 @@ $(document).on('ready', function(){
 	var PING_TIME = 1000;
 	var lastMessageID = -1;
 
+	//pings the server every [PING_TIME] milliseconds to check for new messages. 
 	setInterval(function(){
 		$.ajax({
 			type:'get',
@@ -44,6 +49,10 @@ $(document).on('ready', function(){
 		});
 	}, PING_TIME);
 
+	/**
+	 * Presents the messages fetched from the server. 
+	 * @param  {Object} data Object which includes the messages and the success flag. 
+	 */
 	function messageGetHandler(data){
 		if(!data.success)
 			return;
@@ -54,6 +63,7 @@ $(document).on('ready', function(){
 
 			var message = messages[i];
 
+			//checks if the current message was already displayed 
 			if(lastMessageID !== -1)
 				if(message.messageID <= lastMessageID)
 					continue;
