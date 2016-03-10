@@ -25,6 +25,9 @@ $(document).on('ready', function(){
 		formData.append('password', password);
 		formData.append('path', 'login-user');
 
+		$('#modal-login').find('form').find('#username').val('');
+		$('#modal-login').find('form').find('#password').val('');
+
 		$.ajax({
 			type:'post',
 			processData: false,

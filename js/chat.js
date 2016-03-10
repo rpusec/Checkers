@@ -22,7 +22,14 @@ $(document).on('ready', function(){
 			dataType: 'json',
 			data:formDataSM,
 			success: function(data){
-				console.log(data);
+				if(!data.success)
+				{
+					BootstrapDialog.show({
+						type: BootstrapDialog.TYPE_DANGER,
+						title: "Error",
+						message: data.errorMessage
+					});
+				}
 			},
 			error: function(data){
 				console.log(data);
@@ -58,6 +65,7 @@ $(document).on('ready', function(){
 			return;
 
 		var messages = data.messages;
+		var loggedUserID = data.loggedUserID;
 
 		for(var i = 0; i < messages.length; i++){
 
@@ -67,6 +75,14 @@ $(document).on('ready', function(){
 			if(lastMessageID !== -1)
 				if(message.messageID <= lastMessageID)
 					continue;
+
+			if(message.userID === loggedUserID)
+			{
+				message.firstName = 'You';
+				message.chatColorR = 255;
+				message.chatColorG = 255;
+				message.chatColorB = 255;
+			}
 
 			var msgDOM = document.createElement('div');
 			msgDOM.setAttribute('class', 'user-message');

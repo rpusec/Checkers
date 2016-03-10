@@ -16,14 +16,20 @@ class ChatController extends BaseController
 	public static function addMessage($message)
 	{
 		if(!parent::isUserLogged())
-			return array('success' => false, 'error' => CANNOT_SEND_MESSAGES);
+			return array('success' => false, 'errorMessage' => CANNOT_SEND_MESSAGES);
 
 		parent::startConnection();
 		$userID = $_SESSION['userID'];
 
+		if(strlen($message) > MESSAGE_MAX_SIZE)
+			return array('success' => false, 'errorMessage' => MESSAGE_INPUT_SIZE_OVERLOAD_MSG);
+
+		if(strlen($message) === 0)
+			return array('success' => false, 'errorMessage' => MESSAGE_INPUT_SIZE_ZERO);
+
 		DB::insert('message', array(
 			'USER_userID' => $userID, 
-			'message' => $message,
+			'message' => htmlspecialchars($message),
 			'exparation' => "" . (parent::getTimeInSec() + EXPARATION_TIME)
 		));
 
@@ -39,13 +45,14 @@ class ChatController extends BaseController
 	 */
 	public static function getMessages(){
 		if(!parent::isUserLogged())
-			return array('success' => false, 'error' => CANNOT_RETRIEVE_MESSAGES);
+			return array('success' => false, 'errorMessage' => CANNOT_RETRIEVE_MESSAGES);
 
 		parent::startConnection();
 		self::deleteOldMessages();
 
 		$results = DB::query(
 			'SELECT messageID, ' .
+			'user.userID as userID, ' .
 			'user.FName as firstName, ' .
 			'user.LName as lastName, ' .
 			'message, ' .
@@ -57,7 +64,8 @@ class ChatController extends BaseController
 
 		return array(
 			'success' => true, 
-			'messages' => $results
+			'messages' => $results,
+			'loggedUserID' => parent::getLoggedUserID()
 		);
 	}
 

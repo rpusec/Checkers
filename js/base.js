@@ -34,9 +34,10 @@ $(document).ready(function(){
 				opacity: 0
 			}, 1000, function(){
 				$(childVal).animate({
-					height: 'toggle'
+					height: 'toggle',
+					opacity: 0
 				}, 1000, function(){
-					$(childVal).delete();
+					$(childVal).remove();
 				});
 			});
 		});

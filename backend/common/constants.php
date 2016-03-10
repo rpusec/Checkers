@@ -7,3 +7,6 @@ define('CANNOT_RETRIEVE_MESSAGES', 'Can\'t retrieve a new message. ' . USER_NOT_
 define('USER_LOGOUT_MSG', 'You logged out of the application. ');
 define('USER_LOGOUT_ERROR_MSG', 'You\'re already logged off. ');
 define('CHAT_COLOR_BRIGHTNESS', 200);
+define('MESSAGE_MAX_SIZE', 200);
+define('MESSAGE_INPUT_SIZE_OVERLOAD_MSG', 'Message has to be at least ' . MESSAGE_MAX_SIZE . ' in length. ');
+define('MESSAGE_INPUT_SIZE_ZERO', 'Message should not be empty. ');

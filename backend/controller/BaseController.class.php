@@ -37,4 +37,8 @@ class BaseController
 		session_start();
 		return isset($_SESSION['userID']);
 	}
+
+	public static function getLoggedUserID(){
+		return $_SESSION['userID'];
+	}
 }
