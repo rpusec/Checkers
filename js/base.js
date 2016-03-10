@@ -1,18 +1,43 @@
 $(document).ready(function(){
-	
-	$('#modal-login').modal('show');
 
 	$('#sign-up-btn').on('click', function(){
 		$('#modal-signup').modal('show');
-	});
-
-	$('#modal-login').on('hidden.bs.modal', function(e){
-		if(!$('#modal-signup').is(':visible'))
-			$('#modal-login').modal('show');
 	});
 
 	$('#modal-signup').on('hidden.bs.modal', function(){
 		$('#modal-login').modal('show');
 	});
 
+	$.ajax({
+		type:'get',
+		processData: false,
+		contentType: false,
+		url:'backend/view/UsersView.php',
+		dataType: 'json',
+		data:'path=is-user-logged',
+		success: isUserLoggedHandler,
+		error: function(data){
+			console.log(data);
+		}
+	});
+
+	window.activateModalLogin = function(){
+		$('#modal-login').modal('show');
+		$('#modal-login').on('hidden.bs.modal', function(e){
+			if(!$('#modal-signup').is(':visible'))
+				$('#modal-login').modal('show');
+		});
+	}
+
+	window.deactivateModalLogin = function(){
+		$('#modal-login').off('hidden.bs.modal');
+			$('#modal-login').modal('hide');
+	}
+
+	function isUserLoggedHandler(data){
+		if(data.isLogged)
+			deactivateModalLogin();
+		else
+			activateModalLogin();
+	}
 });

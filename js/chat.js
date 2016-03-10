@@ -26,7 +26,7 @@ $(document).on('ready', function(){
 		});
 	});
 
-	var PING_TIME = 2000;
+	var PING_TIME = 1000;
 	var lastMessageID = -1;
 
 	setInterval(function(){
@@ -45,6 +45,9 @@ $(document).on('ready', function(){
 	}, PING_TIME);
 
 	function messageGetHandler(data){
+		if(!data.success)
+			return;
+
 		var messages = data.messages;
 
 		for(var i = 0; i < messages.length; i++){
@@ -63,9 +66,11 @@ $(document).on('ready', function(){
 			$('#chat-window').append(msgDOM);
 
 			$(msgDOM).hide();
+			$(msgDOM).css('opacity', 0);
 			$(msgDOM).find('span').css('opacity', 0);
 			$(msgDOM).animate({
-				height: 'toggle'
+				height: 'toggle',
+				opacity: 1
 			}, 500, function(){
 				$(this).find('span').animate({
 					opacity: 1

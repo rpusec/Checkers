@@ -31,8 +31,7 @@ $(document).on('ready', function(){
 			data:formData,
 			success:function(data){
 				if(data.success){
-					$('#modal-login').off('hidden.bs.modal');
-					$('#modal-login').modal('hide');
+					deactivateModalLogin();
 				}
 				else
 				{
@@ -75,6 +74,30 @@ $(document).on('ready', function(){
 			data:formData,
 			success:function(data){
 				console.log(data);
+			},
+			error:function(data){
+				console.log(data);
+			}
+		});
+	});
+
+	$('#logout-option-link').on('click', function(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/UsersView.php',
+			dataType: 'json',
+			data:'path=log-user-out',
+			success:function(data){
+				BootstrapDialog.show({
+					type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
+					title: 'Logout status',
+					message: data.message
+				});
+
+				if(data.success)
+					activateModalLogin();
 			},
 			error:function(data){
 				console.log(data);

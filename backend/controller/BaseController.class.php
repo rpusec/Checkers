@@ -17,4 +17,9 @@ class BaseController
 		$currTimeInt = (int) $currTimeInt;
 		return $currTimeInt;
 	}
+
+	public static function isUserLogged(){
+		session_start();
+		return isset($_SESSION['userID']);
+	}
 }

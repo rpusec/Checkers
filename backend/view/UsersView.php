@@ -14,3 +14,15 @@ if(isset($_POST['path']))
 			break;
 	}
 }
+else if(isset($_GET['path']))
+{
+	switch(strtolower($_GET['path']))
+	{
+		case 'is-user-logged' : 
+			print json_encode(UsersController::isUserLogged());
+			break;
+		case 'log-user-out' : 
+			print json_encode(UsersController::logoutUser());
+			break;
+	}
+}

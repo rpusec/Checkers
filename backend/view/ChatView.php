@@ -7,11 +7,11 @@ if(isset($_POST['path']))
 	switch(strtolower($_POST['path']))
 	{
 		case 'send-message' : 
-			print json_encode(ChatController::addMessage(1, $_POST['message']));
+			print json_encode(ChatController::addMessage($_POST['message']));
 			break;
 	}
 }
-if(isset($_GET['path']))
+else if(isset($_GET['path']))
 {
 	switch(strtolower($_GET['path']))
 	{

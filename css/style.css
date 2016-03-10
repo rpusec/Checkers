@@ -23,7 +23,6 @@ html, body{
 	width: 299px;
 	height: 100%;
 	float:right;
-	background-color: #000;
 	border-left: 1px solid #d9d9d9;
 	display: -webkit-flex; /* Safari */
     display: flex;
@@ -44,6 +43,13 @@ html, body{
 	-webkit-flex: 1;  /* Safari 6.1+ */
     -ms-flex: 1;  /* IE 10 */    
     flex: 1;
+}
+
+#user-options{
+	background-color:#fff;
+	text-align: center;
+	font-size: 20px;
+	padding:10px;
 }
 
 .user-message{
