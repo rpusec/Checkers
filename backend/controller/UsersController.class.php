@@ -28,6 +28,7 @@ class UsersController extends BaseController
 		));
 
 		return array(
+			'success' => true, 
 			'affectedRows' => DB::affectedRows()
 		);
 	}

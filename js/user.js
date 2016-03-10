@@ -80,7 +80,22 @@ $(document).on('ready', function(){
 			dataType: 'json',
 			data:formData,
 			success:function(data){
-				console.log(data);
+				if(data.success)
+				{
+					form.find('#firstname').val('');
+					form.find('#lastname').val('');
+					form.find('#username').val('');
+					form.find('#password').val('');
+					form.find('#passwordConfirm').val('');
+
+					$('#modal-signup').modal('hide');
+
+					BootstrapDialog.show({
+						type: BootstrapDialog.TYPE_SUCCESS,
+						title: "Registration status",
+						message: 'Account successfully created. '
+					});
+				}
 			},
 			error:function(data){
 				console.log(data);
