@@ -30,10 +30,10 @@ $(document).on('ready', function(){
 		});
 	});
 
-	var PING_TIME = 1000;
+	var GET_MESSAGES_PING_TIME = 1000;
 	var lastMessageID = -1;
 
-	//pings the server every [PING_TIME] milliseconds to check for new messages. 
+	//pings the server every [GET_MESSAGES_PING_TIME] milliseconds to check for new messages. 
 	setInterval(function(){
 		$.ajax({
 			type:'get',
@@ -47,7 +47,7 @@ $(document).on('ready', function(){
 				console.log(data);
 			}
 		});
-	}, PING_TIME);
+	}, GET_MESSAGES_PING_TIME);
 
 	/**
 	 * Presents the messages fetched from the server. 

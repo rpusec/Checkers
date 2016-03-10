@@ -27,6 +27,19 @@ $(document).ready(function(){
 			if(!$('#modal-signup').is(':visible'))
 				$('#modal-login').modal('show');
 		});
+
+		$.each($('#chat-window').children(), function(childKey, childVal){
+
+			$(childVal).find('span').animate({
+				opacity: 0
+			}, 1000, function(){
+				$(childVal).animate({
+					height: 'toggle'
+				}, 1000, function(){
+					$(childVal).delete();
+				});
+			});
+		});
 	}
 
 	window.deactivateModalLogin = function(){

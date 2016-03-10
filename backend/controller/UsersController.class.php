@@ -56,7 +56,7 @@ class UsersController extends BaseController
 					'chatColorR' => $arrRandColor['red'],
 					'chatColorG' => $arrRandColor['green'],
 					'chatColorB' => $arrRandColor['blue']
-				), $targetUser['userID']);
+				), 'userID=%i', $targetUser['userID']);
 
 				session_start();
 				$_SESSION["userID"] = $targetUser['userID'];
