@@ -22,7 +22,7 @@ class ChatController extends BaseController
 		parent::startConnection();
 		$userID = $_SESSION['userID'];
 		
-		ValidationHelper::checkAppropriateInputLength($message, 1, MESSAGE_MAX_SIZE, MESSAGE_INPUT_SIZE_OVERLOAD_MSG);
+		ValidationHelper::checkAppropriateInputLength($message, MIN_MESSAGE_SIZE, MAX_MESSAGE_SIZE, 'message');
 	
 		if(ValidationHelper::hasErrors())
 			return array(

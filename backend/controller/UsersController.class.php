@@ -19,11 +19,16 @@ class UsersController extends BaseController
 	 */
 	public static function registerUser($firstname, $lastname, $username, $password, $passwordConfirm)
 	{
-		ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, USERNAME_INPUT_ERROR_MSG);
-		ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, PASSWORD_INPUT_ERROR_MSG);
-		ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, FNAME_INPUT_ERROR_MSG);
-		ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, LNAME_INPUT_ERROR_MSG);
-		ValidationHelper::checkIfEqual($password, $passwordConfirm, PASS_EQUAL_ERROR_MSG);
+		ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
+		ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
+		
+		ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
+		ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
+
+		ValidationHelper::validateInput($firstname, 'alphabeticSpace', 'First name' . ALPHABETIC_ERROR_MSG_PART);
+		ValidationHelper::validateInput($lastname, 'alphabeticSpace', 'Last name' . ALPHABETIC_ERROR_MSG_PART);
+		
+		ValidationHelper::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
 
 		if(ValidationHelper::hasErrors())
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());
@@ -50,8 +55,8 @@ class UsersController extends BaseController
 	public static function loginUser($username, $password)
 	{
 		//xss protection
-		ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', XSS_USERNAME_INPUT_ERROR_MSG, true);
-		ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', XSS_PASSWORD_INPUT_ERROR_MSG, true);
+		ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ', true);
+		ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ', true);
 
 		if(ValidationHelper::hasErrors())
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());
@@ -71,7 +76,8 @@ class UsersController extends BaseController
 				DB::update('user', array(
 					'chatColorR' => $arrRandColor['red'],
 					'chatColorG' => $arrRandColor['green'],
-					'chatColorB' => $arrRandColor['blue']
+					'chatColorB' => $arrRandColor['blue'],
+					'connected' => 1
 				), 'userID=%i', $targetUser['userID']);
 
 				session_start();
@@ -81,6 +87,29 @@ class UsersController extends BaseController
 		}
 
 		return array('success' => $flag);
+	}
+
+	public static function getOnlineUsers()
+	{
+		if(!parent::isUserLogged())
+			return array('success' => false, 'message' => 'Cannot retrieve online users. ');
+
+		parent::startConnection();
+
+		$connectedUsers = DB::query(
+			'SELECT userID, ' . 
+			'fname as firstname, ' .
+			'lname as lastname, ' .
+			'username, ' .
+			'chatColorR, ' .
+			'chatColorG, ' .
+			'chatColorB ' .
+			'FROM user WHERE connected = 1');
+
+		return array(
+			'success' => true, 
+			'connectedUsers' => $connectedUsers
+		);
 	}
 
 	/**
@@ -99,6 +128,11 @@ class UsersController extends BaseController
 	{
 		if(!parent::isUserLogged())
 			return array('success' => false, 'message' => USER_LOGOUT_ERROR_MSG);
+
+		parent::startConnection();
+		DB::update('user', array(
+			'connected' => 0
+		), 'userID=%i', $_SESSION['userID']);
 
 		unset($_SESSION["userID"]);
 		return array('success' => true, 'message' => USER_LOGOUT_MSG);

@@ -29,17 +29,7 @@ $(document).ready(function(){
 		});
 
 		$.each($('#chat-window').children(), function(childKey, childVal){
-
-			$(childVal).find('span').animate({
-				opacity: 0
-			}, 1000, function(){
-				$(childVal).animate({
-					height: 'toggle',
-					opacity: 0
-				}, 1000, function(){
-					$(childVal).remove();
-				});
-			});
+			$(childVal).toggleBubbleOff();
 		});
 	}
 

@@ -24,5 +24,8 @@ else if(isset($_GET['path']))
 		case 'log-user-out' : 
 			print json_encode(UsersController::logoutUser());
 			break;
+		case 'who-is-online' : 
+			print json_encode(UsersController::getOnlineUsers());
+			break;
 	}
 }

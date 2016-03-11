@@ -45,6 +45,8 @@ $(document).on('ready', function(){
 	});
 
 	var GET_MESSAGES_PING_TIME = 1000;
+	var CHECK_WHO_IS_ONLINE_PING_TIME = 5000;
+
 	var lastMessageID = -1;
 
 	//pings the server every [GET_MESSAGES_PING_TIME] milliseconds to check for new messages. 
@@ -62,6 +64,21 @@ $(document).on('ready', function(){
 			}
 		});
 	}, GET_MESSAGES_PING_TIME);
+
+	/*setInterval(function(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/UsersView.php',
+			dataType: 'json',
+			data:'path=who-is-online',
+			success: whoIsOnlineHandler,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}, CHECK_WHO_IS_ONLINE_PING_TIME);*/
 
 	/**
 	 * Presents the messages fetched from the server. 
@@ -98,19 +115,97 @@ $(document).on('ready', function(){
 			lastMessageID = message.messageID;
 
 			$('#chat-window').append(msgDOM);
-
-			$(msgDOM).hide();
-			$(msgDOM).css('opacity', 0);
-			$(msgDOM).find('span').css('opacity', 0);
-			$(msgDOM).animate({
-				height: 'toggle',
-				opacity: 1
-			}, 500, function(){
-				$(this).find('span').animate({
-					opacity: 1
-				}, 500);
+			$(msgDOM).toggleBubbleOn(function(){
 				$('#chat-window').scrollTop($('#chat-window').width());
 			});
 		}
+	}
+
+	var data = {
+		success: true,
+		connectedUsers: [
+			{
+				chatColorR:255,
+				chatColorG:0,
+				chatColorB:0,
+				firstname: 'roman',
+				lastname: 'pusec',
+				userID: 1,
+				username: 'rpusec'
+			},
+			{
+				chatColorR:0,
+				chatColorG:255,
+				chatColorB:0,
+				firstname: 'roman',
+				lastname: 'pusec',
+				userID: 2,
+				username: 'rpusec'
+			},
+			{
+				chatColorR:0,
+				chatColorG:0,
+				chatColorB:255,
+				firstname: 'roman',
+				lastname: 'pusec',
+				userID: 3,
+				username: 'rpusec'
+			},
+			{
+				chatColorR:255,
+				chatColorG:255,
+				chatColorB:0,
+				firstname: 'roman',
+				lastname: 'pusec',
+				userID: 4,
+				username: 'rpusec'
+			}
+		]
+	};
+
+	var CONN_USER_PREFIX = 'conn_user_';
+
+	window.whoIsOnlineHandler = function(data){
+		if(!data.success)
+			return;
+
+		var connectedUsers = data.connectedUsers;
+
+		for(var i = 0; i < connectedUsers.length; i++)
+		{
+			var connUser = connectedUsers[i];
+
+			if($('#chat-contact-list').find('#' + CONN_USER_PREFIX + connUser.userID).length === 0)
+			{
+				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
+				$newConnUser.attr('class', 'user-connected');
+				$newConnUser.attr('id', CONN_USER_PREFIX + connUser.userID);
+				$newConnUser.css('background-color', 'rgb(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ')');
+				$('#chat-contact-list').append($newConnUser);
+				$($newConnUser).toggleBubbleOn();
+			}
+		}
+
+		$.each($('#chat-contact-list').children(), function(cclKey, cclVal){
+
+			var found = false;
+
+			for(var i = 0; i < connectedUsers.length; i++)
+			{
+				var connUser = connectedUsers[i];
+
+				if(CONN_USER_PREFIX + connUser.userID === $(cclVal).attr('id'))
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if(!found)
+			{
+				$(cclVal).toggleBubbleOff();
+				//$(cclVal).remove();
+			}
+		});
 	}
 });

@@ -14,7 +14,9 @@ class ValidationHelper
 		return self::$errors;
 	}
 	
-	public static function checkAppropriateInputLength($input, $lengthFrom, $lengthTo, $errorMessage){
+	public static function checkAppropriateInputLength($input, $lengthFrom, $lengthTo, $inputLabel){
+		$errorMessage = ucfirst($inputLabel) . ' input size should be between ' . $lengthFrom . ' and ' . $lengthTo . ' in length. ';
+
 		if(is_string($input))
 		{
 			if(strlen($input) < $lengthFrom || strlen($input) > $lengthTo)
@@ -32,8 +34,8 @@ class ValidationHelper
 			self::$errors[] = $errorMessage;
 	}
 
-	public static function checkIfEqual($value1, $value2, $errorMessage){
+	public static function checkIfEqual($value1, $value2, $label1, $label2){
 		if($value1 != $value2)
-			self::$errors[] = $errorMessage;
+			self::$errors[] = ucfirst($label1) . ' value is inequivalent to ' . $label2 . ' value. ';
 	}
 }
