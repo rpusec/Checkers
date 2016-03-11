@@ -41,10 +41,24 @@ $(document).on('ready', function(){
 				}
 				else
 				{
+					var errorMessage = 'Wrong username / password. ';
+
+					if(data.hasOwnProperty('errors'))
+					{
+						var errors = data.errors;
+						var errorsStr = '';
+
+						errors.forEach(function(error){
+							errorsStr += error + '<br />';
+						});
+
+						errorMessage = errorsStr;
+					}
+
 					BootstrapDialog.show({
 						type: BootstrapDialog.TYPE_DANGER,
 						title: "Error",
-						message: 'Wrong username / password. '
+						message: errorMessage
 					});
 				}
 			},
@@ -94,6 +108,21 @@ $(document).on('ready', function(){
 						type: BootstrapDialog.TYPE_SUCCESS,
 						title: "Registration status",
 						message: 'Account successfully created. '
+					});
+				}
+				else
+				{
+					var errors = data.errors;
+					var errorsStr = '';
+
+					errors.forEach(function(error){
+						errorsStr += error + '<br />';
+					});
+
+					BootstrapDialog.show({
+						type: BootstrapDialog.TYPE_DANGER,
+						title: "Registration status",
+						message: errorsStr
 					});
 				}
 			},

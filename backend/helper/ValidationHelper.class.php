@@ -27,8 +27,13 @@ class ValidationHelper
 		}
 	}
 	
-	public static function validateInput($input, $validationFunct, $errorMessage){
-		if(!$validationFunct($input))
+	public static function validateInput($input, $validationFunct, $errorMessage, $bool = FALSE){
+		if(call_user_func($validationFunct, $input) == $bool)
+			self::$errors[] = $errorMessage;
+	}
+
+	public static function checkIfEqual($value1, $value2, $errorMessage){
+		if($value1 != $value2)
 			self::$errors[] = $errorMessage;
 	}
 }

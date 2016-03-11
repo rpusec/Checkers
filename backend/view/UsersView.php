@@ -7,7 +7,7 @@ if(isset($_POST['path']))
 	switch(strtolower($_POST['path']))
 	{
 		case 'register-user' : 
-			print json_encode(UsersController::registerUser($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['password']));
+			print json_encode(UsersController::registerUser($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['password'], $_POST['passwordConfirm']));
 			break;
 		case 'login-user' : 
 			print json_encode(UsersController::loginUser($_POST['username'], $_POST['password']));

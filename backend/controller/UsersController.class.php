@@ -1,6 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
+require_once('../helper/ValidationHelper.class.php');
 
 /**
  * Handles functionality for users. 
@@ -16,10 +17,18 @@ class UsersController extends BaseController
 	 * @param  String $password  User's password. 
 	 * @return Array             Affected rows. 
 	 */
-	public static function registerUser($firstname, $lastname, $username, $password)
+	public static function registerUser($firstname, $lastname, $username, $password, $passwordConfirm)
 	{
-		parent::startConnection();
+		ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, USERNAME_INPUT_ERROR_MSG);
+		ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, PASSWORD_INPUT_ERROR_MSG);
+		ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, FNAME_INPUT_ERROR_MSG);
+		ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, LNAME_INPUT_ERROR_MSG);
+		ValidationHelper::checkIfEqual($password, $passwordConfirm, PASS_EQUAL_ERROR_MSG);
 
+		if(ValidationHelper::hasErrors())
+			return array('success' => false, 'errors' => ValidationHelper::getErrors());
+
+		parent::startConnection();
 		DB::insert('user', array(
 			'fname' => $firstname,
 			'lname' => $lastname,
@@ -28,8 +37,7 @@ class UsersController extends BaseController
 		));
 
 		return array(
-			'success' => true, 
-			'affectedRows' => DB::affectedRows()
+			'success' => true
 		);
 	}
 
@@ -41,6 +49,13 @@ class UsersController extends BaseController
 	 */
 	public static function loginUser($username, $password)
 	{
+		//xss protection
+		ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', XSS_USERNAME_INPUT_ERROR_MSG, true);
+		ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', XSS_PASSWORD_INPUT_ERROR_MSG, true);
+
+		if(ValidationHelper::hasErrors())
+			return array('success' => false, 'errors' => ValidationHelper::getErrors());
+
 		parent::startConnection();
 		$results = DB::query("SELECT userID, username, password FROM user WHERE username = %s AND password = %s", $username, $password);
 		$flag = false;
@@ -108,7 +123,6 @@ class UsersController extends BaseController
 				$colors['red'] = $brightness;
 				$colors = self::proccessRandomizedColors($colors, 'blue', 'green', $brightness);
 				break;
-				
 			case GRC_GREEN : 
 				$colors['green'] = $brightness;
 				$colors = self::proccessRandomizedColors($colors, 'red', 'blue', $brightness);
