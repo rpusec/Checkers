@@ -79,8 +79,7 @@ class UsersController extends BaseController
 					'chatColorB' => $arrRandColor['blue'],
 					'connected' => 1
 				), 'userID=%i', $targetUser['userID']);
-
-				session_start();
+				
 				$_SESSION["userID"] = $targetUser['userID'];
 				$flag = true;
 			}
@@ -91,11 +90,7 @@ class UsersController extends BaseController
 
 	public static function getOnlineUsers()
 	{
-		if(!parent::isUserLogged())
-			return array('success' => false, 'message' => 'Cannot retrieve online users. ');
-
 		parent::startConnection();
-
 		$connectedUsers = DB::query(
 			'SELECT userID, ' . 
 			'fname as firstname, ' .

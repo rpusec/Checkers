@@ -2,6 +2,8 @@
 
 require_once('../controller/ChatController.class.php');
 
+session_start();
+
 if(isset($_POST['path']))
 {
 	switch(strtolower($_POST['path']))

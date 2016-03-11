@@ -34,7 +34,6 @@ class BaseController
 	 * @return boolean Flag indicating whether the user is logged in. 
 	 */
 	public static function isUserLogged(){
-		session_start();
 		return isset($_SESSION['userID']);
 	}
 

@@ -49,7 +49,7 @@ $(document).on('ready', function(){
 
 	var lastMessageID = -1;
 
-	//pings the server every [GET_MESSAGES_PING_TIME] milliseconds to check for new messages. 
+	//pings the server every [GET_MESSAGES_PING_TIME] milliseconds to check for new messages
 	setInterval(function(){
 		$.ajax({
 			type:'get',
@@ -65,7 +65,8 @@ $(document).on('ready', function(){
 		});
 	}, GET_MESSAGES_PING_TIME);
 
-	/*setInterval(function(){
+	//checks who is online and displays the usernames every [CHECK_WHO_IS_ONLINE_PING_TIME] milliseconds
+	setInterval(function(){
 		$.ajax({
 			type:'get',
 			processData: false,
@@ -78,7 +79,7 @@ $(document).on('ready', function(){
 				console.log(data);
 			}
 		});
-	}, CHECK_WHO_IS_ONLINE_PING_TIME);*/
+	}, CHECK_WHO_IS_ONLINE_PING_TIME);
 
 	/**
 	 * Presents the messages fetched from the server. 
@@ -108,9 +109,10 @@ $(document).on('ready', function(){
 				message.chatColorB = 255;
 			}
 
+			var rgbStr = 'rgb(' + message.chatColorR + ',' + message.chatColorG + ',' + message.chatColorB + ')';
 			var msgDOM = document.createElement('div');
 			msgDOM.setAttribute('class', 'user-message');
-			msgDOM.setAttribute('style', 'background-color: rgb(' + message.chatColorR + ',' + message.chatColorG + ',' + message.chatColorB + ');');
+			msgDOM.setAttribute('style', 'background-color: ' + rgbStr + '; box-shadow: 0px 0px 10px ' + rgbStr + '; ');
 			msgDOM.innerHTML = '<span><b>' + message.firstName + ' say' + (message.userID === loggedUserID ? '' : 's') + ': </b>' + message.message + '</span>';
 			lastMessageID = message.messageID;
 
@@ -121,7 +123,7 @@ $(document).on('ready', function(){
 		}
 	}
 
-	var data = {
+	/*var data = {
 		success: true,
 		connectedUsers: [
 			{
@@ -161,11 +163,11 @@ $(document).on('ready', function(){
 				username: 'rpusec'
 			}
 		]
-	};
+	};*/
 
 	var CONN_USER_PREFIX = 'conn_user_';
 
-	window.whoIsOnlineHandler = function(data){
+	function whoIsOnlineHandler(data){
 		if(!data.success)
 			return;
 
@@ -180,7 +182,8 @@ $(document).on('ready', function(){
 				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', CONN_USER_PREFIX + connUser.userID);
-				$newConnUser.css('background-color', 'rgb(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ')');
+				$newConnUser.css('background-color', 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)');
+				$newConnUser.css('box-shadow', '0px 0px 20px rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 0.5)');
 				$('#chat-contact-list').append($newConnUser);
 				$($newConnUser).toggleBubbleOn();
 			}
@@ -202,10 +205,7 @@ $(document).on('ready', function(){
 			}
 
 			if(!found)
-			{
 				$(cclVal).toggleBubbleOff();
-				//$(cclVal).remove();
-			}
 		});
 	}
 });
