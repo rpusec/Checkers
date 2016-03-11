@@ -1,32 +1,34 @@
 <?php 
 
+require_once('validation.php');
+
 class ValidationHelper
 {
 	private static $errors = array();
 	
 	public static function hasErrors(){
-		return empty($this->errors);
+		return !empty(self::$errors);
 	}
 	
 	public static function getErrors(){
-		return $this->errors;
+		return self::$errors;
 	}
 	
 	public static function checkAppropriateInputLength($input, $lengthFrom, $lengthTo, $errorMessage){
 		if(is_string($input))
 		{
 			if(strlen($input) < $lengthFrom || strlen($input) > $lengthTo)
-				$this->errors[] = $errorMessage;
+				self::$errors[] = $errorMessage;
 		}
 		else
 		{
 			if($input < $lengthFrom || $input > $lengthTo)
-				$this->errors[] = $errorMessage;
+				self::$errors[] = $errorMessage;
 		}
 	}
 	
 	public static function validateInput($input, $validationFunct, $errorMessage){
-		if($validationFunct($input))
-			$this->errors[] = $errorMessage;
+		if(!$validationFunct($input))
+			self::$errors[] = $errorMessage;
 	}
 }

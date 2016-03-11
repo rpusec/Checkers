@@ -24,10 +24,17 @@ $(document).on('ready', function(){
 			success: function(data){
 				if(!data.success)
 				{
+					var errors = data.errors;
+					var errorsStr = '';
+					
+					errors.forEach(function(error){
+						errorsStr += error + "<br />";
+					});
+					
 					BootstrapDialog.show({
 						type: BootstrapDialog.TYPE_DANGER,
 						title: "Error",
-						message: data.errorMessage
+						message: errorsStr
 					});
 				}
 			},
