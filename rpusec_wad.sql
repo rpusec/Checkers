@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2016 at 12:04 AM
+-- Generation Time: Mar 11, 2016 at 10:55 PM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -33,15 +33,15 @@ CREATE TABLE IF NOT EXISTS `message` (
   `exparation` bigint(100) NOT NULL,
   PRIMARY KEY (`MessageID`),
   KEY `fk_MESSAGE_USER` (`USER_UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=364 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=77 ;
 
 --
 -- Dumping data for table `message`
 --
 
 INSERT INTO `message` (`MessageID`, `USER_UserID`, `message`, `exparation`) VALUES
-(362, 1, 'hey', 1457651068),
-(363, 1, '&lt;b&gt; sfaf', 1457651072);
+(75, 1, 'ma daj me nemoj jebati', 1457732729),
+(76, 2, 'you w8 m8', 1457732736);
 
 -- --------------------------------------------------------
 
@@ -55,19 +55,20 @@ CREATE TABLE IF NOT EXISTS `user` (
   `LName` varchar(50) NOT NULL,
   `Username` varchar(100) NOT NULL,
   `Password` varchar(100) NOT NULL,
+  `connected` tinyint(1) NOT NULL,
   `chatColorR` varchar(3) NOT NULL,
   `chatColorG` varchar(3) NOT NULL,
   `chatColorB` varchar(3) NOT NULL,
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`UserID`, `FName`, `LName`, `Username`, `Password`, `chatColorR`, `chatColorG`, `chatColorB`) VALUES
-(1, 'test', 'test', 'test', 'test', '200', '212', '255'),
-(2, 'roman', 'pusec', 'lawl', 'lawl', '255', '200', '228');
+INSERT INTO `user` (`UserID`, `FName`, `LName`, `Username`, `Password`, `connected`, `chatColorR`, `chatColorG`, `chatColorB`) VALUES
+(1, 'test', 'test', 'test', 'test', 0, '200', '212', '255'),
+(2, 'roman', 'pusec', 'lawl', 'lawl', 0, '236', '200', '255');
 
 --
 -- Constraints for dumped tables
