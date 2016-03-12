@@ -138,14 +138,44 @@ $(document).on('ready', function(){
 	$('button[name=should-ch-username-btn]').on('click', enableInputHandler);
 	$('button[name=should-ch-password-btn]').on('click', enablePassword);
 
-	function enableInputHandler(){enableInput(this);}
+	$('#modal-account-settings').find('input[name=lastname]').on('keyup', modalASIKeyPressHandler);
+	$('#modal-account-settings').find('input[name=firstname]').on('keyup', modalASIKeyPressHandler);
+	$('#modal-account-settings').find('input[name=username]').on('keyup', modalASIKeyPressHandler);
+	$('#modal-account-settings').find('input[name=password]').on('keyup', modalASIKeyPressHandler);
+	$('#modal-account-settings').find('input[name=passwordConfirm]').on('keyup', modalASIKeyPressHandler);
+
+	$('#modal-account-settings').find('button[name=submit-btn]').attr('disabled', 'disabled');
+
+	function enableInputHandler(){
+		enableInput(this);
+	}
+
+	/**
+	 * Checks if there's at least one input field that has a value to determine
+	 * whether to disable or enable the submission button. 
+	 */
+	function modalASIKeyPressHandler(){
+		var shouldEnable = false;
+
+		$.each($('#modal-account-settings').find('.form-control'), function(fcKey, fcVal){
+			if($(fcVal).val() !== '')
+			{
+				shouldEnable = true;
+				return false;
+			}
+		});
+
+		if(shouldEnable)
+			$('#modal-account-settings').find('button[name=submit-btn]').removeAttr('disabled');
+		else
+			$('#modal-account-settings').find('button[name=submit-btn]').attr('disabled', 'disabled');
+	}
 
 	/**
 	 * Enables an input from the account settings modal window. 
 	 * @return {boolean} True if the input field has been disabled, false otherwise. 
 	 */
 	function enableInput(thisVar){
-
 		if(typeof thisVar === 'undefined')
 			thisVar = this;
 
@@ -170,6 +200,66 @@ $(document).on('ready', function(){
 			$('input[name=passwordConfirm]').attr('disabled', 'disabled');
 			$('input[name=passwordConfirm]').val('');
 		}
+	}
+
+	$('#modal-account-settings').find('button[name=submit-btn]').on('click', function(){
+
+		var form = $('#modal-account-settings').find('form').eq(0);
+		var firstname = form.find('#firstname').val();
+		var lastname = form.find('#lastname').val();
+		var username = form.find('#username').val();
+		var password = form.find('#password').val();
+		var passwordConfirm = form.find('#passwordConfirm').val();
+
+		var formData = new FormData();
+		formData.append('firstname', firstname);
+		formData.append('lastname', lastname);
+		formData.append('username', username);
+		formData.append('password', password);
+		formData.append('passwordConfirm', passwordConfirm);
+		formData.append('path', 'register-user');
+
+		$.each($('#modal-account-settings').find('.form-control'), function(fcKey, fcVal){
+			$(fcVal).val('');
+			$(fcVal).attr('disabled', 'disabled');
+		});
+		
+		$.ajax({
+			type: 'post',
+			processData: false,
+			contentType: false,
+			url:'backend/view/UsersView.php',
+			dataType: 'json',
+			data:formData,
+			success: accountSettingsAlteredHandler,
+			error:function(data){
+				console.log(data);
+			}
+		});
+	});
+
+	function accountSettingsAlteredHandler(data){
+		var message = 'Account settings successfully altered. ';
+
+		if(data.success)
+			$('#modal-account-settings').modal('hide');
+		else
+		{
+			var errors = data.errors;
+			var errorsStr = '';
+
+			errors.forEach(function(error){
+				errorsStr += error + '<br />';
+			});
+
+			message = errorsStr;
+		}
+
+		BootstrapDialog.show({
+			type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
+			title: "Account settings status",
+			message: message
+		});
 	}
 
 	$('#logout-option-link').on('click', function(){

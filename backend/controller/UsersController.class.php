@@ -19,31 +19,76 @@ class UsersController extends BaseController
 	 */
 	public static function registerUser($firstname, $lastname, $username, $password, $passwordConfirm)
 	{
-		ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
-		ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
+		if(self::checkIfLoggedAndInputNotEmpty($username))
+			ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
 		
-		ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
-		ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
+		if(self::checkIfLoggedAndInputNotEmpty($password))
+			ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
+		
+		if(self::checkIfLoggedAndInputNotEmpty($firstname))
+			ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
+		
+		if(self::checkIfLoggedAndInputNotEmpty($lastname))
+			ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
 
-		ValidationHelper::validateInput($firstname, 'alphabeticSpace', 'First name' . ALPHABETIC_ERROR_MSG_PART);
-		ValidationHelper::validateInput($lastname, 'alphabeticSpace', 'Last name' . ALPHABETIC_ERROR_MSG_PART);
+		if(self::checkIfLoggedAndInputNotEmpty($firstname))
+			ValidationHelper::validateInput($firstname, 'alphabeticSpace', 'First name' . ALPHABETIC_ERROR_MSG_PART);
 		
-		ValidationHelper::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
+		if(self::checkIfLoggedAndInputNotEmpty($lastname))
+			ValidationHelper::validateInput($lastname, 'alphabeticSpace', 'Last name' . ALPHABETIC_ERROR_MSG_PART);
+		
+		if(self::checkIfLoggedAndInputNotEmpty($password))
+			ValidationHelper::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
 
 		if(ValidationHelper::hasErrors())
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());
 
 		parent::startConnection();
-		DB::insert('user', array(
-			'fname' => $firstname,
-			'lname' => $lastname,
-			'username' => $username,
-			'password' => $password
-		));
+
+		if(!parent::isUserLogged())
+		{
+			DB::insert('user', array(
+				'fname' => $firstname,
+				'lname' => $lastname,
+				'username' => $username,
+				'password' => $password
+			));
+		}
+		else
+		{
+			$arrUpdate = array();
+
+			if($firstname != '')
+				$arrUpdate['fname'] = $firstname;
+
+			if($lastname != '')
+				$arrUpdate['lname'] = $lastname;
+
+			if($username != '')
+				$arrUpdate['username'] = $username;
+
+			if($password != '')
+				$arrUpdate['password'] = $password;
+
+			if(!empty($arrUpdate))
+				DB::update('user', $arrUpdate, "userID=%i", parent::getLoggedUserID());
+		}
 
 		return array(
 			'success' => true
 		);
+	}
+
+	/**
+	 * We're checking if the user is logged since only then they can alter their information. 
+	 * 
+	 * @param  [type] $input [description]
+	 * @return [type]        [description]
+	 */
+	private static function checkIfLoggedAndInputNotEmpty($input){
+		if(parent::isUserLogged() && $input != '')
+			return true;
+		return false;
 	}
 
 	/**
