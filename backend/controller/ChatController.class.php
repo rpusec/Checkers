@@ -33,7 +33,7 @@ class ChatController extends BaseController
 		DB::insert('message', array(
 			'USER_userID' => $userID, 
 			'message' => htmlspecialchars($message),
-			'exparation' => "" . (parent::getTimeInSec() + EXPARATION_TIME)
+			'exparation' => "" . (parent::getTimeInSec() + MESSAGE_EXPARATION_TIME)
 		));
 
 		return array(

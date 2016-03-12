@@ -223,7 +223,7 @@ $(document).on('ready', function(){
 			$(fcVal).val('');
 			$(fcVal).attr('disabled', 'disabled');
 		});
-		
+
 		$.ajax({
 			type: 'post',
 			processData: false,
@@ -285,4 +285,49 @@ $(document).on('ready', function(){
 			}
 		});
 	});
+
+	var UPDATE_CONN_EXPAR_PING = 2000;
+	var UPDATE_CONN_ALL_USERS_PING = 5000;
+
+	//sends request every [UPDATE_CONN_TIME_PING] milliseconds
+	//and updates the user's connection exparation time
+	setInterval(function(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/UsersView.php',
+			dataType: 'json',
+			data:'path=update-conn-time',
+			success:function(data){
+				console.log(data);
+			},
+			error:function(data){
+				console.log(data);
+			}
+		});
+	}, UPDATE_CONN_EXPAR_PING);
+
+	//updates all of the users' connection
+	//statuses 
+	//since some users have to be marked as
+	//offline in the database, if they have
+	//closed their browser without 
+	//logging off first
+	setInterval(function(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/UsersView.php',
+			dataType: 'json',
+			data:'path=update-users-conn-stat',
+			success:function(data){
+				console.log(data);
+			},
+			error:function(data){
+				console.log(data);
+			}
+		});
+	}, UPDATE_CONN_ALL_USERS_PING);
 });

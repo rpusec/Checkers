@@ -29,5 +29,11 @@ else if(isset($_GET['path']))
 		case 'who-is-online' : 
 			print json_encode(UsersController::getOnlineUsers());
 			break;
+		case 'update-conn-time' : 
+			print json_encode(UsersController::updateConnTime());
+			break;
+		case 'update-users-conn-stat' : 
+			print json_encode(UsersController::updateAllUserConnStat());
+			break;
 	}
 }

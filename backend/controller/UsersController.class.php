@@ -5,6 +5,15 @@ require_once('../helper/ValidationHelper.class.php');
 
 /**
  * Handles functionality for users. 
+ *
+ * Each user has their own connection status and connection exparation date in the database. 
+ * These two attributes are useful in the following manner:
+ *  - Connection status makes it possible for other users to see if the said user is connected. 
+ *  - Connection exparation date checks if the user's connection has expired (that is, if the user
+ *  wasn't present on the web applicaiton for a specified amount of time). If it has expired, then
+ *  the user will be marked as disconnected on the database, and the change will be propagated on
+ *  other users' browsers through the help of AJAX on the frontend. 
+ * 
  * @author Roman Pusec
  */
 class UsersController extends BaseController
@@ -125,6 +134,8 @@ class UsersController extends BaseController
 					'connected' => 1
 				), 'userID=%i', $targetUser['userID']);
 				
+				self::updateConnTime($targetUser['userID']);
+
 				$_SESSION["userID"] = $targetUser['userID'];
 				$flag = true;
 			}
@@ -170,12 +181,43 @@ class UsersController extends BaseController
 			return array('success' => false, 'message' => USER_LOGOUT_ERROR_MSG);
 
 		parent::startConnection();
+
 		DB::update('user', array(
 			'connected' => 0
-		), 'userID=%i', $_SESSION['userID']);
+		), 'userID=%i', parent::getLoggedUserID());
 
 		unset($_SESSION["userID"]);
 		return array('success' => true, 'message' => USER_LOGOUT_MSG);
+	}
+
+	/**
+	 * Updates the connection time of this user. 
+	 * @see the class description.  
+	 */
+	public static function updateConnTime($userID = null)
+	{
+		if($userID === null)
+			if(!parent::isUserLogged())
+				return array('success' => false);
+
+		parent::startConnection();
+
+		DB::update('user', array(
+			'connexparation' => parent::getTimeInSec() + CONN_EXPARATION_TIME
+		), 'userID=%i', ($userID === null ? parent::getLoggedUserID() : null));
+
+		return array('success' => true);
+	}
+
+	/**
+	 * Marks all users as 'disconnected' whose connection has expired. 
+	 * @see the class description. 
+	 */
+	public static function updateAllUserConnStat()
+	{
+		parent::startConnection();
+		DB::update('user', array('connected' => 0), 'connexparation<%i', parent::getTimeInSec());
+		return array('success' => true);
 	}
 
 	/**
