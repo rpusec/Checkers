@@ -168,6 +168,19 @@ class UsersController extends BaseController
 	 * @return Array Array which contains a flag, indicating whether the user is logged or not. 
 	 */
 	public static function isUserLogged(){
+		if(parent::isUserLogged())
+		{
+			self::updateAllUserConnStat(parent::getLoggedUserID()); 
+			$results = DB::query('SELECT connected FROM user WHERE userID = %i', parent::getLoggedUserID());
+
+			if(!empty($results))
+			{
+				$user = $results[0];
+				if($user['connected'] == 0)
+					unset($_SESSION["userID"]);
+			}
+		}
+
 		return array('isLogged' => parent::isUserLogged());
 	}
 
@@ -213,10 +226,10 @@ class UsersController extends BaseController
 	 * Marks all users as 'disconnected' whose connection has expired. 
 	 * @see the class description. 
 	 */
-	public static function updateAllUserConnStat()
+	public static function updateAllUserConnStat($userID = null)
 	{
 		parent::startConnection();
-		DB::update('user', array('connected' => 0), 'connexparation<%i', parent::getTimeInSec());
+		DB::update('user', array('connected' => 0), 'connexparation<%i' . ($userID !== null ? ' AND userID=%i' : ''), parent::getTimeInSec(), $userID);
 		return array('success' => true);
 	}
 
