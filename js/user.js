@@ -132,6 +132,46 @@ $(document).on('ready', function(){
 		});
 	});
 
+	//account settings modal btns
+	$('button[name=should-ch-fname-btn]').on('click', enableInputHandler);
+	$('button[name=should-ch-lname-btn]').on('click', enableInputHandler);
+	$('button[name=should-ch-username-btn]').on('click', enableInputHandler);
+	$('button[name=should-ch-password-btn]').on('click', enablePassword);
+
+	function enableInputHandler(){enableInput(this);}
+
+	/**
+	 * Enables an input from the account settings modal window. 
+	 * @return {boolean} True if the input field has been disabled, false otherwise. 
+	 */
+	function enableInput(thisVar){
+
+		if(typeof thisVar === 'undefined')
+			thisVar = this;
+
+		if(typeof $(thisVar).parent().parent().find('input').attr('disabled') !== 'undefined')
+		{
+			$(thisVar).parent().parent().find('input').removeAttr('disabled');
+			$(thisVar).text('Exclude?');
+			return true;
+		}
+
+		$(thisVar).parent().parent().find('input').attr('disabled', 'disabled');
+		$(thisVar).parent().parent().find('input').val('');
+		$(thisVar).text('Change?');
+		return false;
+	}
+
+	function enablePassword(){
+		if(enableInput(this))
+			$('input[name=passwordConfirm]').removeAttr('disabled');
+		else
+		{
+			$('input[name=passwordConfirm]').attr('disabled', 'disabled');
+			$('input[name=passwordConfirm]').val('');
+		}
+	}
+
 	$('#logout-option-link').on('click', function(){
 		$.ajax({
 			type:'get',

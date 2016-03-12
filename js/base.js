@@ -8,6 +8,10 @@ $(document).ready(function(){
 		$('#modal-login').modal('show');
 	});
 
+	$('#profile-option-link').on('click', function(){
+		$('#modal-account-settings').modal('show');
+	});
+
 	$.ajax({
 		type:'get',
 		processData: false,
