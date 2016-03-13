@@ -29,25 +29,31 @@ class UsersController extends BaseController
 	public static function registerUser($firstname, $lastname, $username, $password, $passwordConfirm)
 	{
 		if(self::checkIfLoggedAndInputNotEmpty($username))
+		{
 			ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
-		
+			ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ', true);
+		}
+
 		if(self::checkIfLoggedAndInputNotEmpty($password))
+		{
 			ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
-		
-		if(self::checkIfLoggedAndInputNotEmpty($firstname))
-			ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
-		
-		if(self::checkIfLoggedAndInputNotEmpty($lastname))
-			ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
+			ValidationHelper::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
+			ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ', true);
+		}
 
 		if(self::checkIfLoggedAndInputNotEmpty($firstname))
+		{
+			ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
 			ValidationHelper::validateInput($firstname, 'alphabeticSpace', 'First name' . ALPHABETIC_ERROR_MSG_PART);
-		
+			ValidationHelper::validateInput($firstname, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'first name. ', true);
+		}
+
 		if(self::checkIfLoggedAndInputNotEmpty($lastname))
-			ValidationHelper::validateInput($lastname, 'alphabeticSpace', 'Last name' . ALPHABETIC_ERROR_MSG_PART);
-		
-		if(self::checkIfLoggedAndInputNotEmpty($password))
-			ValidationHelper::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
+		{
+			ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
+			ValidationHelper::validateInput($lastname, 'alphabeticSpace', 'Last name' . ALPHABETIC_ERROR_MSG_PART);	
+			ValidationHelper::validateInput($lastname, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'last name. ', true);
+		}					
 
 		if(ValidationHelper::hasErrors())
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());
