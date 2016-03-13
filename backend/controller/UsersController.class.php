@@ -95,9 +95,14 @@ class UsersController extends BaseController
 	 * @return [type]        [description]
 	 */
 	private static function checkIfLoggedAndInputNotEmpty($input){
-		if(parent::isUserLogged() && $input != '')
-			return true;
-		return false;
+		if(parent::isUserLogged())
+		{
+			if($input != '')
+				return true;
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**

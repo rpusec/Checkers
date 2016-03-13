@@ -123,48 +123,6 @@ $(document).on('ready', function(){
 		}
 	}
 
-	/*var data = {
-		success: true,
-		connectedUsers: [
-			{
-				chatColorR:255,
-				chatColorG:0,
-				chatColorB:0,
-				firstname: 'roman',
-				lastname: 'pusec',
-				userID: 1,
-				username: 'rpusec'
-			},
-			{
-				chatColorR:0,
-				chatColorG:255,
-				chatColorB:0,
-				firstname: 'roman',
-				lastname: 'pusec',
-				userID: 2,
-				username: 'rpusec'
-			},
-			{
-				chatColorR:0,
-				chatColorG:0,
-				chatColorB:255,
-				firstname: 'roman',
-				lastname: 'pusec',
-				userID: 3,
-				username: 'rpusec'
-			},
-			{
-				chatColorR:255,
-				chatColorG:255,
-				chatColorB:0,
-				firstname: 'roman',
-				lastname: 'pusec',
-				userID: 4,
-				username: 'rpusec'
-			}
-		]
-	};*/
-
 	var CONN_USER_PREFIX = 'conn_user_';
 
 	function whoIsOnlineHandler(data){
