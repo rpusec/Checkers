@@ -228,7 +228,7 @@ class UsersController extends BaseController
 
 		DB::update('user', array(
 			'connexparation' => parent::getTimeInSec() + CONN_EXPARATION_TIME
-		), 'userID=%i', ($userID === null ? parent::getLoggedUserID() : null));
+		), 'userID=%i', ($userID === null ? parent::getLoggedUserID() : $userID));
 
 		return array('success' => true);
 	}

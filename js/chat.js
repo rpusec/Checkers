@@ -45,7 +45,7 @@ $(document).on('ready', function(){
 	});
 
 	var GET_MESSAGES_PING_TIME = 1000;
-	var CHECK_WHO_IS_ONLINE_PING_TIME = 5000;
+	var CHECK_WHO_IS_ONLINE_PING_TIME = 3000;
 
 	var lastMessageID = -1;
 
