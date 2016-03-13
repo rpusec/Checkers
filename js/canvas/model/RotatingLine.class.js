@@ -28,6 +28,7 @@
 		var radiusPlusStrokeStyle = options.radius + (options.strokeStyle*2);
 		this.cache(radiusPlusStrokeStyle * -1, radiusPlusStrokeStyle * -1, radiusPlusStrokeStyle*2, radiusPlusStrokeStyle*2);
 
+		this.alpha = options.alpha;
 		this.x = options.x;
 		this.y = options.y;
 

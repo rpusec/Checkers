@@ -16,6 +16,8 @@
 	 *                         - height: Height of the display object. 
 	 *                         - colorO: Color of the boxes that are positioned odd. 
 	 *                         - colorE: Color of the boxes that are positioned even. 
+	 *                         - colorOUnavailable: The same purpose as colorO, but it's only applied when the GameRoom is set as unavailable. 
+	 *                         - available: Boolean which indicates whether this GameRoom should be considered as unavailable. 
 	 * 
 	 * @author Roman Pusec
 	 */
@@ -24,6 +26,8 @@
 
 		if(typeof options === 'undefined')
 			options = {};
+
+		this._options = options;
 		
 		if(typeof options.numrectsX === 'undefined')
 			options.numrectsX = 3;
@@ -40,25 +44,39 @@
 		if(typeof options.colorO === 'undefined')
 			options.colorO = '#337ab7';
 
+		if(typeof options.colorOUnavailable === 'undefined')
+			options.colorOUnavailable = '#ff5e5e';
+
 		if(typeof options.colorE === 'undefined')
 			options.colorE = '#fff';
 
-		var rectWidth = options.width / options.numrectsX;
-		var rectHeight = options.height / options.numrectsY;
+		if(typeof options.unavailable !== 'boolean')
+			options.unavailable = false;
 
-		for(var col = 0; col < options.numrectsY; col++)
+		this.setBounds(0, 0, options.width, options.height);
+		this.setAsUnavailable(options.unavailable);
+	}
+
+	var p = createjs.extend(GameRoom, createjs.Container);
+
+	p.setAsUnavailable = function(b){
+		if(typeof b !== 'boolean')
+			b = false;
+
+		var rectWidth = this._options.width / this._options.numrectsX;
+		var rectHeight = this._options.height / this._options.numrectsY;
+
+		for(var col = 0; col < this._options.numrectsY; col++)
 		{
-			for(var row = 0; row < options.numrectsX; row++)
+			for(var row = 0; row < this._options.numrectsX; row++)
 			{
 				var newRect = new createjs.Shape();
-				newRect.graphics.beginFill(((col+row+1) % 2) == 0 ? options.colorE : options.colorO);
+				newRect.graphics.beginFill(((col+row+1) % 2) == 0 ? this._options.colorE : !b ? this._options.colorO : this._options.colorOUnavailable);
 				newRect.graphics.drawRect(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
 				newRect.cache(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
 				this.addChild(newRect);
 			}
 		}
-
-		this.setBounds(0, 0, options.width, options.height);
 
 		for(var i = 0; i < LINE_NUM; i++)
 		{
@@ -69,16 +87,15 @@
 				startAngle:0,
 				endAngle:Math.random()*Math.PI+Math.PI/2,
 				strokeStyle:8,
-				color:'rgba(51,122,183,0.25)',
+				color: !b ? this._options.colorO : this._options.colorOUnavailable,
 				rotationSpeed:5 * (Math.random() < 0.5 ? -1 : 1),
-				rotationVal:Math.random()*20
+				rotationVal:Math.random()*20,
+				alpha: 0.15
 			});
 			line.startRotation();
 			this.addChild(line);
 		}
 	}
-
-	var p = createjs.extend(GameRoom, createjs.Container);
 
 	window.GameRoom = createjs.promote(GameRoom, 'Container');
 
