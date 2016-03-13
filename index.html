@@ -8,225 +8,236 @@
 <link rel="stylesheet" href="css/bootstrap.min.css" />
 <link rel="stylesheet" href="css/bootstrap-dialog.min.css" />
 
+<!-- libraries -->
 <script src="js/libs/jquery-1.12.1.min.js"></script>
 <script src="js/libs/bootstrap.min.js"></script>
 <script src="js/libs/bootstrap-dialog.min.js"></script>
 <script src="js/libs/easeljs-0.8.2.min.js"></script>
 <script src="js/libs/tweenjs-0.6.2.min.js"></script>
 
+<!-- dom based scripts -->
 <script src="js/dom/jquery-plugins.js"></script>
 <script src="js/dom/base.js"></script>
 <script src="js/dom/user.js"></script>
 <script src="js/dom/chat.js"></script>
 
-<body>
+<!-- canvas oriented scripts -->
+<script src="js/canvas/controller.js"></script>
+<script src="js/canvas/model/AppearingText.class.js"></script>
+<script src="js/canvas/model/InteractiveLine.class.js"></script>
+<script src="js/canvas/model/GameRoom.class.js"></script>
+<script src="js/canvas/model/RotatingLine.class.js"></script>
 
-<!-- main screen -->
-<div id="main-container">
-	<canvas id="game-canvas"></canvas>
-	<div id="chat-contact-list"></div>
-	<div id="chat-container">
-		<div id="user-options">
-			<a href="#" id="profile-option-link"><span class="glyphicon glyphicon-user"></span></a>
-			<a href="#" id="logout-option-link"><span class="glyphicon glyphicon-off"></span></a>
+<body onload="init();">
+
+	<!-- main screen -->
+	<div id="main-container">
+		<div id="canvas-wrapper">
+			<canvas id="game-canvas" width="500" height="500"></canvas>
 		</div>
-		<div id="chat-window"></div>
-		<input id="chat-input" class="form-control" name="chat-input" maxlength="200" placeholder="Type in text... " type="text"/>
+		<div id="chat-contact-list"></div>
+		<div id="chat-container">
+			<div id="user-options">
+				<a href="#" id="profile-option-link"><span class="glyphicon glyphicon-user"></span></a>
+				<a href="#" id="logout-option-link"><span class="glyphicon glyphicon-off"></span></a>
+			</div>
+			<div id="chat-window"></div>
+			<input id="chat-input" class="form-control" name="chat-input" maxlength="200" placeholder="Type in text... " type="text"/>
+		</div>
 	</div>
-</div>
 
-<!-- login screen -->
-<div class="modal fade" id="modal-login" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<h4 class="modal-title">Login</h4>
-	  </div>
-	  <div class="modal-body">
-		
-		<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
-		<div class="bootstrap-iso">
-		 <div class="container-fluid">
-		  <div class="row">
-		   <div class="col-md-6 col-sm-6 col-xs-12">
-			<form>
-			 <div class="form-group ">
-			  <input class="form-control" id="username" name="username" placeholder="Username" type="text" />
-			 </div>
-			 <div class="form-group ">
-			  <input class="form-control" id="password" name="password" placeholder="Password" type="password" />
-			 </div>
-			 <div class="form-group">
-			  <div>
-			   <button class="btn btn-primary " name="submit-btn" type="button">
-				Sign in
-			   </button>
+	<!-- login screen -->
+	<div class="modal fade" id="modal-login" tabindex="-1" role="dialog">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h4 class="modal-title">Login</h4>
+		  </div>
+		  <div class="modal-body">
+			
+			<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+			<div class="bootstrap-iso">
+			 <div class="container-fluid">
+			  <div class="row">
+			   <div class="col-md-6 col-sm-6 col-xs-12">
+				<form>
+				 <div class="form-group ">
+				  <input class="form-control" id="username" name="username" placeholder="Username" type="text" />
+				 </div>
+				 <div class="form-group ">
+				  <input class="form-control" id="password" name="password" placeholder="Password" type="password" />
+				 </div>
+				 <div class="form-group">
+				  <div>
+				   <button class="btn btn-primary " name="submit-btn" type="button">
+					Sign in
+				   </button>
+				  </div>
+				 </div>
+				</form>
+			   </div>
 			  </div>
 			 </div>
-			</form>
-		   </div>
+			</div>
+
 		  </div>
-		 </div>
-		</div>
-
-	  </div>
-	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal" id="sign-up-btn">Create an account</button>
-	  </div>
-	</div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<!-- registration screen -->
-<div class="modal fade" id="modal-signup" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h4 class="modal-title">Registration</h4>
-	  </div>
-	  <div class="modal-body">
-		
-		<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
-		<div class="bootstrap-iso">
-		 <div class="container-fluid">
-		  <div class="row">
-		   <div class="col-md-6 col-sm-6 col-xs-12">
-			<form>
-			 <div class="form-group ">
-			  <label class="control-label " for="firstname">
-			   First Name
-			  </label>
-			  <input class="form-control" id="firstname" name="firstname" type="text" value=""/>
-			 </div>
-			 <div class="form-group ">
-			  <label class="control-label " for="lastname">
-			   Last Name
-			  </label>
-			  <input class="form-control" id="lastname" name="lastname" type="text" value=""/>
-			 </div>
-			 <div class="form-group ">
-			  <label class="control-label " for="username">
-			   Username
-			  </label>
-			  <input class="form-control" id="username" name="username" type="text" value=""/>
-			 </div>
-			 <div class="form-group ">
-			  <label class="control-label " for="password">
-			   Password
-			  </label>
-			  <input class="form-control" id="password" name="password" type="password" value=""/>
-			 </div>
-			 <div class="form-group ">
-			  <label class="control-label " for="passwordConfirm">
-			   Confirm password
-			  </label>
-			  <input class="form-control" id="passwordConfirm" name="passwordConfirm" type="password" value=""/>
-			 </div>
-			 <div class="form-group">
-			  <div>
-			   <button class="btn btn-primary " name="submit-btn" type="button">
-				Sign up
-			   </button>
-			  </div>
-			 </div>
-			</form>
-		   </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal" id="sign-up-btn">Create an account</button>
 		  </div>
-		 </div>
-		</div>
+		</div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
-	  </div>
-	</div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<!-- registration screen -->
-<div class="modal fade" id="modal-account-settings" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h4 class="modal-title">Account settings</h4>
-	  </div>
-	  <div class="modal-body">
-		
-		<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
-		<div class="bootstrap-iso">
-		 <div class="container-fluid">
-		  <div class="row">
-		   <div class="col-md-6 col-sm-6 col-xs-12">
-			<form>
-				<div class="form-group">
+	<!-- registration screen -->
+	<div class="modal fade" id="modal-signup" tabindex="-1" role="dialog">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Registration</h4>
+		  </div>
+		  <div class="modal-body">
+			
+			<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+			<div class="bootstrap-iso">
+			 <div class="container-fluid">
+			  <div class="row">
+			   <div class="col-md-6 col-sm-6 col-xs-12">
+				<form>
+				 <div class="form-group ">
 				  <label class="control-label " for="firstname">
 				   First Name
 				  </label>
-				 <div class="input-group">
-				  <input class="form-control" id="firstname" name="firstname" type="text" value="" disabled/>
-				  <span class="input-group-btn">
-					<button class="btn btn-primary" type="button" name="should-ch-fname-btn">Change?</button>
-				  </span>
+				  <input class="form-control" id="firstname" name="firstname" type="text" value=""/>
 				 </div>
-				</div>
-				<div class="form-group">
-					<label class="control-label " for="lastname">
+				 <div class="form-group ">
+				  <label class="control-label " for="lastname">
 				   Last Name
 				  </label>
-				 <div class="input-group">
-				  
-				  <input class="form-control" id="lastname" name="lastname" type="text" value="" disabled/>
-				  <span class="input-group-btn">
-					<button class="btn btn-primary" type="button" name="should-ch-lname-btn">Change?</button>
-				  </span>
+				  <input class="form-control" id="lastname" name="lastname" type="text" value=""/>
 				 </div>
-				</div>
-				<div class="form-group">
-					<label class="control-label " for="username">
+				 <div class="form-group ">
+				  <label class="control-label " for="username">
 				   Username
 				  </label>
-				 <div class="input-group">
-				  
-				  <input class="form-control" id="username" name="username" type="text" value="" disabled/>
-				  <span class="input-group-btn">
-					<button class="btn btn-primary" type="button" name="should-ch-username-btn">Change?</button>
-				  </span>
+				  <input class="form-control" id="username" name="username" type="text" value=""/>
 				 </div>
-				</div>
-				<div class="form-group">
-					<label class="control-label " for="password">
+				 <div class="form-group ">
+				  <label class="control-label " for="password">
 				   Password
 				  </label>
-				 <div class="input-group">
-				  
-				  <input class="form-control" id="password" name="password" type="password" value="" disabled/>
-				  <span class="input-group-btn">
-					<button class="btn btn-primary" type="button" name="should-ch-password-btn">Change?</button>
-				  </span>
+				  <input class="form-control" id="password" name="password" type="password" value=""/>
 				 </div>
-				</div>
-			 <div class="form-group ">
-			  <label class="control-label " for="passwordConfirm">
-			   Confirm password
-			  </label>
-				<input class="form-control" id="passwordConfirm" name="passwordConfirm" type="password" value="" disabled/>
-			 </div>
-			 <div class="form-group">
-			  <div>
-			   <button class="btn btn-primary " name="submit-btn" type="button">
-				Apply new settings
-			   </button>
+				 <div class="form-group ">
+				  <label class="control-label " for="passwordConfirm">
+				   Confirm password
+				  </label>
+				  <input class="form-control" id="passwordConfirm" name="passwordConfirm" type="password" value=""/>
+				 </div>
+				 <div class="form-group">
+				  <div>
+				   <button class="btn btn-primary " name="submit-btn" type="button">
+					Sign up
+				   </button>
+				  </div>
+				 </div>
+				</form>
+			   </div>
 			  </div>
 			 </div>
-			</form>
-		   </div>
-		  </div>
-		 </div>
-		</div>
+			</div>
 
-	  </div>
-	</div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+		  </div>
+		</div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<!-- registration screen -->
+	<div class="modal fade" id="modal-account-settings" tabindex="-1" role="dialog">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Account settings</h4>
+		  </div>
+		  <div class="modal-body">
+			
+			<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+			<div class="bootstrap-iso">
+			 <div class="container-fluid">
+			  <div class="row">
+			   <div class="col-md-6 col-sm-6 col-xs-12">
+				<form>
+					<div class="form-group">
+					  <label class="control-label " for="firstname">
+					   First Name
+					  </label>
+					 <div class="input-group">
+					  <input class="form-control" id="firstname" name="firstname" type="text" value="" disabled/>
+					  <span class="input-group-btn">
+						<button class="btn btn-primary" type="button" name="should-ch-fname-btn">Change?</button>
+					  </span>
+					 </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label " for="lastname">
+					   Last Name
+					  </label>
+					 <div class="input-group">
+					  
+					  <input class="form-control" id="lastname" name="lastname" type="text" value="" disabled/>
+					  <span class="input-group-btn">
+						<button class="btn btn-primary" type="button" name="should-ch-lname-btn">Change?</button>
+					  </span>
+					 </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label " for="username">
+					   Username
+					  </label>
+					 <div class="input-group">
+					  
+					  <input class="form-control" id="username" name="username" type="text" value="" disabled/>
+					  <span class="input-group-btn">
+						<button class="btn btn-primary" type="button" name="should-ch-username-btn">Change?</button>
+					  </span>
+					 </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label " for="password">
+					   Password
+					  </label>
+					 <div class="input-group">
+					  
+					  <input class="form-control" id="password" name="password" type="password" value="" disabled/>
+					  <span class="input-group-btn">
+						<button class="btn btn-primary" type="button" name="should-ch-password-btn">Change?</button>
+					  </span>
+					 </div>
+					</div>
+				 <div class="form-group ">
+				  <label class="control-label " for="passwordConfirm">
+				   Confirm password
+				  </label>
+					<input class="form-control" id="passwordConfirm" name="passwordConfirm" type="password" value="" disabled/>
+				 </div>
+				 <div class="form-group">
+				  <div>
+				   <button class="btn btn-primary " name="submit-btn" type="button">
+					Apply new settings
+				   </button>
+				  </div>
+				 </div>
+				</form>
+			   </div>
+			  </div>
+			 </div>
+			</div>
+
+		  </div>
+		</div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
 </body>
 </html>
