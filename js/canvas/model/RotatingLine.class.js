@@ -43,8 +43,13 @@
 		}
 
 		function onRotation(){
-			self.rotation += options.rotationSpeed;
-			self.rotation %= 360;
+			if(self.parent !== null)
+			{
+				self.rotation += options.rotationSpeed;
+				self.rotation %= 360;
+			}
+			else
+				createjs.Ticker.removeEventListener('tick', onRotation);
 		}
 	}
 

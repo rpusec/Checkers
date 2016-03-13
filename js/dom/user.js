@@ -38,6 +38,7 @@ $(document).on('ready', function(){
 			success:function(data){
 				if(data.success){
 					deactivateModalLogin();
+					initializeGame();
 				}
 				else
 				{
@@ -285,7 +286,10 @@ $(document).on('ready', function(){
 				});
 
 				if(data.success)
+				{
 					activateModalLogin();
+					uninitializeGame();
+				}
 			},
 			error:function(data){
 				console.log(data);

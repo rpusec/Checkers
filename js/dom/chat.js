@@ -112,7 +112,7 @@ $(document).on('ready', function(){
 			var rgbStr = 'rgb(' + message.chatColorR + ',' + message.chatColorG + ',' + message.chatColorB + ')';
 			var msgDOM = document.createElement('div');
 			msgDOM.setAttribute('class', 'user-message');
-			msgDOM.setAttribute('style', 'background-color: ' + rgbStr + '; box-shadow: 0px 0px 10px ' + rgbStr + '; ');
+			msgDOM.setAttribute('style', 'background-color: ' + rgbStr + '; box-shadow: 0px 0px 15px ' + rgbStr + '; ');
 			msgDOM.innerHTML = '<span><b>' + message.firstName + ' say' + (message.userID === loggedUserID ? '' : 's') + ': </b>' + message.message + '</span>';
 			lastMessageID = message.messageID;
 
@@ -141,7 +141,7 @@ $(document).on('ready', function(){
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', CONN_USER_PREFIX + connUser.userID);
 				$newConnUser.css('background-color', 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)');
-				$newConnUser.css('box-shadow', '0px 0px 20px rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 0.5)');
+				$newConnUser.css('box-shadow', '0px 0px 20px rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)');
 				$('#chat-contact-list').append($newConnUser);
 				$($newConnUser).toggleBubbleOn();
 			}

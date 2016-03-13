@@ -44,8 +44,14 @@ $(document).ready(function(){
 
 	function isUserLoggedHandler(data){
 		if(data.isLogged)
+		{
 			deactivateModalLogin();
+			initializeGame();
+		}
 		else
+		{
 			activateModalLogin();
+			uninitializeGame();
+		}
 	}
 });

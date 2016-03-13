@@ -5,11 +5,13 @@
 
 	var stage
 	,	gameNameText
-	,	selARoomText;
+	,	selARoomText
+	,	arrGameRoom = []
+	,	gameInitialized = false;
 
 	window.init = function(){
-
-		stage = new createjs.Stage('game-canvas');
+		if(typeof stage === 'undefined')
+			stage = new createjs.Stage('game-canvas');
 
 		window.stage = stage;
 
@@ -30,6 +32,14 @@
 			x: TEXT_PADDING,
 			y: gameNameText.getBounds().height*2 + TEXT_PADDING
 		});
+	}
+
+	window.initializeGame = function(){
+
+		if(gameInitialized)
+			return;
+
+		gameInitialized = true;
 
 		stage.addChild(gameNameText, selARoomText);
 
@@ -61,6 +71,12 @@
 				waitTime += 100;
 			}
 		}
+	}
+
+	window.uninitializeGame = function(){
+		stage.removeAllChildren();
+		stage.update();
+		gameInitialized = false;
 	}
 
 }());
