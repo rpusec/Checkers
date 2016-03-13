@@ -148,6 +148,7 @@ $(document).on('ready', function(){
 
 	function enableInputHandler(){
 		enableInput(this);
+		modalASIKeyPressHandler();
 	}
 
 	/**
@@ -155,15 +156,20 @@ $(document).on('ready', function(){
 	 * whether to disable or enable the submission button. 
 	 */
 	function modalASIKeyPressHandler(){
-		var shouldEnable = false;
+		var shouldEnable = true;
 
-		$.each($('#modal-account-settings').find('.form-control'), function(fcKey, fcVal){
-			if($(fcVal).val() !== '')
-			{
-				shouldEnable = true;
-				return false;
-			}
-		});
+		if($('#modal-account-settings').find('input.form-control:enabled').length === 0)
+			shouldEnable = false;
+		else
+		{
+			$.each($('#modal-account-settings').find('input.form-control:enabled'), function(fcKey, fcVal){
+				if($(fcVal).val() === '')
+				{
+					shouldEnable = false;
+					return false;
+				}
+			});
+		}
 
 		if(shouldEnable)
 			$('#modal-account-settings').find('button[name=submit-btn]').removeAttr('disabled');
@@ -200,6 +206,7 @@ $(document).on('ready', function(){
 			$('input[name=passwordConfirm]').attr('disabled', 'disabled');
 			$('input[name=passwordConfirm]').val('');
 		}
+		modalASIKeyPressHandler();
 	}
 
 	$('#modal-account-settings').find('button[name=submit-btn]').on('click', function(){
@@ -299,9 +306,6 @@ $(document).on('ready', function(){
 			url:'backend/view/UsersView.php',
 			dataType: 'json',
 			data:'path=update-conn-time',
-			success:function(data){
-				console.log(data);
-			},
 			error:function(data){
 				console.log(data);
 			}
@@ -322,9 +326,6 @@ $(document).on('ready', function(){
 			url:'backend/view/UsersView.php',
 			dataType: 'json',
 			data:'path=update-users-conn-stat',
-			success:function(data){
-				console.log(data);
-			},
 			error:function(data){
 				console.log(data);
 			}
