@@ -18,6 +18,17 @@ require_once('../helper/ValidationHelper.class.php');
  */
 class UsersController extends BaseController
 {
+	public static function getUserByID($userID)
+	{
+		parent::startConnection();
+		$results = DB::query('SELECT fname as firstname, lname as lastname, username FROM user WHERE userID = %i', $userID);
+
+		if(!empty($results))
+			return array('success' => true, 'user' => $results[0]);
+
+		return array('success' => false);
+	}
+
 	/**
 	 * Registers users to the database. 
 	 * @param  String $firstname First name of the user. 

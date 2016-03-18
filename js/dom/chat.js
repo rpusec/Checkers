@@ -149,10 +149,22 @@ $(document).on('ready', function(){
 				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', CONN_USER_PREFIX + connUser.userID);
-				$newConnUser.css('background-color', 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)');
-				$newConnUser.css('box-shadow', '0px 0px 20px rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)');
+				$bgColor = 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)';
+				$newConnUser.css('background-color', $bgColor);
+				$newConnUser.css('box-shadow', '0px 0px 20px ' + $bgColor);
 				$('#chat-contact-list').append($newConnUser);
 				$($newConnUser).toggleBubbleOn();
+				$($newConnUser).hover(
+					function(){
+						$('#single-user-info').css('visibility', 'visible');
+						$('#single-user-info').css({
+							top: $(this).offset().top,
+							left: $(this).offset().left - $('#single-user-info').width()
+						});
+					}, function(){
+						$('#single-user-info').css('visibility', 'hidden');
+						$('#single-user-info').text('Loading... ');
+					});
 			}
 			else
 			{

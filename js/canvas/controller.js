@@ -81,12 +81,12 @@
 
 		for(var i = 0; i < rooms.length; i++)
 		{
-			if(col !== GAME_ROOMS_PER_ROW-1)
+			if(col !== GAME_ROOMS_PER_ROW)
 			{
 				var newGameRoom = new GameRoom({roomID: rooms[i].roomID});
 				var xside = stage.canvas.width/GAME_ROOMS_PER_ROW;
-				newGameRoom.x = xside*row + newGameRoom.getBounds().width;
-				newGameRoom.y = gameRoomInitialY + newGameRoom.getBounds().height + newGameRoom.getBounds().height*(col*3);
+				newGameRoom.x = xside*col + newGameRoom.getBounds().width;
+				newGameRoom.y = gameRoomInitialY + newGameRoom.getBounds().height + newGameRoom.getBounds().height*(row*3);
 				stage.addChild(newGameRoom);
 				newGameRoom.alpha = 0;
 				createjs.Tween.get(newGameRoom).wait(waitTime).to({y: newGameRoom.y+GAME_ROOM_TO_BOTTOM, alpha: 1}, 500);
