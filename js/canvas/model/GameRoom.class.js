@@ -29,6 +29,9 @@
 
 		this._options = options;
 		
+		if(typeof options.roomID === 'undefined')
+			options.roomID = -1;
+
 		if(typeof options.numrectsX === 'undefined')
 			options.numrectsX = 3;
 
@@ -55,6 +58,14 @@
 
 		this.setBounds(0, 0, options.width, options.height);
 		this.setAsUnavailable(options.unavailable);
+
+		var txtRoomNum = new createjs.Text(options.roomID, '14px Arial', '#fff');
+		txtRoomNum.textAlign = 'center';
+		txtRoomNum.textBaseline = 'middle';
+		txtRoomNum.x = this.getBounds().width/2;		
+		txtRoomNum.y = this.getBounds().height/2;
+		txtRoomNum.shadow = new createjs.Shadow("#000000", 0, 0, 5);
+		this.addChild(txtRoomNum);
 	}
 
 	var p = createjs.extend(GameRoom, createjs.Container);
