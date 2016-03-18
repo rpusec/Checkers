@@ -170,7 +170,8 @@ class UsersController extends BaseController
 
 		return array(
 			'success' => true, 
-			'connectedUsers' => $connectedUsers
+			'connectedUsers' => $connectedUsers, 
+			'loggedUserID' => parent::isUserLogged() ? parent::getLoggedUserID() : -1
 		);
 	}
 

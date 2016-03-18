@@ -130,13 +130,22 @@ $(document).on('ready', function(){
 			return;
 
 		var connectedUsers = data.connectedUsers;
+		var loggedUserID = data.loggedUserID; 
 
 		for(var i = 0; i < connectedUsers.length; i++)
 		{
 			var connUser = connectedUsers[i];
+			var connUserDom = $('#chat-contact-list').find('#' + CONN_USER_PREFIX + connUser.userID);
 
-			if($('#chat-contact-list').find('#' + CONN_USER_PREFIX + connUser.userID).length === 0)
+			if(connUserDom.length === 0)
 			{
+				if(connUser.userID === loggedUserID)
+				{
+					connUser.chatColorR = 255;
+					connUser.chatColorG = 255;
+					connUser.chatColorB = 255;
+				}
+
 				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', CONN_USER_PREFIX + connUser.userID);
@@ -144,6 +153,11 @@ $(document).on('ready', function(){
 				$newConnUser.css('box-shadow', '0px 0px 20px rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)');
 				$('#chat-contact-list').append($newConnUser);
 				$($newConnUser).toggleBubbleOn();
+			}
+			else
+			{
+				if($(connUserDom).find('span').text() !== connUser.username)
+					$(connUserDom).find('span').text(connUser.username);
 			}
 		}
 
