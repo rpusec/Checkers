@@ -99,3 +99,12 @@ html, body{
 	padding:5px;
 	background-color: #fff;
 }
+
+#footer{
+	position: absolute;
+	margin:0px auto;
+	bottom: 0px;
+	padding:10px;
+	cursor: default;
+	color: #8c8c8c;
+}
