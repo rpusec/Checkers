@@ -181,17 +181,17 @@ $(document).on('ready', function(){
 				$($newConnUser).toggleBubbleOn();
 				$($newConnUser).hover(
 					function(){
-						$('#single-user-info').css('visibility', 'visible');
-						$('#single-user-info').css({
-							top: $(this).offset().top,
-							left: $(this).offset().left - $('#single-user-info').width()
-						});
-
 						var targetUserInfo = arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID];
 						$('#single-user-info').html(
 							'<b>First name: </b>' + targetUserInfo.firstname + 
 							'<br /><b>Last name: </b>' + targetUserInfo.lastname + 
 							'<br /><b>Username: </b>' + targetUserInfo.username);
+
+						$('#single-user-info').css('visibility', 'visible');
+						$('#single-user-info').css({
+							top: $(this).offset().top,
+							left: $(this).offset().left - $('#single-user-info').width()
+						});
 
 					}, function(){
 						$('#single-user-info').css('visibility', 'hidden');

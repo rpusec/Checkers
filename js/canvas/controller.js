@@ -11,7 +11,7 @@
 	var stage
 	,	gameNameText
 	,	selARoomText
-	,	arrGameRoom = []
+	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false;
 
 	/**
@@ -25,6 +25,7 @@
 
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
+		stage.enableMouseOver(5);
 
 		gameNameText = new AppearingText({
 			text: 'Game name ',
@@ -53,7 +54,6 @@
 			return;
 
 		gameInitialized = true;
-
 		stage.addChild(gameNameText, selARoomText);
 
 		$.ajax({
@@ -95,13 +95,16 @@
 		{
 			if(col !== GAME_ROOMS_PER_ROW)
 			{
+				var ROOM_PADDING = 50;
 				var newGameRoom = new GameRoom({roomID: rooms[i].roomID});
-				var xside = stage.canvas.width/GAME_ROOMS_PER_ROW;
-				newGameRoom.x = xside*col + newGameRoom.getBounds().width;
-				newGameRoom.y = gameRoomInitialY + newGameRoom.getBounds().height + newGameRoom.getBounds().height*(row*3);
-				stage.addChild(newGameRoom);
+				var custWidth = newGameRoom.getBounds().width + ROOM_PADDING;
+				newGameRoom.x = custWidth * col;
+				newGameRoom.y = newGameRoom.getBounds().height*2 + newGameRoom.getBounds().height*(row*3);
+				contGameRoom.addChild(newGameRoom);
 				newGameRoom.alpha = 0;
-				createjs.Tween.get(newGameRoom).wait(waitTime).to({y: newGameRoom.y+GAME_ROOM_TO_BOTTOM, alpha: 1}, 500);
+				createjs.Tween.get(newGameRoom).wait(waitTime).to({y: newGameRoom.y+GAME_ROOM_TO_BOTTOM, alpha: 1}, 500).call(function(){
+					this.addMouseEvents();
+				});
 				col++;
 				waitTime += 100;
 			}
@@ -114,6 +117,10 @@
 				i--;
 			}
 		}
+
+		contGameRoom.x = stage.canvas.width/2 - contGameRoom.getBounds().width/2;
+		contGameRoom.y = gameRoomInitialY;
+		stage.addChild(contGameRoom);
 	}
 
 	/**
@@ -121,6 +128,7 @@
 	 */
 	window.uninitializeGame = function(){
 		stage.removeAllChildren();
+		contGameRoom.removeAllChildren();
 		stage.update();
 		gameInitialized = false;
 	}

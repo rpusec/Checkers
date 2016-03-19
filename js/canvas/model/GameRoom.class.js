@@ -40,7 +40,7 @@
 			options.numrectsY = 3;
 
 		if(typeof options.width === 'undefined')
-			options.width = 50;
+			options.width = 75;
 
 		if(typeof options.height === 'undefined')
 			options.height = 50;
@@ -60,18 +60,44 @@
 		this.setBounds(0, 0, options.width, options.height);
 		this.setAsUnavailable(options.unavailable);
 
-		var txtRoomNum = new createjs.Text(options.roomID, '14px Arial', '#fff');
+		var txtRoomNum = new createjs.Text(options.roomID, '30px Arial', '#fff');
 		txtRoomNum.textAlign = 'center';
 		txtRoomNum.textBaseline = 'middle';
 		txtRoomNum.x = this.getBounds().width/2;		
 		txtRoomNum.y = this.getBounds().height/2;
 		var txtRoomNumBorder = txtRoomNum.clone();
-		txtRoomNumBorder.outline = 2;
+		txtRoomNumBorder.outline = 4;
 		txtRoomNumBorder.color = "#000";
 		this.addChild(txtRoomNumBorder, txtRoomNum);
 	}
 
 	var p = createjs.extend(GameRoom, createjs.Container);
+
+	p.addMouseEvents = function(){
+		var ON_MOUSE_MOVE_AMOUNT = 10;
+		var ON_MOUSE_SPEED_AMOUNT = 100;
+
+		this.on('mouseover', function(){
+			mouseOverHandler(this, ON_MOUSE_MOVE_AMOUNT, ON_MOUSE_SPEED_AMOUNT);
+		});
+		
+		this.on('mouseout', function(){
+			mouseOutHandler(this, ON_MOUSE_MOVE_AMOUNT, ON_MOUSE_SPEED_AMOUNT);
+		});
+
+		this.mouseChildren = false;
+		var initialY = this.y - ON_MOUSE_MOVE_AMOUNT;
+
+		function mouseOverHandler(thisVal, moveAmount, speedAmount){
+			createjs.Tween.get(thisVal).to({y: thisVal.y - moveAmount}, speedAmount);
+		}
+
+		function mouseOutHandler(thisVal, moveAmount, speedAmount){
+			thisVal.y = initialY;			
+			createjs.Tween.removeTweens(thisVal);
+			createjs.Tween.get(thisVal).to({y: thisVal.y + moveAmount}, speedAmount);
+		}
+	}
 
 	p.setAsUnavailable = function(b){
 		if(typeof b !== 'boolean')
