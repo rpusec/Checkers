@@ -1,9 +1,12 @@
 $(document).on('ready', function(){
-	$('#modal-login').find('input[name=username]').on('keypress', luKeyHandler);
-	$('#modal-login').find('input[name=password]').on('keypress', luKeyHandler);
+	$('#modal-login').find('input[name=username]').on('keypress', loginUserKeyHandler);
+	$('#modal-login').find('input[name=password]').on('keypress', loginUserKeyHandler);
 	$('#modal-login').find('button[name="submit-btn"]').on('click', loginUser);
 
-	function luKeyHandler(e){
+	/**
+	 * Handles key events on the login form. 
+	 */
+	function loginUserKeyHandler(e){
 		var key = e.which || e.keyCode;
 		
 		if(key !== 13)
@@ -137,7 +140,7 @@ $(document).on('ready', function(){
 	$('button[name=should-ch-fname-btn]').on('click', enableInputHandler);
 	$('button[name=should-ch-lname-btn]').on('click', enableInputHandler);
 	$('button[name=should-ch-username-btn]').on('click', enableInputHandler);
-	$('button[name=should-ch-password-btn]').on('click', enablePassword);
+	$('button[name=should-ch-password-btn]').on('click', enablePasswordHandler);
 
 	$('#modal-account-settings').find('input[name=lastname]').on('keyup', modalASIKeyPressHandler);
 	$('#modal-account-settings').find('input[name=firstname]').on('keyup', modalASIKeyPressHandler);
@@ -147,6 +150,10 @@ $(document).on('ready', function(){
 
 	$('#modal-account-settings').find('button[name=submit-btn]').attr('disabled', 'disabled');
 
+	/**
+	 * Executed when the user presses the "Change?/Exclude?" buttons 
+	 * on the Account Settings modal window. 
+	 */
 	function enableInputHandler(){
 		enableInput(this);
 		modalASIKeyPressHandler();
@@ -155,6 +162,7 @@ $(document).on('ready', function(){
 	/**
 	 * Checks if there's at least one input field that has a value to determine
 	 * whether to disable or enable the submission button. 
+	 * ASI stands for Account Settings Input. 
 	 */
 	function modalASIKeyPressHandler(){
 		var shouldEnable = true;
@@ -199,7 +207,11 @@ $(document).on('ready', function(){
 		return false;
 	}
 
-	function enablePassword(){
+	/**
+	 * This is a special case since we should enable not only the password field itself but also
+	 * the passwordConfirm field. It embodies the enableInput() function. 
+	 */
+	function enablePasswordHandler(){
 		if(enableInput(this))
 			$('input[name=passwordConfirm]').removeAttr('disabled');
 		else
@@ -210,6 +222,7 @@ $(document).on('ready', function(){
 		modalASIKeyPressHandler();
 	}
 
+	//when the submit button was pressed on the Account Settings section 
 	$('#modal-account-settings').find('button[name=submit-btn]').on('click', function(){
 
 		var form = $('#modal-account-settings').find('form').eq(0);
@@ -239,14 +252,19 @@ $(document).on('ready', function(){
 			url:'backend/view/UsersView.php',
 			dataType: 'json',
 			data:formData,
-			success: accountSettingsAlteredHandler,
+			success: accountSettingsAlteredSuccess,
 			error:function(data){
 				console.log(data);
 			}
 		});
 	});
-
-	function accountSettingsAlteredHandler(data){
+	
+	/**
+	 * Function which is executed when an AJAX request responsible for 
+	 * changing user profile settings was successfully executed. 
+	 * @param  {Object} data Plain object which embodies the data from the server. 
+	 */
+	function accountSettingsAlteredSuccess(data){
 		var message = 'Account settings successfully altered. ';
 
 		if(data.success)
@@ -270,6 +288,7 @@ $(document).on('ready', function(){
 		});
 	}
 
+	//when the logout option was used 
 	$('#logout-option-link').on('click', function(){
 		$.ajax({
 			type:'get',

@@ -6,15 +6,17 @@
 	var DOWN_DIR = 4;
 
 	/**
-	 * Text which fades in or out. 
-	 * - text          Text to display.
-	 * - x             X coordinate of the text. 
-	 * - y             Y coordinate of the text. 
-	 * - [speed]       Speed of fading in or out in milliseconds. 
-	 * - [farAway]     How far away will the text be from the specified location when initialized.  
-	 * - [font]        Font and the size of the font (e.g. 'bold 12px Arial').  
-	 * - [color]       Color of the font
+	 * Augmented createjs.Text object which fades in or out. 
+	 * @param {Object} options A plain object which represents parameters for the class. Includes:
+	 *                         - text          Text to display.
+	 *                         - x             X coordinate of the text. 
+	 *                         - y             Y coordinate of the text. 
+	 *                         - [speed]       Speed of fading in or out in milliseconds. 
+	 *                         - [farAway]     How far away will the text be from the specified location when initialized.  
+	 *                         - [font]        Font and the size of the font (e.g. 'bold 12px Arial').  
+	 *                         - [color]       Color of the font
 	 * @author Roman Pusec
+	 * @augments {createjs.Text}
 	 */
 	function AppearingText(options){
 		this.Text_constructor();
@@ -42,7 +44,7 @@
 		this.font = options.font;
 		this.color = options.color;
 
-		switch(Math.ceil(Math.random()*Math.max(LEFT_DIR, RIGHT_DIR, UP_DIR, DOWN_DIR)))
+		switch(Math.ceil(Math.random()*DOWN_DIR))
 		{
 			case LEFT_DIR : 
 				this.x += options.farAway;

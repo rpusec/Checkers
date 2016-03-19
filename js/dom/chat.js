@@ -2,6 +2,12 @@ $(document).on('ready', function(){
 
 	var arrOnlineUserInfo = {};
 
+	/**
+	 * Represents the information of a user who's logged in. 
+	 * @param {String} firstname The first name of the user. 
+	 * @param {String} lastname  The last name of the user. 
+	 * @param {String} username  The username of the user. 
+	 */
 	function OnlineUserInfo(firstname, lastname, username){
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -53,11 +59,12 @@ $(document).on('ready', function(){
 	});
 
 	var GET_MESSAGES_PING_TIME = 1000;
-	var CHECK_WHO_IS_ONLINE_PING_TIME = 3000;
+	var CHECK_WHO_IS_ONLINE_PING_TIME = 2500;
 
 	var lastMessageID = -1;
 
-	//pings the server every [GET_MESSAGES_PING_TIME] milliseconds to check for new messages
+	//pings the server every [GET_MESSAGES_PING_TIME] 
+	//milliseconds to check for new messages
 	setInterval(function(){
 		$.ajax({
 			type:'get',
@@ -73,7 +80,8 @@ $(document).on('ready', function(){
 		});
 	}, GET_MESSAGES_PING_TIME);
 
-	//checks who is online and displays the usernames every [CHECK_WHO_IS_ONLINE_PING_TIME] milliseconds
+	//checks who is online and displays the usernames 
+	//every [CHECK_WHO_IS_ONLINE_PING_TIME] milliseconds
 	setInterval(function(){
 		$.ajax({
 			type:'get',
@@ -82,7 +90,7 @@ $(document).on('ready', function(){
 			url:'backend/view/UsersView.php',
 			dataType: 'json',
 			data:'path=who-is-online',
-			success: whoIsOnlineHandler,
+			success: whoIsOnlineHandlerSuccess,
 			error: function(data){
 				console.log(data);
 			}
@@ -133,13 +141,19 @@ $(document).on('ready', function(){
 
 	var CONN_USER_PREFIX = 'conn_user_';
 
-	function whoIsOnlineHandler(data){
+	/**
+	 * Updates the chat screen with new online users 
+	 * and excludes those that have logged out. 
+	 * @param  {Object} data Plain object which includes the information from the appropriate AJAX request. 
+	 */
+	function whoIsOnlineHandlerSuccess(data){
 		if(!data.success)
 			return;
 
 		var connectedUsers = data.connectedUsers;
 		var loggedUserID = data.loggedUserID; 
 
+		//adds the potential users to the chat screen
 		for(var i = 0; i < connectedUsers.length; i++)
 		{
 			var connUser = connectedUsers[i];
@@ -178,7 +192,6 @@ $(document).on('ready', function(){
 							'<b>First name: </b>' + targetUserInfo.firstname + 
 							'<br /><b>Last name: </b>' + targetUserInfo.lastname + 
 							'<br /><b>Username: </b>' + targetUserInfo.username);
-						console.log(arrOnlineUserInfo);
 
 					}, function(){
 						$('#single-user-info').css('visibility', 'hidden');
@@ -197,6 +210,7 @@ $(document).on('ready', function(){
 			}
 		}
 
+		//removes the users from the chat screen, if there are any to remove 
 		$.each($('#chat-contact-list').children(), function(cclKey, cclVal){
 
 			var found = false;
@@ -216,7 +230,7 @@ $(document).on('ready', function(){
 			{
 				if(arrOnlineUserInfo.hasOwnProperty($(cclVal).attr('id')))
 					delete arrOnlineUserInfo[$(cclVal).attr('id')];
-				
+
 				$(cclVal).toggleBubbleOff();
 			}
 		});

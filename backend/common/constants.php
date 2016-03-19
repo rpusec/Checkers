@@ -1,7 +1,7 @@
 <?php
 
 define('MESSAGE_EXPARATION_TIME', 20);
-define('CONN_EXPARATION_TIME', 10);
+define('CONN_EXPARATION_TIME', 5);
 
 define('USER_NOT_LOGGED_MSG', 'You\'re not logged into the application. ');
 define('CANNOT_SEND_MESSAGES', 'Can\'t send a new message. ' . USER_NOT_LOGGED_MSG);

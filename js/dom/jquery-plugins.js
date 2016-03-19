@@ -1,3 +1,8 @@
+/**
+ * Two jQuery plugins which handle the appearance or disappearance of 
+ * the 'text bubbles' (e.g. the content on the chat and online user sections). 
+ * @author Roman Pusec
+ */
 (function($){
 
 $.fn.toggleBubbleOn = function(completeFunct){

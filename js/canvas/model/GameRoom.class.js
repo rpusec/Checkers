@@ -9,7 +9,7 @@
 	/**
 	 * Represents a game room. 
 	 *
-	 * @param {Object} options Represents parameters. 
+	 * @param {Object} options A plain object which represents parameters for the class. Includes:
 	 *                         - numrectsX: Number of rectangles from the horizontal perspective. 
 	 *                         - numrectsY: Number of rectangles from the vertical perspective. 
 	 *                         - width: Width of the display object. 
@@ -20,6 +20,7 @@
 	 *                         - available: Boolean which indicates whether this GameRoom should be considered as unavailable. 
 	 * 
 	 * @author Roman Pusec
+	 * @augments {createjs.Container}
 	 */
 	function GameRoom(options){
 		this.Container_constructor();
@@ -39,10 +40,10 @@
 			options.numrectsY = 3;
 
 		if(typeof options.width === 'undefined')
-			options.width = 30;
+			options.width = 50;
 
 		if(typeof options.height === 'undefined')
-			options.height = 30;
+			options.height = 50;
 
 		if(typeof options.colorO === 'undefined')
 			options.colorO = '#337ab7';
@@ -64,9 +65,10 @@
 		txtRoomNum.textBaseline = 'middle';
 		txtRoomNum.x = this.getBounds().width/2;		
 		txtRoomNum.y = this.getBounds().height/2;
-		txtRoomNum.shadow = new createjs.Shadow("#000000", 0, 0, 5);
-		txtRoomNum.cache(txtRoomNum.getBounds().width*-1, txtRoomNum.getBounds().height*-1, txtRoomNum.getBounds().width*2, txtRoomNum.getBounds().height*2);
-		this.addChild(txtRoomNum);
+		var txtRoomNumBorder = txtRoomNum.clone();
+		txtRoomNumBorder.outline = 2;
+		txtRoomNumBorder.color = "#000";
+		this.addChild(txtRoomNumBorder, txtRoomNum);
 	}
 
 	var p = createjs.extend(GameRoom, createjs.Container);

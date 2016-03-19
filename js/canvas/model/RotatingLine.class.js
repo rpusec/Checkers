@@ -1,16 +1,18 @@
 (function(){
 	/**
-	 * [RotatingLine description]
-	 * @param {Number} x                     X coordinate of the object. 
-	 * @param {Number} y                     Y coordinates of the object. 
-	 * @param {Number} radius                The radius of the circle. 
-	 * @param {Number} startAngle            Starting angle. 
-	 * @param {Number} endAngle              Ending angle. 
-	 * @param {Number} strokeStyle           The width of the line. 
-	 * @param {String} color                 The color of the line. 
-	 * @param {Number} rotationSpeed         The speed of the rotation. 
-	 * @param {Number} rotationVal           The initial rotation value.
+	 * An arc-ish line which rotates in circles. 
+	 * @param {Object} options A plain object which represents parameters for the class. Includes:
+	 *                         - {Number} x                     X coordinate of the object. 
+	 *                         - {Number} y                     Y coordinates of the object. 
+	 *                         - {Number} radius                The radius of the circle. 
+	 *                         - {Number} startAngle            Starting angle. 
+	 *                         - {Number} endAngle              Ending angle. 
+	 *                         - {Number} strokeStyle           The width of the line. 
+	 *                         - {String} color                 The color of the line. 
+	 *                         - {Number} rotationSpeed         The speed of the rotation. 
+	 *                         - {Number} rotationVal           The initial rotation value.
 	 * @author Roman Pusec
+	 * @augments {createjs.Shape}
 	 */
 	function RotatingLine(options){
 		this.Shape_constructor();
