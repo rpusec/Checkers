@@ -1,5 +1,13 @@
 $(document).on('ready', function(){
 
+	var arrOnlineUserInfo = {};
+
+	function OnlineUserInfo(firstname, lastname, username){
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.username = username;
+	}
+
 	//executes an anonymous function when the chat input is focused
 	$('#main-container').find('#chat-input').on('keypress', function(e){
 		var key = e.which || e.keyCode;
@@ -137,6 +145,7 @@ $(document).on('ready', function(){
 			var connUser = connectedUsers[i];
 			var connUserDom = $('#chat-contact-list').find('#' + CONN_USER_PREFIX + connUser.userID);
 
+			//if the target user isn't displayed on the chat list
 			if(connUserDom.length === 0)
 			{
 				if(connUser.userID === loggedUserID)
@@ -146,10 +155,12 @@ $(document).on('ready', function(){
 					connUser.chatColorB = 255;
 				}
 
+				arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID] = new OnlineUserInfo(connUser.firstname, connUser.lastname, connUser.username);
+
 				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', CONN_USER_PREFIX + connUser.userID);
-				$bgColor = 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)';
+				var $bgColor = 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)';
 				$newConnUser.css('background-color', $bgColor);
 				$newConnUser.css('box-shadow', '0px 0px 20px ' + $bgColor);
 				$('#chat-contact-list').append($newConnUser);
@@ -161,6 +172,14 @@ $(document).on('ready', function(){
 							top: $(this).offset().top,
 							left: $(this).offset().left - $('#single-user-info').width()
 						});
+
+						var targetUserInfo = arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID];
+						$('#single-user-info').html(
+							'<b>First name: </b>' + targetUserInfo.firstname + 
+							'<br /><b>Last name: </b>' + targetUserInfo.lastname + 
+							'<br /><b>Username: </b>' + targetUserInfo.username);
+						console.log(arrOnlineUserInfo);
+
 					}, function(){
 						$('#single-user-info').css('visibility', 'hidden');
 						$('#single-user-info').text('Loading... ');
@@ -170,6 +189,11 @@ $(document).on('ready', function(){
 			{
 				if($(connUserDom).find('span').text() !== connUser.username)
 					$(connUserDom).find('span').text(connUser.username);
+
+				var targetUserInfo = arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID];
+				targetUserInfo.firstname = connUser.firstname;
+				targetUserInfo.lastname = connUser.lastname;
+				targetUserInfo.username = connUser.username;
 			}
 		}
 
@@ -189,7 +213,12 @@ $(document).on('ready', function(){
 			}
 
 			if(!found)
+			{
+				if(arrOnlineUserInfo.hasOwnProperty($(cclVal).attr('id')))
+					delete arrOnlineUserInfo[$(cclVal).attr('id')];
+				
 				$(cclVal).toggleBubbleOff();
+			}
 		});
 	}
 });

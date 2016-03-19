@@ -65,6 +65,7 @@
 		txtRoomNum.x = this.getBounds().width/2;		
 		txtRoomNum.y = this.getBounds().height/2;
 		txtRoomNum.shadow = new createjs.Shadow("#000000", 0, 0, 5);
+		txtRoomNum.cache(txtRoomNum.getBounds().width*-1, txtRoomNum.getBounds().height*-1, txtRoomNum.getBounds().width*2, txtRoomNum.getBounds().height*2);
 		this.addChild(txtRoomNum);
 	}
 
