@@ -13,6 +13,7 @@
 	,	gameNameText
 	,	selARoomText
 	,	board
+	,	btnLeaveGame
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false;
 
@@ -24,6 +25,7 @@
 			stage = new createjs.Stage('game-canvas');
 
 		window.stage = stage;
+		window.contGameRoom = contGameRoom;
 
 		createjs.Ticker.setFPS(60);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
@@ -45,6 +47,23 @@
 			textAlign: 'center'
 		});
 
+		btnLeaveGame = new Button({text: 'Leave game...'}, function(){
+			btnLeaveGame.disappear();
+			createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
+				gameNameText.show();
+				selARoomText.show();
+				board.alpha = 0;
+				displayAllRoomsAJAXCall();
+			});
+		});
+
+		btnLeaveGame.appear(false);
+		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + TEXT_PADDING);
+		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + TEXT_PADDING);
+		stage.addChild(btnLeaveGame);
+
+		window.btnLeaveGame = btnLeaveGame;
+
 		board = new Board();
 		board.x = stage.canvas.width/2 - board.getBounds().width/2;
 		board.y = stage.canvas.height;
@@ -63,6 +82,14 @@
 
 		gameInitialized = true;
 		stage.addChild(gameNameText, selARoomText);
+		displayAllRoomsAJAXCall();
+	}
+
+	/**
+	 * AJAX call which displays all game rooms.  
+	 */
+	function displayAllRoomsAJAXCall(){
+		contGameRoom.alpha = 1;
 
 		$.ajax({
 			type: 'get',
@@ -114,9 +141,16 @@
 				newGameRoom.on('click', function(){
 					gameNameText.hide();
 					selARoomText.hide();
+
+					contGameRoom.children.forEach(function(gameRoom){
+						gameRoom.removeMouseEvents();
+					});
+
 					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
+						contGameRoom.removeAllChildren();
+						stage.removeChild(contGameRoom);
 						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
-							console.log('test');
+							btnLeaveGame.appear();
 						});
 					});
 				});

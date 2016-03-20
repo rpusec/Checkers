@@ -24,7 +24,7 @@
 
 		this._options = $.extend({
 			font: '12px Arial',
-			color: '#337ab7',
+			color: ModelConstants.oddColor,
 			farAway: 20,
 			speed: 500,
 			textAlign: 'left'

@@ -82,6 +82,12 @@
 		}
 	}
 
+	p.removeMouseEvents = function(){
+		this.off('mouseover');
+		this.off('mouseout');
+		this.off('click');
+	}
+
 	p.setAsUnavailable = function(b){
 		if(typeof b !== 'boolean')
 			b = false;
