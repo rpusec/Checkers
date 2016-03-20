@@ -71,9 +71,11 @@
 	 * an AJAX request to fetch the game rooms. 
 	 */
 	window.initializeGame = function(){
-
 		if(gameInitialized)
 			return;
+
+		gameNameText.show();
+		selARoomText.show();
 
 		gameInitialized = true;
 		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board);

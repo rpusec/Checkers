@@ -24,7 +24,9 @@
 			rowAmount: 8,
 			colAmount: 8,
 			oddColor: Constants.oddColor,
-			evenColor: Constants.evenColor
+			evenColor: Constants.evenColor,
+			borderColor: Constants.oddColor,
+			borderWidth: 3
 		}, options);
 
 		//width and height of each rectangle 
@@ -45,6 +47,10 @@
 				this.addChild(newBlock);
 			}
 		}
+
+		var boardBorder = new createjs.Shape();
+		boardBorder.graphics.setStrokeStyle(options.borderWidth).beginStroke(options.borderColor).drawRect(0, 0, options.width, options.height);
+		this.addChild(boardBorder);
 
 		this.cache(0, 0, options.width, options.height);
 	}
