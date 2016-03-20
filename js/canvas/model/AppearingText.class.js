@@ -22,27 +22,18 @@
 		this.Text_constructor();
 		this.text = options.text;
 
-		this._options = options;
-
-		if(typeof options.font === 'undefined')
-			options.font = '12px Arial';
-
-		if(typeof options.color === 'undefined')
-			options.color = '#337ab7';
-
-		if(typeof options.farAway === 'undefined')
-			options.farAway = 20;
-
-		if(typeof options.speed === 'undefined')
-			options.speed = 500;
-
-		if(typeof options.textAlign === 'undefined')
-			options.textAlign = 'left';
+		this._options = $.extend({
+			font: '12px Arial',
+			color: '#337ab7',
+			farAway: 20,
+			speed: 500,
+			textAlign: 'left'
+		}, options);
 
 		this.alpha = 0;
-		this.textAlign = options.textAlign;
-		this.font = options.font;
-		this.color = options.color;
+		this.textAlign = this._options.textAlign;
+		this.font = this._options.font;
+		this.color = this._options.color;
 		this.show();
 	}
 

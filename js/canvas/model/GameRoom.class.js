@@ -28,39 +28,22 @@
 		if(typeof options === 'undefined')
 			options = {};
 
-		this._options = options;
-		
-		if(typeof options.roomID === 'undefined')
-			options.roomID = -1;
+		this._options = $.extend({
+			roomID: -1,
+			numrectsX: 3,
+			numrectsY: 3,
+			width: 75,
+			height: 50,
+			colorO: ModelConstants.oddColor,
+			colorOUnavailable: ModelConstants.oddColorAlter,
+			colorE: ModelConstants.evenColor,
+			unavailable: false
+		}, options);
 
-		if(typeof options.numrectsX === 'undefined')
-			options.numrectsX = 3;
+		this.setBounds(0, 0, this._options.width, this._options.height);
+		this.setAsUnavailable(this._options.unavailable);
 
-		if(typeof options.numrectsY === 'undefined')
-			options.numrectsY = 3;
-
-		if(typeof options.width === 'undefined')
-			options.width = 75;
-
-		if(typeof options.height === 'undefined')
-			options.height = 50;
-
-		if(typeof options.colorO === 'undefined')
-			options.colorO = ModelConstants.oddColor;
-
-		if(typeof options.colorOUnavailable === 'undefined')
-			options.colorOUnavailable = ModelConstants.oddColorAlter;
-
-		if(typeof options.colorE === 'undefined')
-			options.colorE = ModelConstants.evenColor;
-
-		if(typeof options.unavailable !== 'boolean')
-			options.unavailable = false;
-
-		this.setBounds(0, 0, options.width, options.height);
-		this.setAsUnavailable(options.unavailable);
-
-		var txtRoomNum = new createjs.Text(options.roomID, '30px Arial', '#fff');
+		var txtRoomNum = new createjs.Text(this._options.roomID, '30px Arial', '#fff');
 		txtRoomNum.textAlign = 'center';
 		txtRoomNum.textBaseline = 'middle';
 		txtRoomNum.x = this.getBounds().width/2;		

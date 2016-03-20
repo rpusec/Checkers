@@ -6,16 +6,14 @@
 		if(typeof options !== 'object')
 			options = {};
 
-		var defaultOptions = {
+		options = $.extend({
 			width: 300,
 			height: 200,
 			rowAmount: 8,
 			colAmount: 8,
 			oddColor: ModelConstants.oddColor,
 			evenColor: ModelConstants.evenColor
-		};
-
-		$.extend(options, defaultOptions);
+		}, options);
 
 		var rectWidth = options.width / options.colAmount;
 		var rectHeight = options.height / options.rowAmount;
