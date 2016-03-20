@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Uno</title>
+	<title>Checkers</title>
 </head>
 
 <link rel="stylesheet" href="css/style.css" />
@@ -23,12 +23,15 @@
 
 <!-- canvas oriented scripts -->
 <script src="js/canvas/controller.js"></script>
+<script src="js/canvas/model/ModelConstants.js"></script>
 <script src="js/canvas/model/AppearingText.class.js"></script>
 <script src="js/canvas/model/GameRoom.class.js"></script>
 <script src="js/canvas/model/RotatingLine.class.js"></script>
+<script src="js/canvas/model/Board.class.js"></script>
 
 <body onload="init();">
-	<div id="single-user-info">Loading... </div>
+	<div id="single-user-info"></div>
+
 	<!-- main screen -->
 	<div id="main-container">
 		<div id="canvas-wrapper">
@@ -44,7 +47,7 @@
 				<a href="#" id="logout-option-link"><span class="glyphicon glyphicon-off"></span></a>
 			</div>
 			<div id="chat-window"></div>
-			<input id="chat-input" class="form-control" name="chat-input" maxlength="200" placeholder="Type in text... " type="text"/>
+			<input id="chat-input" class="form-control" name="chat-input" maxlength="200" placeholder="Type in a message... " type="text"/>
 		</div>
 	</div>
 

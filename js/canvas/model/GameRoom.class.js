@@ -46,13 +46,13 @@
 			options.height = 50;
 
 		if(typeof options.colorO === 'undefined')
-			options.colorO = '#337ab7';
+			options.colorO = ModelConstants.oddColor;
 
 		if(typeof options.colorOUnavailable === 'undefined')
-			options.colorOUnavailable = '#ff5e5e';
+			options.colorOUnavailable = ModelConstants.oddColorAlter;
 
 		if(typeof options.colorE === 'undefined')
-			options.colorE = '#fff';
+			options.colorE = ModelConstants.evenColor;
 
 		if(typeof options.unavailable !== 'boolean')
 			options.unavailable = false;

@@ -28,7 +28,7 @@
 		stage.enableMouseOver(5);
 
 		gameNameText = new AppearingText({
-			text: 'Game name ',
+			text: 'Checkers',
 			font: '20px Arial',
 			x: stage.canvas.width/2,
 			y: TEXT_PADDING,
