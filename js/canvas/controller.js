@@ -5,10 +5,6 @@
  */
 (function(){
 
-	//constants
-	var TEXT_PADDING = 25;
-	var GAME_ROOMS_PER_ROW = 3;
-
 	var stage
 	,	gameNameText
 	,	selARoomText
@@ -18,7 +14,8 @@
 	,	gameInitialized = false;
 
 	/**
-	 * Initializes the core attributes of the game. 
+	 * Initializes the core 
+	 * attributes of the game. 
 	 */
 	window.init = function(){
 		if(typeof stage === 'undefined')
@@ -35,15 +32,15 @@
 			text: 'Checkers',
 			font: '20px Arial',
 			x: stage.canvas.width/2,
-			y: TEXT_PADDING,
+			y: Constants.textPadding,
 			textAlign: 'center'
 		});
 
 		selARoomText = new AppearingText({
-			text: 'Please select a game room below... ',
+			text: 'Please select a game room below...',
 			font: '15px Arial',
 			x: stage.canvas.width/2,
-			y: gameNameText.getBounds().height*2 + TEXT_PADDING,
+			y: gameNameText.getBounds().height*2 + Constants.textPadding,
 			textAlign: 'center'
 		});
 
@@ -58,8 +55,8 @@
 		});
 
 		btnLeaveGame.appear(false);
-		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + TEXT_PADDING);
-		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + TEXT_PADDING);
+		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.textPadding);
+		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + Constants.textPadding);
 		stage.addChild(btnLeaveGame);
 
 		window.btnLeaveGame = btnLeaveGame;
@@ -128,7 +125,7 @@
 
 		for(var i = 0; i < rooms.length; i++)
 		{
-			if(col !== GAME_ROOMS_PER_ROW)
+			if(col !== Constants.GAME_ROOMS_PER_ROW)
 			{
 				var ROOM_PADDING = 50;
 				var newGameRoom = new GameRoom({roomID: rooms[i].roomID});

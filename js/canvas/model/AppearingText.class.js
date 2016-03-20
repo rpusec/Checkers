@@ -24,7 +24,7 @@
 
 		this._options = $.extend({
 			font: '12px Arial',
-			color: ModelConstants.oddColor,
+			color: Constants.oddColor,
 			farAway: 20,
 			speed: 500,
 			textAlign: 'left'
@@ -39,6 +39,9 @@
 
 	var p = createjs.extend(AppearingText, createjs.Text);
 
+	/**
+	 * Hides the text. 
+	 */
 	p.hide = function(){
 		this.x = this._options.x;
 		this.y = this._options.y;
@@ -65,6 +68,9 @@
 		createjs.Tween.get(this).to({alpha: 0, x: dirX, y: dirY}, this._options.speed, createjs.Ease.quartOut);
 	}
 
+	/**
+	 * Displays the text. 
+	 */
 	p.show = function(){
 		this.x = this._options.x;
 		this.y = this._options.y;

@@ -1,5 +1,23 @@
 (function(){
 
+	/**
+	 * Represents a single clickable button. 
+	 * @param {Object} options        Plain object which represents the parameters of the display object.
+	 *                                - {String} text => Text to be displayed. 
+	 *                                - {String} textColor => The color of the text. 
+	 *                                - {String} textColorHovered => The color of the text when hovered. 
+	 *                                - {String} font => The font, which also includes the font size and the font itself (e.g. 12px Arial). 
+	 *                                - {String} bgColor => The background color of the button. 
+	 *                                - {String} bgColorHovered => The background color of the button when hovered. 
+	 *                                - {String} borderColor => The color of the border. 
+	 *                                - {String} borderColorHovered => The color of the border when hovered. 
+	 *                                - {Number} padding => The padding of the button. 
+	 *                                - {Integer} strokeStyle => The border width of the button. 
+	 *                                - {Number} appearSpeed => The speed in which the button appears or disappears measured in milliseconds. 
+	 * @param {Function} onClickFunct Function which is executed when the button is clicked. 
+	 * @author Roman Pusec
+	 * @augments {createjs.Container}
+	 */
 	function Button(options, onClickFunct){
 		this.Container_constructor();
 		var animating = false;
@@ -9,13 +27,13 @@
 
 		options = $.extend({
 			text: 'No text specified. ',
-			textColor: ModelConstants.oddColor,
-			textColorHovered: ModelConstants.evenColor,
+			textColor: Constants.oddColor,
+			textColorHovered: Constants.evenColor,
 			font: '12px Arial',
-			bgColor: ModelConstants.evenColor,
-			bgColorHovered: ModelConstants.oddColor,
-			borderColor: ModelConstants.oddColor,
-			borderColorHovered: ModelConstants.evenColor,
+			bgColor: Constants.evenColor,
+			bgColorHovered: Constants.oddColor,
+			borderColor: Constants.oddColor,
+			borderColorHovered: Constants.evenColor,
 			padding: 7,
 			strokeStyle: 2,
 			appearSpeed: 1000
@@ -54,6 +72,10 @@
 				onClickFunct();
 		});
 
+		/**
+		 * Displays the button. 
+		 * @param  {boolean} shouldAnimate If the animation should be executed. 
+		 */
 		this.appear = function(shouldAnimate){
 			if(typeof shouldAnimate !== 'boolean')
 			{
@@ -74,6 +96,10 @@
 			}
 		}
 
+		/**
+		 * Hides the button 
+		 * @param  {boolean} shouldAnimate If the animation should be executed. 
+		 */
 		this.disappear = function(shouldAnimate){
 			if(typeof shouldAnimate !== 'boolean')
 			{
@@ -95,6 +121,11 @@
 			}
 		}
 
+		/**
+		 * Alters the graphics of the button, but not its text. 
+		 * @param  {String} borderColor The border color of the button. 
+		 * @param  {String} bgColor     The background color of the button. 
+		 */
 		function changeGraphics(borderColor, bgColor){
 			btnBody.graphics
 				.clear()

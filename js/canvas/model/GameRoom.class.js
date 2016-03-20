@@ -7,8 +7,7 @@
 	var LINE_NUM = 3;
 
 	/**
-	 * Represents a game room. 
-	 *
+	 * Represents a single game room icon on the start of the game. 
 	 * @param {Object} options A plain object which represents parameters for the class. Includes:
 	 *                         - numrectsX: Number of rectangles from the horizontal perspective. 
 	 *                         - numrectsY: Number of rectangles from the vertical perspective. 
@@ -34,9 +33,9 @@
 			numrectsY: 3,
 			width: 75,
 			height: 50,
-			colorO: ModelConstants.oddColor,
-			colorOUnavailable: ModelConstants.oddColorAlter,
-			colorE: ModelConstants.evenColor,
+			colorO: Constants.oddColor,
+			colorOUnavailable: Constants.oddColorAlter,
+			colorE: Constants.evenColor,
 			unavailable: false
 		}, options);
 
