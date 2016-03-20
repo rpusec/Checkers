@@ -102,9 +102,19 @@
 				newGameRoom.y = newGameRoom.getBounds().height*2 + newGameRoom.getBounds().height*(row*3);
 				contGameRoom.addChild(newGameRoom);
 				newGameRoom.alpha = 0;
+
+				newGameRoom.on('click', function(){
+					gameNameText.hide();
+					selARoomText.hide();
+					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
+						console.log('test');
+					});
+				});
+
 				createjs.Tween.get(newGameRoom).wait(waitTime).to({y: newGameRoom.y+GAME_ROOM_TO_BOTTOM, alpha: 1}, 500).call(function(){
 					this.addMouseEvents();
 				});
+
 				col++;
 				waitTime += 100;
 			}

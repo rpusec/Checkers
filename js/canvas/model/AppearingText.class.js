@@ -22,6 +22,8 @@
 		this.Text_constructor();
 		this.text = options.text;
 
+		this._options = options;
+
 		if(typeof options.font === 'undefined')
 			options.font = '12px Arial';
 
@@ -29,7 +31,7 @@
 			options.color = '#337ab7';
 
 		if(typeof options.farAway === 'undefined')
-			options.farAway = 15;
+			options.farAway = 20;
 
 		if(typeof options.speed === 'undefined')
 			options.speed = 500;
@@ -39,31 +41,61 @@
 
 		this.alpha = 0;
 		this.textAlign = options.textAlign;
-		this.x = options.x;
-		this.y = options.y;
 		this.font = options.font;
 		this.color = options.color;
+		this.show();
+	}
+
+	var p = createjs.extend(AppearingText, createjs.Text);
+
+	p.hide = function(){
+		this.x = this._options.x;
+		this.y = this._options.y;
+
+		var dirX = this._options.x;
+		var dirY = this._options.y;
 
 		switch(Math.ceil(Math.random()*DOWN_DIR))
 		{
 			case LEFT_DIR : 
-				this.x += options.farAway;
+				dirX += this._options.farAway;
 				break;
 			case RIGHT_DIR : 
-				this.x -= options.farAway;
+				dirX -= this._options.farAway;
 				break;
 			case UP_DIR : 
-				this.y += options.farAway;
+				dirY += this._options.farAway;
 				break;
 			case DOWN_DIR : 
-				this.y -= options.farAway;
+				dirY -= this._options.farAway;
 				break;
 		}
 
-		createjs.Tween.get(this).to({alpha: 1, x: options.x, y: options.y}, options.speed, createjs.Ease.quartOut);
+		createjs.Tween.get(this).to({alpha: 0, x: dirX, y: dirY}, this._options.speed, createjs.Ease.quartOut);
 	}
 
-	var p = createjs.extend(AppearingText, createjs.Text);
+	p.show = function(){
+		this.x = this._options.x;
+		this.y = this._options.y;
+
+		switch(Math.ceil(Math.random()*DOWN_DIR))
+		{
+			case LEFT_DIR : 
+				this.x += this._options.farAway;
+				break;
+			case RIGHT_DIR : 
+				this.x -= this._options.farAway;
+				break;
+			case UP_DIR : 
+				this.y += this._options.farAway;
+				break;
+			case DOWN_DIR : 
+				this.y -= this._options.farAway;
+				break;
+		}
+
+		createjs.Tween.get(this).to({alpha: 1, x: this._options.x, y: this._options.y}, this._options.speed, createjs.Ease.quartOut);
+	}
 
 	window.AppearingText = createjs.promote(AppearingText, 'Text');
 
