@@ -54,7 +54,7 @@
 			});
 		});
 
-		btnLeaveGame.appear(false);
+		btnLeaveGame.disappear(false);
 		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.textPadding);
 		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + Constants.textPadding);
 		stage.addChild(btnLeaveGame);

@@ -78,21 +78,27 @@
 		 */
 		this.appear = function(shouldAnimate){
 			if(typeof shouldAnimate !== 'boolean')
-			{
 				shouldAnimate = true;
-				animating = true;
-				this.visible = true;
-			}
 
-			this.scaleX = 0;
-			this.scaleY = 0;
 			createjs.Tween.removeTweens(this);
 
 			if(shouldAnimate)
 			{
+				animating = true;
+				this.visible = true;
+				this.scaleX = 0;
+				this.scaleY = 0;
+				
 				createjs.Tween.get(this).to({scaleX: 1, scaleY: 1}, options.appearSpeed, createjs.Ease.bounceOut).call(function(){
 					animating = false;
 				});
+			}
+			else
+			{
+				animating = false;
+				this.visible = true;
+				this.scaleX = 1;
+				this.scaleY = 1;
 			}
 		}
 
@@ -102,22 +108,28 @@
 		 */
 		this.disappear = function(shouldAnimate){
 			if(typeof shouldAnimate !== 'boolean')
-			{
 				shouldAnimate = true;
-				animating = true;
-				this.visible = true;
-			}
 
-			this.scaleX = 1;
-			this.scaleY = 1;
 			createjs.Tween.removeTweens(this);
 
 			if(shouldAnimate)
 			{
+				animating = true;
+				this.visible = true;
+				this.scaleX = 1;
+				this.scaleY = 1;
+
 				createjs.Tween.get(this).to({scaleX: 0, scaleY: 0}, options.appearSpeed, createjs.Ease.bounceOut).call(function(){
 					this.visible = false;
 					animating = false;	
 				});
+			}
+			else
+			{
+				animating = false;
+				this.visible = false;
+				this.scaleX = 0;
+				this.scaleY = 0;
 			}
 		}
 
