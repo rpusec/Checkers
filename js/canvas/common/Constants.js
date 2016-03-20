@@ -3,5 +3,6 @@ var Constants = {
 	oddColorAlter: '#ff5e5e',
 	evenColor: '#fff',
 	textPadding: 25,
-	GAME_ROOMS_PER_ROW: 3
+	GAME_ROOMS_PER_ROW: 3,
+	GAME_ROOM_WAIT_TIME: 100
 }
