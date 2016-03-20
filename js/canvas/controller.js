@@ -1,5 +1,6 @@
 /**
- * This file handles all of the necessary things relating to the game itself. 
+ * This file handles all of the necessary 
+ * things relating to the game itself. 
  * @author Roman Pusec
  */
 (function(){
@@ -11,6 +12,7 @@
 	var stage
 	,	gameNameText
 	,	selARoomText
+	,	board
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false;
 
@@ -42,6 +44,12 @@
 			y: gameNameText.getBounds().height*2 + TEXT_PADDING,
 			textAlign: 'center'
 		});
+
+		board = new Board();
+		board.x = stage.canvas.width/2 - board.getBounds().width/2;
+		board.y = stage.canvas.height;
+		board.alpha = 0;
+		stage.addChild(board);
 	}
 
 	/**
@@ -107,7 +115,9 @@
 					gameNameText.hide();
 					selARoomText.hide();
 					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
-						console.log('test');
+						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
+							console.log('test');
+						});
 					});
 				});
 

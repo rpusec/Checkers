@@ -7,8 +7,8 @@
 			options = {};
 
 		var defaultOptions = {
-			width: 500,
-			height: 300,
+			width: 300,
+			height: 200,
 			rowAmount: 8,
 			colAmount: 8,
 			oddColor: ModelConstants.oddColor,
@@ -26,12 +26,13 @@
 			{
 				var currEvenColor = ((row % 2) === 0) ? options.evenColor : options.oddColor;
 				var currOddColor = ((row % 2) === 0) ? options.oddColor : options.evenColor;
-
 				var newBlock = new createjs.Shape();
 				newBlock.graphics.beginFill((col % 2) === 0 ? currEvenColor : currOddColor).drawRect(rectWidth*col, rectHeight*row, rectWidth, rectHeight);
 				this.addChild(newBlock);
 			}
 		}
+
+		this.cache(0, 0, options.width, options.height);
 	}
 
 	var p = createjs.extend(Board, createjs.Container);
