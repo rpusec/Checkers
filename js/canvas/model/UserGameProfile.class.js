@@ -10,7 +10,7 @@
 	 *                         - {String} username => Username of the user. 
 	 *                         - {Integer} frameStrokeStyle => Thickness of the stroke.  
 	 *                         - {String} frameStrokeColor => Color of the stroke. 
-	 *                         - {String} font => Font for the text. 
+	 *                         - {String} font => Font for the text (e.g. '12px Arial'). 
 	 *                         - {String} fontColor => Color of the text. 
 	 *                         - {Integer} side => Specifies which side should the avatar face. Use constants 'UserGameProfile.LEFT_SIDE' or 'UserGameProfile.RIGHT_SIDE'. 
 	 *                         - {Number} padding => Padding of the avatar. 

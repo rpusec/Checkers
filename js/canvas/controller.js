@@ -60,16 +60,16 @@
 				var destSin = Math.sin(pawnAngle) * Constants.DISAPPEARANCE_DIST;
 				var destCos = Math.cos(pawnAngle) * Constants.DISAPPEARANCE_DIST;
 
-				createjs.Tween.get(pawn).to({scaleX: 0, scaleY: 0, x: pawn.x + destSin, y: pawn.y + destCos}, 500).call(function(){
+				createjs.Tween.get(pawn).to({scaleX: 0, scaleY: 0, x: pawn.x + destSin, y: pawn.y + destCos}, 1500, createjs.Ease.circOut).call(function(){
 					stage.removeChild(this);
 				});
 			});
 
-			createjs.Tween.get(playerProfile).to({y: playerProfile.y - Constants.USER_PROFILE_MOVE, alpha: 0}, 250).call(function(){
+			createjs.Tween.get(playerProfile).to({y: playerProfile.y - Constants.USER_PROFILE_MOVE, alpha: 0}, 500, createjs.Ease.backIn).call(function(){
 				stage.removeChild(this);
 			});
 
-			createjs.Tween.get(opponentProfile).to({y: opponentProfile.y + Constants.USER_PROFILE_MOVE, alpha: 0}, 250).call(function(){
+			createjs.Tween.get(opponentProfile).to({y: opponentProfile.y + Constants.USER_PROFILE_MOVE, alpha: 0}, 500, createjs.Ease.backIn).call(function(){
 				stage.removeChild(this);
 			});
 
@@ -180,14 +180,13 @@
 
 						//displaying the board to the center of the canvas 
 						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
-							
-							//spawns the player and opponent pawns 
-							//and positiones them accordingly
 							BoardPawnFactory.resetSides();
 							var pPawns = BoardPawnFactory.createPlayerPawns();
 							var oPawns = BoardPawnFactory.createOpponentPawns();
 
 							btnLeaveGame.appear(null, function(){
+
+								//creating user profiles
 								playerProfile = new UserGameProfile({side: UserGameProfile.RIGHT_SIDE, avatar: pPawns.avatar});
 								opponentProfile = new UserGameProfile({side: UserGameProfile.LEFT_SIDE, avatar: oPawns.avatar});
 
@@ -203,12 +202,14 @@
 								playerProfile.x += Constants.USER_PROFILE_MOVE;
 								opponentProfile.x -= Constants.USER_PROFILE_MOVE;
 
-								createjs.Tween.get(playerProfile).to({x: playerProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 250);
-								createjs.Tween.get(opponentProfile).to({x: opponentProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 250);
+								createjs.Tween.get(playerProfile).to({x: playerProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
+								createjs.Tween.get(opponentProfile).to({x: opponentProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 
 								stage.addChild(playerProfile, opponentProfile);
 							});
-
+							
+							//spawns the player and opponent pawns 
+							//and positiones them accordingly
 							playerPawns = pPawns.list;
 							opponentPawns = oPawns.list;
 
@@ -227,7 +228,7 @@
 							(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
 								pawn.scaleX = 0;
 								pawn.scaleY = 0;
-								createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 500);
+								createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
 								stage.addChild(pawn);
 							});
 						});
