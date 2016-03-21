@@ -76,7 +76,7 @@
 		 * Displays the button. 
 		 * @param  {boolean} shouldAnimate If the animation should be executed. 
 		 */
-		this.appear = function(shouldAnimate){
+		this.appear = function(shouldAnimate, callFunct){
 			if(typeof shouldAnimate !== 'boolean')
 				shouldAnimate = true;
 
@@ -91,6 +91,9 @@
 				
 				createjs.Tween.get(this).to({scaleX: 1, scaleY: 1}, options.appearSpeed, createjs.Ease.bounceOut).call(function(){
 					animating = false;
+
+					if(typeof callFunct === 'function')
+						callFunct();
 				});
 			}
 			else

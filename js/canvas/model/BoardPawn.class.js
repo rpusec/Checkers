@@ -33,6 +33,8 @@
 		.beginStroke(options.strokeColor)
 		.beginFill(options.bgColor)
 		.drawPolyStar(0, 0, options.radius, options.sides, options.pointSize, 0);
+
+		this.setBounds(0, 0, options.radius*2, options.radius*2);
 	}
 
 	var p = createjs.extend(BoardPawn, createjs.Shape);

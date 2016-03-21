@@ -1,5 +1,6 @@
 /**
- * Includes functions to create appropriate pawns for the board. 
+ * Includes functions to create appropriate pawns for 
+ * both player and player's opponent. 
  * @author Roman Pusec
  * @requires BoardPawn.class.js
  */
@@ -34,8 +35,8 @@ var BoardPawnFactory = {};
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player.  
 	 */
-	BoardPawnFactory.createPlayerPawnList = function(amount){
-		return createPawnList(amount, playerPawnOptions);
+	BoardPawnFactory.createPlayerPawns = function(amount){
+		return createPawns(amount, playerPawnOptions);
 	}
 
 	/**
@@ -44,8 +45,8 @@ var BoardPawnFactory = {};
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player's opponent.  
 	 */
-	BoardPawnFactory.createOpponentPawnList = function(amount){
-		return createPawnList(amount, opponentPawnOptions);
+	BoardPawnFactory.createOpponentPawns = function(amount){
+		return createPawns(amount, opponentPawnOptions);
 	}
 
 	/**
@@ -67,7 +68,7 @@ var BoardPawnFactory = {};
 	 * @param  {Object} pawnOptions Plain object which contains options for each pawn in the list.  
 	 * @return {Array}             	An array of pawns. 
 	 */
-	function createPawnList(amount, pawnOptions){
+	function createPawns(amount, pawnOptions){
 		if(typeof amount !== 'number')
 			amount = Constants.PAWN_AMOUNT;
 
@@ -105,7 +106,11 @@ var BoardPawnFactory = {};
 		for(var i = 0; i < amount; i++)
 			pawnList.push(new BoardPawn(pawnOptions));
 
-		return pawnList;
+		var avatarOptions = $.extend({}, pawnOptions, {
+			radius: Constants.USER_PROFILE_AVATAR_SIZE
+		});
+
+		return {list: pawnList, avatar: new BoardPawn(avatarOptions)};
 	}
 
 	/**

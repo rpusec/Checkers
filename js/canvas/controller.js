@@ -12,6 +12,8 @@
 	,	btnLeaveGame
 	,	playerPawns
 	,	opponentPawns
+	,	playerProfile
+	,	opponentProfile
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false;
 
@@ -26,9 +28,9 @@
 		window.stage = stage;
 		window.contGameRoom = contGameRoom;
 
-		createjs.Ticker.setFPS(60);
+		createjs.Ticker.setFPS(Constants.FPS);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
-		stage.enableMouseOver(5);
+		stage.enableMouseOver(Constants.MOUSE_OVER_FREQ);
 
 		gameNameText = new AppearingText({
 			text: 'Checkers',
@@ -61,6 +63,14 @@
 				createjs.Tween.get(pawn).to({scaleX: 0, scaleY: 0, x: pawn.x + destSin, y: pawn.y + destCos}, 500).call(function(){
 					stage.removeChild(this);
 				});
+			});
+
+			createjs.Tween.get(playerProfile).to({y: playerProfile.y - Constants.USER_PROFILE_MOVE, alpha: 0}, 250).call(function(){
+				stage.removeChild(this);
+			});
+
+			createjs.Tween.get(opponentProfile).to({y: opponentProfile.y + Constants.USER_PROFILE_MOVE, alpha: 0}, 250).call(function(){
+				stage.removeChild(this);
 			});
 
 			createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
@@ -144,10 +154,9 @@
 			if(col !== Constants.GAME_ROOMS_PER_ROW)
 			{
 				//creates a new GameRoom display object
-				var ROOM_PADDING = 70;
 				var newGameRoom = new GameRoom({roomID: rooms[i].roomID});
-				newGameRoom.x = (newGameRoom.getBounds().width + ROOM_PADDING) * col;
-				newGameRoom.y = (newGameRoom.getBounds().height + ROOM_PADDING) * row;
+				newGameRoom.x = (newGameRoom.getBounds().width + Constants.GAME_ROOM_PADDING) * col;
+				newGameRoom.y = (newGameRoom.getBounds().height + Constants.GAME_ROOM_PADDING) * row;
 				contGameRoom.addChild(newGameRoom);
 				newGameRoom.alpha = 0;
 
@@ -171,11 +180,37 @@
 
 						//displaying the board to the center of the canvas 
 						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
-							btnLeaveGame.appear();
-
+							
+							//spawns the player and opponent pawns 
+							//and positiones them accordingly
 							BoardPawnFactory.resetSides();
-							playerPawns = BoardPawnFactory.createPlayerPawnList();
-							opponentPawns = BoardPawnFactory.createOpponentPawnList();
+							var pPawns = BoardPawnFactory.createPlayerPawns();
+							var oPawns = BoardPawnFactory.createOpponentPawns();
+
+							btnLeaveGame.appear(null, function(){
+								playerProfile = new UserGameProfile({side: UserGameProfile.RIGHT_SIDE, avatar: pPawns.avatar});
+								opponentProfile = new UserGameProfile({side: UserGameProfile.LEFT_SIDE, avatar: oPawns.avatar});
+
+								playerProfile.x = board.x + board.getBounds().width - playerProfile.getBounds().width + playerProfile.getMargin()*2 + playerProfile.getPadding()*2 + playerProfile.getFrameStrokeStyle();
+								playerProfile.y = board.y/2 - playerProfile.getBounds().height/2;
+
+								opponentProfile.x = board.x;
+								opponentProfile.y = board.y + board.getBounds().height + (Math.abs(board.y + board.getBounds().height - stage.canvas.height)/2) - opponentProfile.getBounds().height/2;
+
+								playerProfile.alpha = 0;
+								opponentProfile.alpha = 0;
+
+								playerProfile.x += Constants.USER_PROFILE_MOVE;
+								opponentProfile.x -= Constants.USER_PROFILE_MOVE;
+
+								createjs.Tween.get(playerProfile).to({x: playerProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 250);
+								createjs.Tween.get(opponentProfile).to({x: opponentProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 250);
+
+								stage.addChild(playerProfile, opponentProfile);
+							});
+
+							playerPawns = pPawns.list;
+							opponentPawns = oPawns.list;
 
 							playerPawns.forEach(function(pp, ppIndex){
 								pp.x = board.x + board.getRectDimensions().width/2;
@@ -189,7 +224,7 @@
 								op.x += board.getRectDimensions().width * opIndex;
 							});
 
-							(playerPawns.concat(opponentPawns)).forEach(function(pawn){
+							(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
 								pawn.scaleX = 0;
 								pawn.scaleY = 0;
 								createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 500);
