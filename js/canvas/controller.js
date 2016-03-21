@@ -10,6 +10,8 @@
 	,	selARoomText
 	,	board
 	,	btnLeaveGame
+	,	playerPawns
+	,	opponentPawns
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false;
 
@@ -46,6 +48,21 @@
 
 		btnLeaveGame = new Button({text: 'Leave game...'}, function(){
 			btnLeaveGame.disappear();
+
+			(playerPawns.concat(opponentPawns)).forEach(function(pawn){
+				createjs.Tween.removeTweens(pawn);
+				pawn.scaleX = 1;
+				pawn.scaleY = 1;
+
+				var pawnAngle = Math.random()*(Math.PI*2);
+				var destSin = Math.sin(pawnAngle) * Constants.DISAPPEARANCE_DIST;
+				var destCos = Math.cos(pawnAngle) * Constants.DISAPPEARANCE_DIST;
+
+				createjs.Tween.get(pawn).to({scaleX: 0, scaleY: 0, x: pawn.x + destSin, y: pawn.y + destCos}, 500).call(function(){
+					stage.removeChild(this);
+				});
+			});
+
 			createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
 				gameNameText.show();
 				selARoomText.show();
@@ -155,6 +172,29 @@
 						//displaying the board to the center of the canvas 
 						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
 							btnLeaveGame.appear();
+
+							BoardPawnFactory.resetSides();
+							playerPawns = BoardPawnFactory.createPlayerPawnList();
+							opponentPawns = BoardPawnFactory.createOpponentPawnList();
+
+							playerPawns.forEach(function(pp, ppIndex){
+								pp.x = board.x + board.getRectDimensions().width/2;
+								pp.y = board.y + board.getRectDimensions().height/2;
+								pp.x += board.getRectDimensions().width * ppIndex;
+							});
+
+							opponentPawns.forEach(function(op, opIndex){
+								op.x = board.x + board.getRectDimensions().width/2;
+								op.y = board.y + board.getBounds().height - board.getRectDimensions().height/2;
+								op.x += board.getRectDimensions().width * opIndex;
+							});
+
+							(playerPawns.concat(opponentPawns)).forEach(function(pawn){
+								pawn.scaleX = 0;
+								pawn.scaleY = 0;
+								createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 500);
+								stage.addChild(pawn);
+							});
 						});
 					});
 				});

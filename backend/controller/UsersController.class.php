@@ -107,9 +107,7 @@ class UsersController extends BaseController
 
 	/**
 	 * We're checking if the user is logged since only then they can alter their information. 
-	 * 
-	 * @param  [type] $input [description]
-	 * @return [type]        [description]
+	 * @param Boolean $input True if the user is logged in and input isn't an empty string, false otherwise. 
 	 */
 	private static function checkIfLoggedAndInputNotEmpty($input){
 		if(parent::isUserLogged())
@@ -166,6 +164,10 @@ class UsersController extends BaseController
 		return array('success' => $flag);
 	}
 
+	/**
+	 * Gets the list of all online users from the database. 
+	 * @return Array List of connected users, success flag, and the ID of the logged user. 
+	 */
 	public static function getOnlineUsers()
 	{
 		parent::startConnection();

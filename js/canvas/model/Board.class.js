@@ -53,6 +53,14 @@
 		this.addChild(boardBorder);
 
 		this.cache(0, 0, options.width, options.height);
+
+		/**
+		 * Returns the dimensions of a block. 
+		 * @return {Object} Plain object with 'width' and 'height' properties. 
+		 */
+		this.getRectDimensions = function(){
+			return {width: rectWidth, height: rectHeight};
+		}
 	}
 
 	var p = createjs.extend(Board, createjs.Container);

@@ -37,6 +37,10 @@ class BaseController
 		return isset($_SESSION['userID']);
 	}
 
+	/**
+	 * Returns the ID of the logged user. 
+	 * @return Integer The ID of the logged user. 
+	 */
 	public static function getLoggedUserID(){
 		return $_SESSION['userID'];
 	}
