@@ -1,5 +1,26 @@
 (function(){
 
+	/**
+	 * Represents a user profile when playing the game. 
+	 * It displays user's first name, last name, username, and avatar. 
+	 * 
+	 * @param {Object} options Plain object which represents the parameters of the display object. 
+	 *                         - {String} firstname => First name of the user. 
+	 *                         - {String} lastname => Last name of the user. 
+	 *                         - {String} username => Username of the user. 
+	 *                         - {Integer} frameStrokeStyle => Thickness of the stroke.  
+	 *                         - {String} frameStrokeColor => Color of the stroke. 
+	 *                         - {String} font => Font for the text. 
+	 *                         - {String} fontColor => Color of the text. 
+	 *                         - {Integer} side => Specifies which side should the avatar face. Use constants 'UserGameProfile.LEFT_SIDE' or 'UserGameProfile.RIGHT_SIDE'. 
+	 *                         - {Number} padding => Padding of the avatar. 
+	 *                         - {Number} margin => Margin of the avatar. 
+	 *                         - {Number} pFrameAlpha => Specifies the alpha value of the frame.  
+	 *                         - {BoardPawn} avatar => The avatar to display. 
+	 *                         
+	 * @author Roman Pusec
+	 * @augments {createjs.Container}
+	 */
 	function UserGameProfile(options){
 		this.Container_constructor();
 
@@ -17,12 +38,9 @@
 			side: UserGameProfile.LEFT_SIDE,
 			padding: 5,
 			margin: 5,
-			pFrameAlpha: 0.25
+			pFrameAlpha: 0.25,
+			avatar: new BoardPawn()
 		}, options);
-
-		//default paceholder if an avatar wasn't specified
-		if(!options.hasOwnProperty('avatar'))
-			options.avatar = new BoardPawn();
 
 		var pawnFrame = new createjs.Shape();
 		pawnFrame.graphics
