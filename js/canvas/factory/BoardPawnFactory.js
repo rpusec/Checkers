@@ -73,19 +73,19 @@ var BoardPawnFactory = {};
 			amount = Constants.PAWN_AMOUNT;
 
 		if(sides === null)
-			sides = calcSides();
+			sides = Constants.POLIGON_POINT_TYPE[calcPolyPointTypeIndex()];
 		else
 		{
-			var newSides = calcSides();
+			var newSides = calcPolyPointTypeIndex();
 
 			//to ensure that player's and opponent's
 			//pawns are always different when it comes
 			//to the number of sides from both of them 
-			if(newSides === sides)
+			if(newSides === Constants.POLIGON_POINT_TYPE.indexOf(sides))
 			{
-				if(newSides + 1 > Constants.MAX_POLIGON_POINT_SIZE)
+				if(newSides + 1 > Constants.POLIGON_POINT_TYPE.length-1)
 					newSides--;
-				else if(newSides - 1 < Constants.MIN_POLIGON_POINT_SIZE)
+				else if(newSides - 1 < 0)
 					newSides++;
 				else
 				{
@@ -96,7 +96,7 @@ var BoardPawnFactory = {};
 				}
 			}
 
-			sides = newSides;
+			sides = Constants.POLIGON_POINT_TYPE[newSides];
 		}
 		
 		pawnOptions.sides = sides;
@@ -118,10 +118,9 @@ var BoardPawnFactory = {};
 	 * @see Constants.js for minimum or maxumum polygon point size. 
 	 * @return {Integer} A new randomized amount of polygon sides. 
 	 */
-	function calcSides(){
-		var minSides = Constants.MIN_POLIGON_POINT_SIZE;
-		var maxSides = Constants.MAX_POLIGON_POINT_SIZE;
-		return Math.floor(Math.random()*(maxSides-minSides))+minSides;
+	function calcPolyPointTypeIndex(){
+		var poliPoinType = Constants.POLIGON_POINT_TYPE;
+		return Math.floor(Math.random()*poliPoinType.length);
 	}
 
 }());
