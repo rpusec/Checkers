@@ -34,7 +34,7 @@
 
 		gameNameText = new AppearingText({
 			text: 'Checkers',
-			font: '20px Arial',
+			font: '40px Arial',
 			x: stage.canvas.width/2,
 			y: Constants.textPadding,
 			textAlign: 'center'
@@ -42,7 +42,7 @@
 
 		selARoomText = new AppearingText({
 			text: 'Please select a game room below...',
-			font: '15px Arial',
+			font: '20px Arial',
 			x: stage.canvas.width/2,
 			y: gameNameText.getBounds().height*2 + Constants.textPadding,
 			textAlign: 'center'

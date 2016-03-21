@@ -6,9 +6,9 @@
 var Constants = {
 	FPS: 60,
 	MOUSE_OVER_FREQ: 5,
-	oddColor: '#337ab7',
+	oddColor: '#ffbe85',
 	oddColorAlter: '#ff5e5e',
-	evenColor: '#fff',
+	evenColor: '#202020',
 	textPadding: 25,
 	GAME_ROOMS_PER_ROW: 3,
 	GAME_ROOM_WAIT_TIME: 100,

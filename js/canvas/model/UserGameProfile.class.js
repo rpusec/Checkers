@@ -46,6 +46,7 @@
 		pawnFrame.graphics
 		.setStrokeStyle(options.frameStrokeStyle)
 		.beginStroke(options.frameStrokeColor)
+		.beginFill(options.frameStrokeColor)
 		.drawRect(0, 0, options.avatar.getBounds().width + options.padding*2, options.avatar.getBounds().height + options.padding*2);
 		pawnFrame.alpha = options.pFrameAlpha;
 
