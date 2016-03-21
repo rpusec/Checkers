@@ -69,7 +69,7 @@ $(document).ready(function(){
 		if(data.isLogged)
 		{
 			deactivateModalLogin();
-			initializeGame();
+			initializeGame(data.hasOwnProperty('arrUserColor') ? data.arrUserColor : null);
 		}
 		else
 		{

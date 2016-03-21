@@ -41,7 +41,7 @@ $(document).on('ready', function(){
 			success:function(data){
 				if(data.success){
 					deactivateModalLogin();
-					initializeGame();
+					initializeGame(data.hasOwnProperty('arrUserColor') ? data.arrUserColor : null);
 				}
 				else
 				{

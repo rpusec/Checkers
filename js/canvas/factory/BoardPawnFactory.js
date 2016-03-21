@@ -8,19 +8,23 @@ var BoardPawnFactory = {};
 
 (function(){
 
-	var playerPawnOptions = {
-		strokeStyle: 2,
-		strokeColor: Constants.oddColor,
-		bgColor: Constants.evenColor,
-		radius: 10
-	};
+	function getPlayerPawnOptions(){
+		return {
+			strokeStyle: 2,
+			strokeColor: Constants.oddColor,
+			bgColor: Constants.evenColor,
+			radius: 10
+		};
+	}
 
-	var opponentPawnOptions = {
-		strokeStyle: 2,
-		strokeColor: Constants.evenColor,
-		bgColor: Constants.oddColor,
-		radius: 10
-	};
+	function getOpponentPawnOptions(){
+		return {
+			strokeStyle: 2,
+			strokeColor: Constants.evenColor,
+			bgColor: Constants.oddColor,
+			radius: 10
+		};
+	}
 
 	/**
 	 * Represents the amount of 'sides' for a polygon-shaped pawn. 
@@ -36,7 +40,7 @@ var BoardPawnFactory = {};
 	 * @return {Array}        	List of pawns specified for the player.  
 	 */
 	BoardPawnFactory.createPlayerPawns = function(board, amount){
-		return createPawns(amount, playerPawnOptions, board, true);
+		return createPawns(amount, getPlayerPawnOptions(), board, true);
 	}
 
 	/**
@@ -46,7 +50,7 @@ var BoardPawnFactory = {};
 	 * @return {Array}        	List of pawns specified for the player's opponent.  
 	 */
 	BoardPawnFactory.createOpponentPawns = function(board, amount){
-		return createPawns(amount, opponentPawnOptions, board, false);
+		return createPawns(amount, getOpponentPawnOptions(), board, false);
 	}
 
 	/**

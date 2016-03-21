@@ -161,7 +161,13 @@ class UsersController extends BaseController
 			}
 		}
 
-		return array('success' => $flag);
+		$arrReturn = array();
+		$arrReturn['success'] = $flag;
+
+		if(isset($arrRandColor))
+			$arrReturn['arrUserColor'] = $arrRandColor;
+
+		return $arrReturn;
 	}
 
 	/**
@@ -196,7 +202,7 @@ class UsersController extends BaseController
 		if(parent::isUserLogged())
 		{
 			self::updateAllUserConnStat(parent::getLoggedUserID()); 
-			$results = DB::query('SELECT connected FROM user WHERE userID = %i', parent::getLoggedUserID());
+			$results = DB::query('SELECT connected, chatColorR, chatColorG, chatColorB FROM user WHERE userID = %i', parent::getLoggedUserID());
 
 			if(!empty($results))
 			{
@@ -206,7 +212,17 @@ class UsersController extends BaseController
 			}
 		}
 
-		return array('isLogged' => parent::isUserLogged());
+		$arrReturn = array();
+		$arrReturn['isLogged'] = parent::isUserLogged();
+
+		if(isset($results) && count($results) === 1)
+			$arrReturn['arrUserColor'] = array(
+				'red' => $results[0]['chatColorR'],
+				'green' => $results[0]['chatColorG'],
+				'blue' => $results[0]['chatColorB']
+			);
+
+		return $arrReturn;
 	}
 
 	/**

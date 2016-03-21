@@ -31,6 +31,18 @@
 		createjs.Ticker.setFPS(Constants.FPS);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
 		stage.enableMouseOver(Constants.MOUSE_OVER_FREQ);
+	}
+
+	/**
+	 * Pupulates the canvas with display objects and sends 
+	 * an AJAX request to fetch the game rooms. 
+	 */
+	window.initializeGame = function(arrUserColor){
+		if(gameInitialized)
+			return;
+
+		if(typeof arrUserColor === 'object')
+			Constants.oddColor = 'rgb(' + arrUserColor.red + ', ' + arrUserColor.green + ', ' + arrUserColor.blue + ')';
 
 		gameNameText = new AppearingText({
 			text: 'Checkers',
@@ -44,7 +56,7 @@
 			text: 'Please select a game room below...',
 			font: '20px Arial',
 			x: stage.canvas.width/2,
-			y: gameNameText.getBounds().height*2 + Constants.textPadding,
+			y: gameNameText.getBounds().height*2,
 			textAlign: 'center'
 		});
 
@@ -85,21 +97,10 @@
 		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.textPadding);
 		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + Constants.textPadding);
 
-		window.btnLeaveGame = btnLeaveGame;
-
 		board = new Board();
 		board.x = stage.canvas.width/2 - board.getBounds().width/2;
 		board.y = stage.canvas.height;
 		board.alpha = 0;
-	}
-
-	/**
-	 * Pupulates the canvas with display objects and sends 
-	 * an AJAX request to fetch the game rooms. 
-	 */
-	window.initializeGame = function(){
-		if(gameInitialized)
-			return;
 
 		gameNameText.show();
 		selARoomText.show();
