@@ -61,6 +61,14 @@
 		this.getRectDimensions = function(){
 			return {width: rectWidth, height: rectHeight};
 		}
+
+		this.getRowAmount = function(){
+			return options.rowAmount;
+		}
+
+		this.getColAmount = function(){
+			return options.colAmount;
+		}
 	}
 
 	var p = createjs.extend(Board, createjs.Container);

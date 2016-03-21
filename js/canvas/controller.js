@@ -181,8 +181,8 @@
 						//displaying the board to the center of the canvas 
 						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
 							BoardPawnFactory.resetSides();
-							var pPawns = BoardPawnFactory.createPlayerPawns();
-							var oPawns = BoardPawnFactory.createOpponentPawns();
+							var pPawns = BoardPawnFactory.createPlayerPawns(board);
+							var oPawns = BoardPawnFactory.createOpponentPawns(board);
 
 							btnLeaveGame.appear(null, function(){
 
@@ -212,18 +212,6 @@
 							//and positiones them accordingly
 							playerPawns = pPawns.list;
 							opponentPawns = oPawns.list;
-
-							playerPawns.forEach(function(pp, ppIndex){
-								pp.x = board.x + board.getRectDimensions().width/2;
-								pp.y = board.y + board.getRectDimensions().height/2;
-								pp.x += board.getRectDimensions().width * ppIndex;
-							});
-
-							opponentPawns.forEach(function(op, opIndex){
-								op.x = board.x + board.getRectDimensions().width/2;
-								op.y = board.y + board.getBounds().height - board.getRectDimensions().height/2;
-								op.x += board.getRectDimensions().width * opIndex;
-							});
 
 							(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
 								pawn.scaleX = 0;
