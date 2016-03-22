@@ -128,7 +128,6 @@ class UsersController extends BaseController
 	 */
 	public static function loginUser($username, $password)
 	{
-		//xss protection
 		ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ', true);
 		ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ', true);
 
@@ -155,8 +154,7 @@ class UsersController extends BaseController
 				), 'userID=%i', $targetUser['userID']);
 				
 				self::updateConnTime($targetUser['userID']);
-
-				$_SESSION["userID"] = $targetUser['userID'];
+				parent::setLoggedUser($targetUser['userID']);
 				$flag = true;
 			}
 		}
@@ -208,7 +206,7 @@ class UsersController extends BaseController
 			{
 				$user = $results[0];
 				if($user['connected'] == 0)
-					unset($_SESSION["userID"]);
+					session_destroy();
 			}
 		}
 
@@ -277,6 +275,7 @@ class UsersController extends BaseController
 
 	/**
 	 * Generates a random color for the chat personnel. 
+	 * This algorithm does not provide dark colors. 
 	 * @param  Integer $brightness 	Determines the actual brightness, can be from 0 up to 255. 
 	 * @return Array 				An associative array object which contains randomized red, green, and blue color combinations items.             
 	 */

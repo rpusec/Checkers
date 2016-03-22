@@ -8,7 +8,7 @@ var BoardPawnFactory = {};
 
 (function(){
 
-	function getPlayerPawnOptions(){
+	function getPlayerOnePawnOptions(){
 		return {
 			strokeStyle: 2,
 			strokeColor: Constants.COLOR_ONE,
@@ -17,7 +17,7 @@ var BoardPawnFactory = {};
 		};
 	}
 
-	function getOpponentPawnOptions(){
+	function getPlayerTwoPawnOptions(){
 		return {
 			strokeStyle: 2,
 			strokeColor: Constants.COLOR_TWO,
@@ -39,8 +39,8 @@ var BoardPawnFactory = {};
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player.  
 	 */
-	BoardPawnFactory.createPlayerPawns = function(board, amount){
-		return createPawns(amount, getPlayerPawnOptions(), board, true);
+	BoardPawnFactory.createPlayerOnePawns = function(board, amount){
+		return createPawns(amount, getPlayerOnePawnOptions(), board, true);
 	}
 
 	/**
@@ -49,13 +49,13 @@ var BoardPawnFactory = {};
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player's opponent.  
 	 */
-	BoardPawnFactory.createOpponentPawns = function(board, amount){
-		return createPawns(amount, getOpponentPawnOptions(), board, false);
+	BoardPawnFactory.createPlayerTwoPawns = function(board, amount){
+		return createPawns(amount, getPlayerTwoPawnOptions(), board, false);
 	}
 
 	/**
 	 * Sets the sides variable back to null. 
-	 * It's executed when the createPlayerPawnList and createOpponentPawnList have already been
+	 * It's executed when the createPlayerOnePawns and createPlayerTwoPawns have already been
 	 * used, since then the previous sides value doesn't have to be kept. 
 	 */
 	BoardPawnFactory.resetSides = function(){
@@ -64,7 +64,7 @@ var BoardPawnFactory = {};
 
 	/**
 	 * Generates a number of pawns. This function is used by 
-	 * both createOpponentPawnList() and createPlayerPawnList() 
+	 * both createPlayerOnePawns() and createPlayerTwoPawns() 
 	 * functions. 
 	 * 
 	 * @see Constants.js for the default amount value. 
