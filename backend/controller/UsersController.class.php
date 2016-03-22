@@ -237,7 +237,8 @@ class UsersController extends BaseController
 		parent::startConnection();
 
 		DB::update('user', array(
-			'connected' => 0
+			'connected' => 0,
+			'ROOM_roomID' => 0
 		), 'userID=%i', parent::getLoggedUserID());
 
 		unset($_SESSION["userID"]);
@@ -270,7 +271,7 @@ class UsersController extends BaseController
 	public static function updateAllUserConnStat($userID = null)
 	{
 		parent::startConnection();
-		DB::update('user', array('connected' => 0), 'connexparation<%i' . ($userID !== null ? ' AND userID=%i' : ''), parent::getTimeInSec(), $userID);
+		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($userID !== null ? ' AND userID=%i' : ''), parent::getTimeInSec(), $userID);
 		return array('success' => true);
 	}
 

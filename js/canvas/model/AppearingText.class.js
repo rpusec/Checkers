@@ -24,7 +24,7 @@
 
 		this._options = $.extend({
 			font: '12px Arial',
-			color: Constants.oddColor,
+			color: Constants.COLOR_ONE,
 			farAway: 20,
 			speed: 500,
 			textAlign: 'left'

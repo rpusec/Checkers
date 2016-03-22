@@ -33,9 +33,9 @@
 			numrectsY: 3,
 			width: 75,
 			height: 50,
-			colorO: Constants.oddColor,
-			colorOUnavailable: Constants.oddColorAlter,
-			colorE: Constants.evenColor,
+			colorO: Constants.COLOR_ONE,
+			colorOUnavailable: Constants.COLOR_ONEAlter,
+			colorE: Constants.COLOR_TWO,
 			unavailable: false
 		}, options);
 
@@ -54,6 +54,10 @@
 	}
 
 	var p = createjs.extend(GameRoom, createjs.Container);
+
+	p.getRoomID = function(){
+		return this._options.roomID;
+	}
 
 	p.addMouseEvents = function(){
 		var ON_MOUSE_MOVE_AMOUNT = 10;

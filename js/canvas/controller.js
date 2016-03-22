@@ -42,13 +42,13 @@
 			return;
 
 		if(typeof arrUserColor === 'object')
-			Constants.oddColor = 'rgb(' + arrUserColor.red + ', ' + arrUserColor.green + ', ' + arrUserColor.blue + ')';
+			Constants.COLOR_ONE = 'rgb(' + arrUserColor.red + ', ' + arrUserColor.green + ', ' + arrUserColor.blue + ')';
 
 		gameNameText = new AppearingText({
 			text: 'Checkers',
 			font: '40px Arial',
 			x: stage.canvas.width/2,
-			y: Constants.textPadding,
+			y: Constants.TEXT_PADDING,
 			textAlign: 'center'
 		});
 
@@ -61,41 +61,23 @@
 		});
 
 		btnLeaveGame = new Button({text: 'Leave game...'}, function(){
-			btnLeaveGame.disappear();
-
-			(playerPawns.concat(opponentPawns)).forEach(function(pawn){
-				createjs.Tween.removeTweens(pawn);
-				pawn.scaleX = 1;
-				pawn.scaleY = 1;
-
-				var pawnAngle = Math.random()*(Math.PI*2);
-				var destSin = Math.sin(pawnAngle) * Constants.DISAPPEARANCE_DIST;
-				var destCos = Math.cos(pawnAngle) * Constants.DISAPPEARANCE_DIST;
-
-				createjs.Tween.get(pawn).to({scaleX: 0, scaleY: 0, x: pawn.x + destSin, y: pawn.y + destCos}, 1500, createjs.Ease.circOut).call(function(){
-					stage.removeChild(this);
-				});
-			});
-
-			createjs.Tween.get(playerProfile).to({y: playerProfile.y - Constants.USER_PROFILE_MOVE, alpha: 0}, 500, createjs.Ease.backIn).call(function(){
-				stage.removeChild(this);
-			});
-
-			createjs.Tween.get(opponentProfile).to({y: opponentProfile.y + Constants.USER_PROFILE_MOVE, alpha: 0}, 500, createjs.Ease.backIn).call(function(){
-				stage.removeChild(this);
-			});
-
-			createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
-				gameNameText.show();
-				selARoomText.show();
-				board.alpha = 0;
-				displayAllRoomsAJAXCall();
+			$.ajax({
+				type:'get',
+				processData: false,
+				contentType: false,
+				url:'backend/view/GameView.php',
+				dataType: 'json',
+				data:'path=remove-from-game-room',
+				success: offGameSuccessHandler,
+				error: function(data){
+					console.log(data);
+				}
 			});
 		});
 
 		btnLeaveGame.disappear(false);
-		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.textPadding);
-		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + Constants.textPadding);
+		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.TEXT_PADDING);
+		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + Constants.TEXT_PADDING);
 
 		board = new Board();
 		board.x = stage.canvas.width/2 - board.getBounds().width/2;
@@ -164,6 +146,8 @@
 				//when a GameRoom icon is clicked 
 				newGameRoom.on('click', function(){
 
+					var targetRoomID = this.getRoomID()
+
 					//hiding the texts 
 					gameNameText.hide();
 					selARoomText.hide();
@@ -176,50 +160,17 @@
 
 					//setting the GameRoom container below the stage and setting its alpha to zero
 					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
-						contGameRoom.removeAllChildren();
-						stage.removeChild(contGameRoom);
-
-						//displaying the board to the center of the canvas 
-						createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
-							BoardPawnFactory.resetSides();
-							var pPawns = BoardPawnFactory.createPlayerPawns(board);
-							var oPawns = BoardPawnFactory.createOpponentPawns(board);
-
-							btnLeaveGame.appear(null, function(){
-
-								//creating user profiles
-								playerProfile = new UserGameProfile({side: UserGameProfile.RIGHT_SIDE, avatar: pPawns.avatar});
-								opponentProfile = new UserGameProfile({side: UserGameProfile.LEFT_SIDE, avatar: oPawns.avatar});
-
-								playerProfile.x = board.x + board.getBounds().width - playerProfile.getBounds().width + playerProfile.getMargin()*2 + playerProfile.getPadding()*2 + playerProfile.getFrameStrokeStyle();
-								playerProfile.y = board.y/2 - playerProfile.getBounds().height/2;
-
-								opponentProfile.x = board.x;
-								opponentProfile.y = board.y + board.getBounds().height + (Math.abs(board.y + board.getBounds().height - stage.canvas.height)/2) - opponentProfile.getBounds().height/2;
-
-								playerProfile.alpha = 0;
-								opponentProfile.alpha = 0;
-
-								playerProfile.x += Constants.USER_PROFILE_MOVE;
-								opponentProfile.x -= Constants.USER_PROFILE_MOVE;
-
-								createjs.Tween.get(playerProfile).to({x: playerProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
-								createjs.Tween.get(opponentProfile).to({x: opponentProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
-
-								stage.addChild(playerProfile, opponentProfile);
-							});
-							
-							//spawns the player and opponent pawns 
-							//and positiones them accordingly
-							playerPawns = pPawns.list;
-							opponentPawns = oPawns.list;
-
-							(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
-								pawn.scaleX = 0;
-								pawn.scaleY = 0;
-								createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
-								stage.addChild(pawn);
-							});
+						$.ajax({
+							type:'get',
+							processData: false,
+							contentType: false,
+							url:'backend/view/GameView.php',
+							dataType: 'json',
+							data:'path=add-to-game-room&gameRoomID=' + targetRoomID,
+							success: toGameRoomSuccessHandler,
+							error: function(data){
+								console.log(data);
+							}
 						});
 					});
 				});
@@ -245,6 +196,115 @@
 		contGameRoom.x = stage.canvas.width/2 - contGameRoom.getBounds().width/2;
 		contGameRoom.y = stage.canvas.height/2 - contGameRoom.getBounds().height/2 - GAME_ROOM_TO_BOTTOM;
 		stage.addChild(contGameRoom);
+	}
+
+	function toGameRoomSuccessHandler(data){
+		if(!data.success)
+		{
+			var errors = '';
+
+			data.errors.forEach(function(error){
+				errors += error + "<br />";
+			});
+
+			BootstrapDialog.show({
+				type: BootstrapDialog.TYPE_DANGER,
+				title: "Error",
+				message: errors
+			});
+
+			return;
+		}
+
+		contGameRoom.removeAllChildren();
+		stage.removeChild(contGameRoom);
+
+		//displaying the board to the center of the canvas 
+		createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
+			BoardPawnFactory.resetSides();
+			var pPawns = BoardPawnFactory.createPlayerPawns(board);
+			var oPawns = BoardPawnFactory.createOpponentPawns(board);
+
+			btnLeaveGame.appear(null, function(){
+
+				//creating player profile
+				playerProfile = new UserGameProfile({
+					side: UserGameProfile.RIGHT_SIDE, 
+					avatar: pPawns.avatar, 
+					firstname: data.user.firstname, 
+					lastname: data.user.lastname, 
+					username: data.user.username
+				});
+
+				//creating opponent profile
+				opponentProfile = new UserGameProfile({
+					side: UserGameProfile.LEFT_SIDE, 
+					avatar: oPawns.avatar
+				});
+
+				playerProfile.x = board.x + board.getBounds().width - playerProfile.getBounds().width + playerProfile.getMargin()*2 + playerProfile.getPadding()*2 + playerProfile.getFrameStrokeStyle();
+				playerProfile.y = board.y/2 - playerProfile.getBounds().height/2;
+
+				opponentProfile.x = board.x;
+				opponentProfile.y = board.y + board.getBounds().height + (Math.abs(board.y + board.getBounds().height - stage.canvas.height)/2) - opponentProfile.getBounds().height/2;
+
+				playerProfile.alpha = 0;
+				opponentProfile.alpha = 0;
+
+				playerProfile.x += Constants.USER_PROFILE_MOVE;
+				opponentProfile.x -= Constants.USER_PROFILE_MOVE;
+
+				createjs.Tween.get(playerProfile).to({x: playerProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
+				createjs.Tween.get(opponentProfile).to({x: opponentProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
+
+				stage.addChild(playerProfile, opponentProfile);
+			});
+			
+			//spawns the player and opponent pawns 
+			//and positiones them accordingly
+			playerPawns = pPawns.list;
+			opponentPawns = oPawns.list;
+
+			(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
+				pawn.scaleX = 0;
+				pawn.scaleY = 0;
+				createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
+				stage.addChild(pawn);
+			});
+		});
+	}
+
+	function offGameSuccessHandler(){
+		btnLeaveGame.disappear();
+
+		(playerPawns.concat(opponentPawns)).forEach(function(pawn){
+			createjs.Tween.removeTweens(pawn);
+			pawn.scaleX = 1;
+			pawn.scaleY = 1;
+
+			var pawnAngle = Math.random()*(Math.PI*2);
+			var destSin = Math.sin(pawnAngle) * Constants.DISAPPEARANCE_DIST;
+			var destCos = Math.cos(pawnAngle) * Constants.DISAPPEARANCE_DIST;
+
+			createjs.Tween.get(pawn).to({scaleX: 0, scaleY: 0, x: pawn.x + destSin, y: pawn.y + destCos}, 1500, createjs.Ease.circOut).call(function(){
+				stage.removeChild(this);
+			});
+		});
+
+		createjs.Tween.get(playerProfile).to({y: playerProfile.y - Constants.USER_PROFILE_MOVE, alpha: 0}, 500, createjs.Ease.backIn).call(function(){
+			stage.removeChild(this);
+		});
+
+		createjs.Tween.get(opponentProfile).to({y: opponentProfile.y + Constants.USER_PROFILE_MOVE, alpha: 0}, 500, createjs.Ease.backIn).call(function(){
+			stage.removeChild(this);
+		});
+
+		createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
+			gameNameText.show();
+			selARoomText.show();
+			board.alpha = 0;
+			displayAllRoomsAJAXCall();
+		});
 	}
 
 	/**

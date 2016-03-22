@@ -6,10 +6,9 @@
 var Constants = {
 	FPS: 60,
 	MOUSE_OVER_FREQ: 5,
-	oddColor: '#fff',
-	oddColorAlter: '#ff5e5e',
-	evenColor: '#202020',
-	textPadding: 25,
+	COLOR_ONE: '#fff', 
+	COLOR_TWO: '#202020',
+	TEXT_PADDING: 25,
 	GAME_ROOMS_PER_ROW: 3,
 	GAME_ROOM_WAIT_TIME: 100,
 	POLIGON_POINT_TYPE: [4, 6, 8, 10],

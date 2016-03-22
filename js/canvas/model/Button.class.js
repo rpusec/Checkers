@@ -27,13 +27,13 @@
 
 		options = $.extend({
 			text: 'No text specified. ',
-			textColor: Constants.oddColor,
-			textColorHovered: Constants.evenColor,
+			textColor: Constants.COLOR_ONE,
+			textColorHovered: Constants.COLOR_TWO,
 			font: '12px Arial',
-			bgColor: Constants.evenColor,
-			bgColorHovered: Constants.oddColor,
-			borderColor: Constants.oddColor,
-			borderColorHovered: Constants.evenColor,
+			bgColor: Constants.COLOR_TWO,
+			bgColorHovered: Constants.COLOR_ONE,
+			borderColor: Constants.COLOR_ONE,
+			borderColorHovered: Constants.COLOR_TWO,
 			padding: 7,
 			strokeStyle: 2,
 			appearSpeed: 1000

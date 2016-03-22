@@ -7,8 +7,8 @@
 	 *                         - {Number} [height] => The height of the board. 
 	 *                         - {Integer} [rowAmount] => The amount of blocks on the Y axis. 
 	 *                         - {Integer} [colAmount] => The amount of blocks on the X axis. 
-	 *                         - {String} [oddColor] => The color specified for each block who's position is divisable by three. 
-	 *                         - {String} [evenColor] => The color specified for each block who's position is divisable by two. 
+	 *                         - {String} [COLOR_ONE] => The color specified for each block who's position is divisable by three. 
+	 *                         - {String} [COLOR_TWO] => The color specified for each block who's position is divisable by two. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
 	 */
@@ -23,9 +23,9 @@
 			height: 200,
 			rowAmount: 8,
 			colAmount: 8,
-			oddColor: Constants.oddColor,
-			evenColor: Constants.evenColor,
-			borderColor: Constants.oddColor,
+			COLOR_ONE: Constants.COLOR_ONE,
+			COLOR_TWO: Constants.COLOR_TWO,
+			borderColor: Constants.COLOR_ONE,
 			borderWidth: 3
 		}, options);
 
@@ -39,11 +39,11 @@
 			{
 				//each row which is divisable by two (so second, fourth, sixth, etc...) 
 				//has the opposite color scheme 
-				var currEvenColor = ((row % 2) === 0) ? options.evenColor : options.oddColor;
-				var currOddColor = ((row % 2) === 0) ? options.oddColor : options.evenColor;
+				var currCOLOR_TWO = ((row % 2) === 0) ? options.COLOR_TWO : options.COLOR_ONE;
+				var currCOLOR_ONE = ((row % 2) === 0) ? options.COLOR_ONE : options.COLOR_TWO;
 
 				var newBlock = new createjs.Shape();
-				newBlock.graphics.beginFill((col % 2) === 0 ? currEvenColor : currOddColor).drawRect(rectWidth*col, rectHeight*row, rectWidth, rectHeight);
+				newBlock.graphics.beginFill((col % 2) === 0 ? currCOLOR_TWO : currCOLOR_ONE).drawRect(rectWidth*col, rectHeight*row, rectWidth, rectHeight);
 				this.addChild(newBlock);
 			}
 		}

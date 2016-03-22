@@ -11,8 +11,8 @@ var BoardPawnFactory = {};
 	function getPlayerPawnOptions(){
 		return {
 			strokeStyle: 2,
-			strokeColor: Constants.oddColor,
-			bgColor: Constants.evenColor,
+			strokeColor: Constants.COLOR_ONE,
+			bgColor: Constants.COLOR_TWO,
 			radius: 10
 		};
 	}
@@ -20,8 +20,8 @@ var BoardPawnFactory = {};
 	function getOpponentPawnOptions(){
 		return {
 			strokeStyle: 2,
-			strokeColor: Constants.evenColor,
-			bgColor: Constants.oddColor,
+			strokeColor: Constants.COLOR_TWO,
+			bgColor: Constants.COLOR_ONE,
 			radius: 10
 		};
 	}
