@@ -28,3 +28,6 @@ define('MIN_LNAME_INPUT_SIZE', 3);
 
 define('ILLEGAL_INPUT_ERROR_MSG_PART', 'Illegal value supplied for ');
 define('ALPHABETIC_ERROR_MSG_PART', ' should be alphabetic. ');
+
+define('FIRST_PLAYER', 1);
+define('SECOND_PLAYER', 2);

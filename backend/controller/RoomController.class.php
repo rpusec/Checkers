@@ -39,8 +39,12 @@ class RoomController extends BaseController
 			'ROOM_roomID' => $roomID
 		), 'userID=%i', parent::getLoggedUserID());
 
-		$users = DB::query('SELECT fname as firstname, lname as lastname, username FROM user WHERE userID=%i', parent::getLoggedUserID());
-		return array('success' => true, 'user' => count($users) === 1 ? $users[0] : null);
+		DB::query('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID=%i', $roomID);
+		$userCount = DB::count();
+		parent::setPlayerNumber($userCount == 1 ? FIRST_PLAYER : SECOND_PLAYER);
+
+		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
+		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
 
 	public static function removeFromGameRoom()
@@ -53,6 +57,8 @@ class RoomController extends BaseController
 		DB::update('user', array(
 			'ROOM_roomID' => 0
 		), 'userID=%i', parent::getLoggedUserID());
+
+		parent::removePlayerNumber();
 
 		return array('success' => true);
 	}

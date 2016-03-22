@@ -225,22 +225,57 @@
 			var pPawns = BoardPawnFactory.createPlayerOnePawns(board);
 			var oPawns = BoardPawnFactory.createPlayerTwoPawns(board);
 
+			console.log(data.users);
+			console.log(data.playerNumber);
+			console.log(data.loggedUserID);
+
 			btnLeaveGame.appear(null, function(){
 
-				//creating player profile
-				playerOneProfile = new UserGameProfile({
+				var playerOneProps = {
 					side: UserGameProfile.RIGHT_SIDE, 
-					avatar: pPawns.avatar, 
-					firstname: data.user.firstname, 
-					lastname: data.user.lastname, 
-					username: data.user.username
-				});
+					avatar: pPawns.avatar
+				};
 
-				//creating opponent profile
-				playerTwoProfile = new UserGameProfile({
+				var playerTwoProps = {
 					side: UserGameProfile.LEFT_SIDE, 
 					avatar: oPawns.avatar
-				});
+				};
+
+				if(data.playerNumber === Constants.FIRST_PLAYER)
+				{
+					if(data.users[0].userID == data.loggedUserID)
+					{
+						playerOneProps.firstname = data.users[0].firstname;
+						playerOneProps.lastname = data.users[0].lastname;
+						playerOneProps.username = data.users[0].username;
+					}
+				}
+				else if(data.playerNumber === Constants.SECOND_PLAYER)
+				{
+					if(data.users[0].userID == data.loggedUserID)
+					{
+						playerOneProps.firstname = data.users[1].firstname;
+						playerOneProps.lastname = data.users[1].lastname;
+						playerOneProps.username = data.users[1].username;
+
+						playerTwoProps.firstname = data.users[0].firstname;
+						playerTwoProps.lastname = data.users[0].lastname;
+						playerTwoProps.username = data.users[0].username;
+					}
+					else if(data.users[1].userID == data.loggedUserID)
+					{
+						playerOneProps.firstname = data.users[0].firstname;
+						playerOneProps.lastname = data.users[0].lastname;
+						playerOneProps.username = data.users[0].username;
+
+						playerTwoProps.firstname = data.users[1].firstname;
+						playerTwoProps.lastname = data.users[1].lastname;
+						playerTwoProps.username = data.users[1].username;
+					}
+				}
+
+				playerOneProfile = new UserGameProfile(playerOneProps);
+				playerTwoProfile = new UserGameProfile(playerTwoProps);
 
 				playerOneProfile.x = board.x + board.getBounds().width - playerOneProfile.getBounds().width + playerOneProfile.getMargin()*2 + playerOneProfile.getPadding()*2 + playerOneProfile.getFrameStrokeStyle();
 				playerOneProfile.y = board.y/2 - playerOneProfile.getBounds().height/2;
