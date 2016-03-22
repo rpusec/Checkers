@@ -76,6 +76,8 @@
 			});
 		});
 
+		wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
+
 		btnLeaveGame.disappear(false);
 		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.TEXT_PADDING);
 		btnLeaveGame.y = Math.floor(btnLeaveGame.getBounds().height/2 + Constants.TEXT_PADDING);
@@ -238,8 +240,6 @@
 					avatar: oPawns.avatar
 				};
 
-				var WM_SP_TO_BOTTOM = 40;
-
 				if(data.playerNumber === Constants.FIRST_PLAYER)
 				{
 					if(data.users[0].userID == data.loggedUserID)
@@ -249,12 +249,11 @@
 						playerOneProps.username = data.users[0].username;
 					}
 
-					wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
 					wmSecondPlayer.alpha = 0;
 					wmSecondPlayer.x = stage.canvas.width/2;
-					wmSecondPlayer.y = stage.canvas.height/2 - WM_SP_TO_BOTTOM;
+					wmSecondPlayer.y = stage.canvas.height/2 - Constants.WM_SP_TO_BOTTOM;
 
-					createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y + WM_SP_TO_BOTTOM, alpha: 1}, 500, createjs.Ease.backOut);
+					createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y + Constants.WM_SP_TO_BOTTOM, alpha: 1}, 1000, createjs.Ease.backOut);
 					stage.addChild(wmSecondPlayer);
 				}
 				else if(data.playerNumber === Constants.SECOND_PLAYER)
@@ -349,6 +348,10 @@
 			selARoomText.show();
 			board.alpha = 0;
 			displayAllRoomsAJAXCall();
+		});
+
+		createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y - Constants.WM_SP_TO_BOTTOM, alpha: 0}, 1000, createjs.Ease.quadOut).call(function(){
+			stage.removeChild(this);
 		});
 	}
 
