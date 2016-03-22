@@ -14,6 +14,7 @@
 	,	opponentPawns
 	,	playerOneProfile
 	,	playerTwoProfile
+	,	wmSecondPlayer
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false;
 
@@ -225,10 +226,6 @@
 			var pPawns = BoardPawnFactory.createPlayerOnePawns(board);
 			var oPawns = BoardPawnFactory.createPlayerTwoPawns(board);
 
-			console.log(data.users);
-			console.log(data.playerNumber);
-			console.log(data.loggedUserID);
-
 			btnLeaveGame.appear(null, function(){
 
 				var playerOneProps = {
@@ -241,6 +238,8 @@
 					avatar: oPawns.avatar
 				};
 
+				var WM_SP_TO_BOTTOM = 40;
+
 				if(data.playerNumber === Constants.FIRST_PLAYER)
 				{
 					if(data.users[0].userID == data.loggedUserID)
@@ -249,6 +248,14 @@
 						playerOneProps.lastname = data.users[0].lastname;
 						playerOneProps.username = data.users[0].username;
 					}
+
+					wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
+					wmSecondPlayer.alpha = 0;
+					wmSecondPlayer.x = stage.canvas.width/2;
+					wmSecondPlayer.y = stage.canvas.height/2 - WM_SP_TO_BOTTOM;
+
+					createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y + WM_SP_TO_BOTTOM, alpha: 1}, 500, createjs.Ease.backOut);
+					stage.addChild(wmSecondPlayer);
 				}
 				else if(data.playerNumber === Constants.SECOND_PLAYER)
 				{
