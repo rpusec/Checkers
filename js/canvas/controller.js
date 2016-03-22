@@ -65,7 +65,7 @@
 				type:'get',
 				processData: false,
 				contentType: false,
-				url:'backend/view/GameView.php',
+				url:'backend/view/RoomView.php',
 				dataType: 'json',
 				data:'path=remove-from-game-room',
 				success: offGameSuccessHandler,
@@ -164,7 +164,7 @@
 							type:'get',
 							processData: false,
 							contentType: false,
-							url:'backend/view/GameView.php',
+							url:'backend/view/RoomView.php',
 							dataType: 'json',
 							data:'path=add-to-game-room&gameRoomID=' + targetRoomID,
 							success: toGameRoomSuccessHandler,
@@ -274,7 +274,10 @@
 		});
 	}
 
-	function offGameSuccessHandler(){
+	function offGameSuccessHandler(data){
+		if(!data.success)
+			return;
+
 		btnLeaveGame.disappear();
 
 		(playerPawns.concat(opponentPawns)).forEach(function(pawn){
