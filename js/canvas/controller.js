@@ -1,6 +1,6 @@
 /**
  * This file handles all of the necessary 
- * things relating to the game itself. 
+ * functionalities relating to the game itself. 
  * @author Roman Pusec
  */
 (function(){
@@ -96,7 +96,7 @@
 	}
 
 	/**
-	 * AJAX call which displays all game rooms.  
+	 * AJAX call which displays all game rooms from the database.  
 	 */
 	function displayAllRoomsAJAXCall(){
 		contGameRoom.alpha = 1;
@@ -198,9 +198,23 @@
 
 		contGameRoom.x = stage.canvas.width/2 - contGameRoom.getBounds().width/2;
 		contGameRoom.y = stage.canvas.height/2 - contGameRoom.getBounds().height/2 - GAME_ROOM_TO_BOTTOM;
+		
 		stage.addChild(contGameRoom);
 	}
 
+	/**
+	 * Executes when an appropriate AJAX request was handled successfully. 
+	 * Displays the board, the player pawns, and the player profiles on the canvas. 
+	 *
+	 * If the user was the first one to enter a game room, then the message stating
+	 * that they have to wait for the second player would show up. If there already
+	 * was another user in a game room, then a message would not be displayed. 
+	 *
+	 * First player will always be displayed on top, whereas the second one will always
+	 * be displayed from below. 
+	 * 
+	 * @param  {Object} data Data retrieved from the server. 
+	 */
 	function toGameRoomSuccessHandler(data){
 		if(!data.success)
 		{
@@ -240,6 +254,7 @@
 					avatar: oPawns.avatar
 				};
 
+				//true if the user was the first one to enter a game room
 				if(data.playerNumber === Constants.FIRST_PLAYER)
 				{
 					if(data.users[0].userID == data.loggedUserID)
@@ -253,11 +268,17 @@
 					wmSecondPlayer.x = stage.canvas.width/2;
 					wmSecondPlayer.y = stage.canvas.height/2 - Constants.WM_SP_TO_BOTTOM;
 
+					//displays a message informing the user that they have to wait for the second player 
 					createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y + Constants.WM_SP_TO_BOTTOM, alpha: 1}, 1000, createjs.Ease.backOut);
 					stage.addChild(wmSecondPlayer);
 				}
+
+				//true if the user was the second one to enter a game room
 				else if(data.playerNumber === Constants.SECOND_PLAYER)
 				{
+					//if the first user on the list is the one who's logged in from
+					//this computer, then they should be represented as the second
+					//player
 					if(data.users[0].userID == data.loggedUserID)
 					{
 						playerOneProps.firstname = data.users[1].firstname;
@@ -295,6 +316,7 @@
 				playerOneProfile.x += Constants.USER_PROFILE_MOVE;
 				playerTwoProfile.x -= Constants.USER_PROFILE_MOVE;
 
+				//displaying user profiles 
 				createjs.Tween.get(playerOneProfile).to({x: playerOneProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 				createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 
@@ -315,6 +337,12 @@
 		});
 	}
 
+	/**
+	 * Executes when an appropriate AJAX request was handled successfully. 
+	 * Hides the board, the player profiles, etc. and returns the user back
+	 * to the list of available game rooms. 
+	 * @param  {Object} data Data retrieved from the server. 
+	 */
 	function offGameSuccessHandler(data){
 		if(!data.success)
 			return;
@@ -356,7 +384,7 @@
 	}
 
 	/**
-	 * Removes all children from the canvas. 
+	 * Removes all children, tweens, and events from the canvas. 
 	 */
 	window.uninitializeGame = function(){
 		createjs.Tween.removeAllTweens();

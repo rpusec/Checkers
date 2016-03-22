@@ -9,14 +9,14 @@
 	/**
 	 * Represents a single game room icon on the start of the game. 
 	 * @param {Object} options A plain object which represents parameters for the class. Includes:
-	 *                         - numrectsX: Number of rectangles from the horizontal perspective. 
-	 *                         - numrectsY: Number of rectangles from the vertical perspective. 
-	 *                         - width: Width of the display object. 
-	 *                         - height: Height of the display object. 
-	 *                         - colorO: Color of the boxes that are positioned odd. 
-	 *                         - colorE: Color of the boxes that are positioned even. 
-	 *                         - colorOUnavailable: The same purpose as colorO, but it's only applied when the GameRoom is set as unavailable. 
-	 *                         - available: Boolean which indicates whether this GameRoom should be considered as unavailable. 
+	 *                         - {Integer} numrectsX => Number of rectangles from the horizontal perspective. 
+	 *                         - {Integer} numrectsY => Number of rectangles from the vertical perspective. 
+	 *                         - {Number} width => Width of the display object. 
+	 *                         - {Number} height => Height of the display object. 
+	 *                         - {String} colorO => Color of the boxes that are positioned odd. 
+	 *                         - {String} colorE => Color of the boxes that are positioned even. 
+	 *                         - {String} colorOUnavailable => The same purpose as colorO, but it's only applied when the GameRoom is set as unavailable. 
+	 *                         - {Boolean} available => Boolean which indicates whether this GameRoom should be considered as unavailable. 
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}

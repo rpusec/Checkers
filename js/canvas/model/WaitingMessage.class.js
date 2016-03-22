@@ -1,5 +1,22 @@
 (function(){
 
+	/**
+	 * Represents a particular message with a 'waiting' or 'loading' characteristic to it. 
+	 * @param {Object} options Represents parameters of the object. 
+	 *                         - {Integer} linesAmount => The amount of rotating lines. 
+	 *                         - {String} linesColor => The color of the rotating lines. 
+	 *                         - {Number} radius => The radius of the lines and the background. 
+	 *                         - {Number} lineWidth => The width or the thickness of the lines.
+	 *                         - {String} text => The text to be displayed. 
+	 *                         - {String} textColor => The color of the text. 
+	 *                         - {String} font => The font of the text (e.g. '20px Arial'). 
+	 *                         - {Number} textBorder => The border size of the text. 
+	 *                         - {String} textBorderColor => The color of the border of the text. 
+	 *                         - {String} bgCircleColor => The color of the circular background. 
+	 * @author Roman Pusec
+	 * @augments {createjs.Container}
+	 * @requires RotatingLine.class.js
+	 */
 	function WaitingMessage(options){
 		this.Container_constructor();
 

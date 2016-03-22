@@ -8,13 +8,13 @@
 	/**
 	 * Augmented createjs.Text object which fades in or out. 
 	 * @param {Object} options A plain object which represents parameters for the class. Includes:
-	 *                         - text          Text to display.
-	 *                         - x             X coordinate of the text. 
-	 *                         - y             Y coordinate of the text. 
-	 *                         - [speed]       Speed of fading in or out in milliseconds. 
-	 *                         - [farAway]     How far away will the text be from the specified location when initialized.  
-	 *                         - [font]        Font and the size of the font (e.g. 'bold 12px Arial').  
-	 *                         - [color]       Color of the font
+	 *                         - {String} text => Text to display.
+	 *                         - {Number} x => X coordinate of the text. 
+	 *                         - {Number} y => Y coordinate of the text. 
+	 *                         - {Number} [speed] => Speed of fading in or out in milliseconds. 
+	 *                         - {Number} [farAway] => How far away will the text be from the specified location when initialized.  
+	 *                         - {String} [font] => Font and the size of the font (e.g. 'bold 12px Arial').  
+	 *                         - {String} [color] => Color of the font.
 	 * @author Roman Pusec
 	 * @augments {createjs.Text}
 	 */

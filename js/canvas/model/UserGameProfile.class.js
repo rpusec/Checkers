@@ -20,6 +20,7 @@
 	 *                         
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
+	 * @requires BoardPawn.class.js
 	 */
 	function UserGameProfile(options){
 		this.Container_constructor();
@@ -70,14 +71,26 @@
 
 		this.addChild(userInfoTxt, pawnFrame, options.avatar);
 
+		/**
+		 * Returns margin of the user profile. 
+		 * @return {Number} Margin. 
+		 */
 		this.getMargin = function(){
 			return options.margin;
 		}
 
+		/**
+		 * Returns padding of the user profile. 
+		 * @return {Number} Padding. 
+		 */
 		this.getPadding = function(){
 			return options.padding;
 		}
 
+		/**
+		 * Returns the frame stroke style of the user profile
+		 * @return {Integer} Frame stroke style. 
+		 */
 		this.getFrameStrokeStyle = function(){
 			return options.frameStrokeStyle;
 		}
