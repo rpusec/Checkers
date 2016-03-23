@@ -226,11 +226,6 @@ $(document).on('ready', function(){
 		formData.append('passwordConfirm', passwordConfirm);
 		formData.append('path', 'register-user');
 
-		$.each($('#modal-account-settings').find('.form-control'), function(fcKey, fcVal){
-			$(fcVal).val('');
-			$(fcVal).attr('disabled', 'disabled');
-		});
-
 		$.ajax({
 			type: 'post',
 			processData: false,
@@ -254,7 +249,14 @@ $(document).on('ready', function(){
 		var message = 'Account settings successfully altered. ';
 
 		if(data.success)
+		{
+			$.each($('#modal-account-settings').find('.form-control'), function(fcKey, fcVal){
+				$(fcVal).val('');
+				$(fcVal).attr('disabled', 'disabled');
+			});
+			
 			$('#modal-account-settings').modal('hide');
+		}
 		else
 			message = formatLineByLine(data.errors);
 

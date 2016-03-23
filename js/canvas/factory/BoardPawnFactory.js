@@ -85,26 +85,26 @@ var BoardPawnFactory = {};
 			sides = Constants.POLIGON_POINT_TYPE[calcPolyPointTypeIndex()];
 		else
 		{
-			var newSides = calcPolyPointTypeIndex();
+			var sidesIndex = calcPolyPointTypeIndex();
 
 			//to ensure that player's and opponent's pawns are always different 
 			//when it comes to the number of sides from both of them 
-			if(newSides === Constants.POLIGON_POINT_TYPE.indexOf(sides))
+			if(sidesIndex === Constants.POLIGON_POINT_TYPE.indexOf(sides))
 			{
-				if(newSides + 1 > Constants.POLIGON_POINT_TYPE.length-1)
-					newSides--;
-				else if(newSides - 1 < 0)
-					newSides++;
+				if(sidesIndex + 1 > Constants.POLIGON_POINT_TYPE.length-1)
+					sidesIndex--;
+				else if(sidesIndex - 1 < 0)
+					sidesIndex++;
 				else
 				{
 					if(Math.random() < 0.5)
-						newSides--;
+						sidesIndex--;
 					else
-						newSides++;
+						sidesIndex++;
 				}
 			}
 
-			sides = Constants.POLIGON_POINT_TYPE[newSides];
+			sides = Constants.POLIGON_POINT_TYPE[sidesIndex];
 		}
 		
 		pawnOptions.sides = sides;
