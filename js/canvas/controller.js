@@ -218,16 +218,10 @@
 	function toGameRoomSuccessHandler(data){
 		if(!data.success)
 		{
-			var errors = '';
-
-			data.errors.forEach(function(error){
-				errors += error + "<br />";
-			});
-
 			BootstrapDialog.show({
 				type: BootstrapDialog.TYPE_DANGER,
 				title: "Error",
-				message: errors
+				message: formatLineByLine(data.errors)
 			});
 
 			return;

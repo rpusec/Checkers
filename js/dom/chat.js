@@ -37,18 +37,11 @@ $(document).on('ready', function(){
 			data:formDataSM,
 			success: function(data){
 				if(!data.success)
-				{
-					var errors = data.errors;
-					var errorsStr = '';
-					
-					errors.forEach(function(error){
-						errorsStr += error + "<br />";
-					});
-					
+				{					
 					BootstrapDialog.show({
 						type: BootstrapDialog.TYPE_DANGER,
 						title: "Error",
-						message: errorsStr
+						message: formatLineByLine(data.errors)
 					});
 				}
 			},

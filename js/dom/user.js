@@ -45,24 +45,10 @@ $(document).on('ready', function(){
 				}
 				else
 				{
-					var errorMessage = 'Wrong username / password. ';
-
-					if(data.hasOwnProperty('errors'))
-					{
-						var errors = data.errors;
-						var errorsStr = '';
-
-						errors.forEach(function(error){
-							errorsStr += error + '<br />';
-						});
-
-						errorMessage = errorsStr;
-					}
-
 					BootstrapDialog.show({
 						type: BootstrapDialog.TYPE_DANGER,
 						title: "Error",
-						message: errorMessage
+						message: data.hasOwnProperty('errors') ? formatLineByLine(data.errors) : 'Wrong username / password. '
 					});
 				}
 			},
@@ -270,16 +256,7 @@ $(document).on('ready', function(){
 		if(data.success)
 			$('#modal-account-settings').modal('hide');
 		else
-		{
-			var errors = data.errors;
-			var errorsStr = '';
-
-			errors.forEach(function(error){
-				errorsStr += error + '<br />';
-			});
-
-			message = errorsStr;
-		}
+			message = formatLineByLine(data.errors);
 
 		BootstrapDialog.show({
 			type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
