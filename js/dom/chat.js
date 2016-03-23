@@ -174,7 +174,7 @@ $(document).on('ready', function(){
 				$($newConnUser).toggleBubbleOn();
 				$($newConnUser).hover(
 					function(){
-						var targetUserInfo = arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID];
+						var targetUserInfo = arrOnlineUserInfo[this.id];
 						$('#single-user-info').html(
 							'<b>First name: </b>' + targetUserInfo.firstname + 
 							'<br /><b>Last name: </b>' + targetUserInfo.lastname + 

@@ -68,7 +68,7 @@ class RoomController extends BaseController
 			DB::update('room', array('whose_turn' => $users[$randUserInt]['userID']), 'roomID=%i', $roomID);
 		}
 
-		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
+		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID(), 'roomID' => $roomID);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class RoomController extends BaseController
 
 		parent::startConnection();
 
-		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username '
+		$users = DB::query('SELECT ROOM_roomID as roomID, userID, fname as firstname, lname as lastname, username '
 			.'FROM user JOIN room ON (user.ROOM_roomID = room.roomID) '
 			.'WHERE userID <> %i', parent::getLoggedUserID());
 

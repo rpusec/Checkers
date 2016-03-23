@@ -27,7 +27,7 @@
 			linesAmount: 4,
 			linesColor: Constants.COLOR_ONE,
 			radius: 80,
-			lineWidth: 4,
+			lineWidth: 20,
 			text: 'Text unspecified. ',
 			textColor: '#fff',
 			font: '18px Arial',
@@ -42,19 +42,7 @@
 
 		for(var i = 0; i < options.linesAmount; i++)
 		{
-			var rotatingLine = new RotatingLine({
-				x: 0,
-				y: 0,
-				radius: options.radius,
-				startAngle:0,
-				endAngle:Math.random()*Math.PI+Math.PI/2,
-				strokeStyle:8,
-				color: options.linesColor,
-				rotationSpeed:5 * (Math.random() < 0.5 ? -1 : 1),
-				rotationVal:Math.random()*20,
-				alpha: 0.15
-			});
-
+			var rotatingLine = new RotatingLine({radius: options.radius, strokeStyle: options.lineWidth});
 			rotatingLine.startRotation();
 			this.addChild(rotatingLine);
 		}

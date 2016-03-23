@@ -18,8 +18,21 @@
 		this.Shape_constructor();
 		var self = this;
 
-		if(typeof options === 'undefined')
+		if(typeof options !== 'object')
 			options = {};
+
+		options = $.extend({
+			x: 0,
+			y: 0,
+			radius: 30,
+			startAngle: 0,
+			endAngle:Math.random()*Math.PI+Math.PI/2,
+			strokeStyle: 5,
+			color: Constants.COLOR_ONE,
+			rotationSpeed:5 * (Math.random() < 0.5 ? -1 : 1),
+			rotationVal:Math.random()*360,
+			alpha: 0.15
+		}, options);
 
 		this.graphics
 		.setStrokeStyle(options.strokeStyle, 'round', 'round')
@@ -44,6 +57,10 @@
 			createjs.Ticker.removeEventListener('tick', onRotation);
 		}
 
+		this.getInitialAlpha = function(){
+			return options.alpha;
+		}
+
 		function onRotation(){
 			if(self.parent !== null)
 			{
@@ -55,7 +72,7 @@
 		}
 	}
 
-	var e = createjs.extend(RotatingLine, createjs.Shape);
+	var p = createjs.extend(RotatingLine, createjs.Shape);
 
 	window.RotatingLine = createjs.promote(RotatingLine, 'Shape');
 }());

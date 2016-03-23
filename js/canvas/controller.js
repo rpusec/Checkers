@@ -175,6 +175,22 @@
 		});
 	}
 
+
+	function whoseTurnAJAXCall(targetRoomID){
+		$.ajax({
+			type: 'get',
+			processData: false,
+			contentType: false,
+			url: 'backend/view/GameView.php',
+			dataType: 'json',
+			data: 'path=check-whose-turn&gameRoomID=' + targetRoomID,
+			success: checkWhoseTurnSuccessHandler,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}
+
 	//-----------------------------------------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------------------------
 	//------- The following functions are responsible for handling success callbacks of AJAX calls. -------
@@ -275,6 +291,46 @@
 			playerTwoProfile.setUsername(data.opponent.username);
 			hideSecondPlayerWaitingMessage();
 			clearInterval(checkForOpponentInterval);
+			whoseTurnAJAXCall(data.opponent.roomID);
+		}
+	}
+
+	function checkWhoseTurnSuccessHandler(data){
+		if(!data.success)
+			return;
+
+		data.playerNumber = parseInt(data.playerNumber);
+		data.loggedUserID = parseInt(data.loggedUserID);
+		data.whoseTurn = data.whoseTurn !== null ? parseInt(data.whoseTurn) : null;
+
+		if(data.whoseTurn !== null)
+		{
+			if(data.playerNumber === Constants.FIRST_PLAYER)
+			{
+				if(data.whoseTurn === data.loggedUserID)
+				{
+					playerOneProfile.highlight();
+					playerTwoProfile.understate();
+				}
+				else
+				{
+					playerOneProfile.understate();
+					playerTwoProfile.highlight();
+				}
+			}
+			else if(data.playerNumber === Constants.SECOND_PLAYER)
+			{
+				if(data.whoseTurn === data.loggedUserID)
+				{
+					playerOneProfile.understate();
+					playerTwoProfile.highlight();
+				}
+				else
+				{
+					playerOneProfile.highlight();
+					playerTwoProfile.understate();
+				}
+			}
 		}
 	}
 
@@ -397,6 +453,10 @@
 					checkForOpponentInterval = setInterval(function(){
 						checkForOpponentAJAXCall();
 					}, Constants.UPDATE_GAME_INTERVAL_DURATION);
+				}
+				else if(data.playerNumber === Constants.SECOND_PLAYER)
+				{
+					whoseTurnAJAXCall(data.roomID);
 				}
 			});
 			

@@ -116,13 +116,9 @@
 				x: this.getBounds().width/2,
 				y: this.getBounds().height/2,
 				radius: this.getBounds().width/1.5,
-				startAngle:0,
-				endAngle:Math.random()*Math.PI+Math.PI/2,
 				strokeStyle:8,
 				color: !b ? this._options.colorO : this._options.colorOUnavailable,
-				rotationSpeed:5 * (Math.random() < 0.5 ? -1 : 1),
-				rotationVal:Math.random()*20,
-				alpha: 0.15
+				rotationVal:Math.random()*20
 			});
 			line.startRotation();
 			this.addChild(line);

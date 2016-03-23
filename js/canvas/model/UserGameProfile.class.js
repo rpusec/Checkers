@@ -17,6 +17,8 @@
 	 *                         - {Number} margin => Margin of the avatar. 
 	 *                         - {Number} pFrameAlpha => Specifies the alpha value of the frame.  
 	 *                         - {BoardPawn} avatar => The avatar to display. 
+	 *                         - {Integer} lineAmount => The amount of rotating lines. 
+	 *                         - {Integer} lineRadius => The thickness of a rotating line. 
 	 *                         
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
@@ -40,7 +42,9 @@
 			padding: 5,
 			margin: 5,
 			pFrameAlpha: 0.25,
-			avatar: new BoardPawn()
+			avatar: new BoardPawn(),
+			lineAmount: 4,
+			lineRadius: 10
 		}, options);
 
 		var pawnFrame = new createjs.Shape();
@@ -71,6 +75,22 @@
 		}
 
 		this.addChild(userInfoTxt, pawnFrame, options.avatar);
+		var prevBounds = this.getBounds();
+
+		var arrRotatingLine = [];
+
+		for(var i = 0; i < options.lineAmount; i++)
+		{
+			var rotatingLine = new RotatingLine({radius: 50, strokeStyle: options.lineRadius});
+			rotatingLine.x = options.avatar.x ;
+			rotatingLine.y = options.avatar.y ;
+			rotatingLine.alpha = 0;
+			rotatingLine.startRotation();
+			arrRotatingLine.push(rotatingLine);
+			this.addChild(rotatingLine);
+		}
+
+		this.setBounds(0, 0, prevBounds.width, prevBounds.height);
 
 		/**
 		 * Returns margin of the user profile. 
@@ -113,6 +133,18 @@
 
 		function updateUserInfoText(){
 			userInfoTxt.text = options.firstname + " " + options.lastname + "\n" + options.username;
+		}
+
+		this.highlight = function(){
+			arrRotatingLine.forEach(function(rotatingLine){
+				createjs.Tween.get(rotatingLine).to({alpha: rotatingLine.getInitialAlpha()}, 500);
+			});
+		}
+
+		this.understate = function(){
+			arrRotatingLine.forEach(function(rotatingLine){
+				createjs.Tween.get(rotatingLine).to({alpha: 0}, 500);
+			});
 		}
 	}
 
