@@ -25,6 +25,19 @@ class RoomController extends BaseController
 		return array('success' => true, 'rooms' => $rooms);
 	}
 
+	/**
+	 * Adds the user (who's authenticated) to a game room specified by the first parameter. 
+	 *
+	 * The client side requires that the list of users from the target game room, so that they could
+	 * be displayed on the screen. The following argument is the 'player number', which tells the client side
+	 * that the authenticated user is either the first player or the second player who got to the game room
+	 * (that way, we can differentiate the first/second player in the client side). 
+	 * 
+	 * @param Integer $roomID The ID value of the target game room. 
+	 * @return Array Success flag indicating that the user is authenticated and that the $roomID is valid. 
+	 *               It also returns a list of users from the room, the 'player number' value of the authenticated player,
+	 *               and the ID of the authenticated player. 
+	 */
 	public static function addUserToGameRoom($roomID)
 	{
 		if(!parent::isUserLogged())
@@ -35,18 +48,27 @@ class RoomController extends BaseController
 
 		parent::startConnection();
 
+		//adding the authenticated user to the game room
 		DB::update('user', array(
 			'ROOM_roomID' => $roomID
 		), 'userID=%i', parent::getLoggedUserID());
 
+		//fetching all of the users from the game room and checking if the authenticated user was the first one to enter
 		DB::query('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID=%i', $roomID);
 		$userCount = DB::count();
+
+		//marking the user as either the first or the second player
 		parent::setPlayerNumber($userCount == 1 ? FIRST_PLAYER : SECOND_PLAYER);
 
 		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
 
+	/**
+	 * Removes the user (who's authenticated) from the 
+	 * game room that they're attached to. 
+	 * @return Array Success flag indicating that the user is logged into the system. 
+	 */
 	public static function removeFromGameRoom()
 	{
 		if(!parent::isUserLogged())
@@ -63,6 +85,14 @@ class RoomController extends BaseController
 		return array('success' => true);
 	}
 
+	/**
+	 * Checks whether there's an opponent of the player. 
+	 * It fetches another user who's also registered in the same room as the first user who entered the room. 
+	 * Therefore, it checks for a user who's ID is not equal to that of the first user. 
+	 * Value of null is returned if the opponent does not exist. 
+	 * The opponent in this case would NOT be the authenticated user. 
+	 * @return Array Returns a success flag indicating that a user is authenticated. It also returns the opponent fetched from the database. 
+	 */
 	public static function checkForOpponent()
 	{
 		if(!parent::isUserLogged())
@@ -74,6 +104,6 @@ class RoomController extends BaseController
 			.'FROM user JOIN room ON (user.ROOM_roomID = room.roomID) '
 			.'WHERE userID <> %i', parent::getLoggedUserID());
 
-		return array('success' => true, 'opponent' => (DB::count() === 1) ? $users[0] : null, 'playerNumber' => parent::getPlayerNumber());
+		return array('success' => true, 'opponent' => (DB::count() === 1) ? $users[0] : null);
 	}
 }

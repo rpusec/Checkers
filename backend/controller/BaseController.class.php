@@ -22,7 +22,7 @@ require_once('../common/constants.php');
 class BaseController
 {
 	/**
-	 * Sets up meekrodb's connection parameters. 
+	 * Sets up connection parameters for meekrodb. 
 	 */
 	public static function startConnection(){
 		DB::$user = DB_USER;

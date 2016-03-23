@@ -18,6 +18,11 @@ require_once('../helper/ValidationHelper.class.php');
  */
 class UsersController extends BaseController
 {
+	/**
+	 * Returns a user by their ID. 
+	 * @param  Integer $userID The user ID. 
+	 * @return Array Success flag, whether the user was found. 
+	 */
 	public static function getUserByID($userID)
 	{
 		parent::startConnection();
@@ -30,12 +35,14 @@ class UsersController extends BaseController
 	}
 
 	/**
-	 * Registers users to the database. 
+	 * Registers users to the database. If a field is an empty string, then it 
+	 * is not included in the sql update statement. 
+	 * @see 'checkIfLoggedAndInputNotEmpty' function. 
 	 * @param  String $firstname First name of the user. 
 	 * @param  String $lastname  Last name of the user. 
 	 * @param  String $username  User's username. 
 	 * @param  String $password  User's password. 
-	 * @return Array             Affected rows. 
+	 * @return Array             Success flag, indicating whether the user was added to the database. In other case, it may also return a list of errors. 
 	 */
 	public static function registerUser($firstname, $lastname, $username, $password, $passwordConfirm)
 	{
@@ -96,6 +103,7 @@ class UsersController extends BaseController
 			if($password != '')
 				$arrUpdate['password'] = $password;
 
+			//includes only the parameters that aren't an empty string 
 			if(!empty($arrUpdate))
 				DB::update('user', $arrUpdate, "userID=%i", parent::getLoggedUserID());
 		}
@@ -106,7 +114,13 @@ class UsersController extends BaseController
 	}
 
 	/**
-	 * We're checking if the user is logged since only then they can alter their information. 
+	 * Checking if the user is logged since only then they can alter their information. 
+	 *
+	 * Since our aim is to evaluate only the input fields that were provided by the authenticated user,
+	 * the function should return true if the input field isn't empty, since in that case we should 
+	 * conduct input validation. Otherwise, it would return false since then the validation wouldn't be necessary 
+	 * since the fields would not be included in the update statement of the 'registerUser' function.
+	 * 
 	 * @param Boolean $input True if the user is logged in and input isn't an empty string, false otherwise. 
 	 */
 	private static function checkIfLoggedAndInputNotEmpty($input){
@@ -124,7 +138,7 @@ class UsersController extends BaseController
 	 * Logs the user in. 
 	 * @param  String $username User's username. 
 	 * @param  String $password User's password.
-	 * @return Array            Array with a flag, indicating whether the authentication procedure was successful. 
+	 * @return Array            Array with a flag, indicating whether the authentication procedure was successful. It also includes user chat bubble colors. 
 	 */
 	public static function loginUser($username, $password)
 	{
@@ -277,7 +291,9 @@ class UsersController extends BaseController
 
 	/**
 	 * Generates a random color for the chat personnel. 
-	 * This algorithm does not provide dark colors. 
+	 * This algorithm does not provide generation of dark 
+	 * colors (e.g. if $brightness is set to 0, then the 
+	 * color would be exactly between bright and dark). 
 	 * @param  Integer $brightness 	Determines the actual brightness, can be from 0 up to 255. 
 	 * @return Array 				An associative array object which contains randomized red, green, and blue color combinations items.             
 	 */

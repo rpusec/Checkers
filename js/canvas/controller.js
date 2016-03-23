@@ -143,8 +143,6 @@
 	 * AJAX call which displays all game rooms from the database.  
 	 */
 	function displayAllRoomsAJAXCall(){
-		contGameRoom.alpha = 1;
-
 		$.ajax({
 			type: 'get',
 			processData: false,
@@ -159,6 +157,9 @@
 		});
 	}
 
+	/**
+	 * AJAX call which checks for player's opponent. 
+	 */
 	function checkForOpponentAJAXCall(){
 		$.ajax({
 			type: 'get',
@@ -256,15 +257,16 @@
 		stage.addChild(contGameRoom);
 	}
 
+	/**
+	 * Is executed when an appropriate AJAX request was executed successfully. 
+	 * Displays the opponent's first name, last name, and username in the game. 
+	 * It also removes the WaitingMessage which informs the player that they
+	 * have to wait for their opponent. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	function checkForOpponentSuccessHandler(data){
 		if(!data.success)
 			return;
-
-		if(data.playerNumber === Constants.SECOND_PLAYER)
-		{
-			clearInterval(checkForOpponentInterval);
-			return;
-		}
 
 		if(data.opponent !== null)
 		{
@@ -390,9 +392,12 @@
 
 				stage.addChild(playerOneProfile, playerTwoProfile);
 
-				checkForOpponentInterval = setInterval(function(){
-					checkForOpponentAJAXCall();
-				}, Constants.UPDATE_GAME_INTERVAL_DURATION);
+				if(data.playerNumber === Constants.FIRST_PLAYER)
+				{
+					checkForOpponentInterval = setInterval(function(){
+						checkForOpponentAJAXCall();
+					}, Constants.UPDATE_GAME_INTERVAL_DURATION);
+				}
 			});
 			
 			//spawns the player and opponent pawns 
@@ -448,6 +453,7 @@
 			selARoomText.show();
 			board.alpha = 0;
 			clearInterval(checkForOpponentInterval);
+			contGameRoom.alpha = 1;
 			displayAllRoomsAJAXCall();
 		});
 
@@ -460,6 +466,11 @@
 	//-----------------------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------
 	
+	/**
+	 * Hides the WaitingMessage object which informs the user that they 
+	 * have to wait for their opponent. 
+	 * @see  WaitingMessage.class.js for display object clarification. 
+	 */
 	function hideSecondPlayerWaitingMessage(){
 		createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y - Constants.WM_SP_TO_BOTTOM, alpha: 0}, 1000, createjs.Ease.quadOut).call(function(){
 			stage.removeChild(this);
