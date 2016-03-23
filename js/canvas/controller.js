@@ -16,7 +16,8 @@
 	,	playerTwoProfile
 	,	wmSecondPlayer
 	,	contGameRoom = new createjs.Container()
-	,	gameInitialized = false;
+	,	gameInitialized = false
+	,	updateGameInterval;
 
 	/**
 	 * Initializes the core 
@@ -27,7 +28,6 @@
 			stage = new createjs.Stage('game-canvas');
 
 		window.stage = stage;
-		window.contGameRoom = contGameRoom;
 
 		createjs.Ticker.setFPS(Constants.FPS);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
@@ -62,18 +62,7 @@
 		});
 
 		btnLeaveGame = new Button({text: 'Leave game...'}, function(){
-			$.ajax({
-				type:'get',
-				processData: false,
-				contentType: false,
-				url:'backend/view/RoomView.php',
-				dataType: 'json',
-				data:'path=remove-from-game-room',
-				success: offGameSuccessHandler,
-				error: function(data){
-					console.log(data);
-				}
-			});
+			offGameRoomAJAXCall();
 		});
 
 		wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
@@ -96,6 +85,61 @@
 	}
 
 	/**
+	 * Removes all children, tweens, and events from the canvas. 
+	 */
+	window.uninitializeGame = function(){
+		createjs.Tween.removeAllTweens();
+		stage.removeAllChildren();
+		contGameRoom.removeAllChildren();
+		stage.update();
+		gameInitialized = false;
+	}
+
+	//--------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------
+	//------- The following functions are responsible for executing various AJAX requests. -------
+	//--------------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------------
+
+	/**
+	 * AJAX call which, when successfully eyecuted, will escort the player to
+	 * a game room of player's choice. 
+	 */
+	function toGameRoomAJAXCall(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/RoomView.php',
+			dataType: 'json',
+			data:'path=add-to-game-room&gameRoomID=' + targetRoomID,
+			success: toGameRoomSuccessHandler,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}
+
+	/**
+	 * AJAX call which, when successfully executed, will return the player
+	 * back to the list of game rooms. 
+	 */
+	function offGameRoomAJAXCall(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/RoomView.php',
+			dataType: 'json',
+			data:'path=remove-from-game-room',
+			success: offGameSuccessHandler,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}
+
+	/**
 	 * AJAX call which displays all game rooms from the database.  
 	 */
 	function displayAllRoomsAJAXCall(){
@@ -108,12 +152,18 @@
 			url: 'backend/view/RoomView.php',
 			dataType: 'json',
 			data: 'path=get-all-rooms',
-			success: displayAllRoomsSuccess,
+			success: displayAllRoomsSuccessHandler,
 			error: function(data){
 				console.log(data);
 			}
 		});
 	}
+
+	//-----------------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------
+	//------- The following functions are responsible for handling success callbacks of AJAX calls. -------
+	//-----------------------------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------------------------
 
 	/**
 	 * This function is executed if a specified AJAX request was handles successfully. 
@@ -122,7 +172,7 @@
 	 * @param {Object} data A plain object which contains data from the backend. It includes a success flag, indicating 
 	 *                      if the user's state is appropriate for this request, and the array of rooms. 
 	 */
-	function displayAllRoomsSuccess(data)
+	function displayAllRoomsSuccessHandler(data)
 	{
 		if(!data.success)
 			return;
@@ -163,18 +213,7 @@
 
 					//setting the GameRoom container below the stage and setting its alpha to zero
 					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
-						$.ajax({
-							type:'get',
-							processData: false,
-							contentType: false,
-							url:'backend/view/RoomView.php',
-							dataType: 'json',
-							data:'path=add-to-game-room&gameRoomID=' + targetRoomID,
-							success: toGameRoomSuccessHandler,
-							error: function(data){
-								console.log(data);
-							}
-						});
+						toGameRoomAJAXCall();
 					});
 				});
 
@@ -375,17 +414,6 @@
 		createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y - Constants.WM_SP_TO_BOTTOM, alpha: 0}, 1000, createjs.Ease.quadOut).call(function(){
 			stage.removeChild(this);
 		});
-	}
-
-	/**
-	 * Removes all children, tweens, and events from the canvas. 
-	 */
-	window.uninitializeGame = function(){
-		createjs.Tween.removeAllTweens();
-		stage.removeAllChildren();
-		contGameRoom.removeAllChildren();
-		stage.update();
-		gameInitialized = false;
 	}
 
 }());
