@@ -61,6 +61,13 @@ class RoomController extends BaseController
 		parent::setPlayerNumber($userCount == 1 ? FIRST_PLAYER : SECOND_PLAYER);
 
 		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
+
+		if(parent::getPlayerNumber() === SECOND_PLAYER)
+		{
+			$randUserInt = mt_rand(0,1);
+			DB::update('room', array('whose_turn' => $users[$randUserInt]['userID']), 'roomID=%i', $roomID);
+		}
+
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
 
