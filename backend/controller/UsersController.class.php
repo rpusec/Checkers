@@ -193,7 +193,7 @@ class UsersController extends BaseController
 	}
 
 	/**
-	 * Checks whether the user is logged. 
+	 * Checks whether the user is logged. This function is executed on startup. 
 	 * @return Array Array which contains a flag, indicating whether the user is logged or not. 
 	 */
 	public static function isUserLogged(){
@@ -208,6 +208,8 @@ class UsersController extends BaseController
 				if($user['connected'] == 0)
 					session_destroy();
 			}
+		
+			DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', parent::getLoggedUserID());
 		}
 
 		$arrReturn = array();

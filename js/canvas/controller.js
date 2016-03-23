@@ -192,8 +192,6 @@
 		if(!data.success)
 			return;
 
-		clearInterval(checkForOpponentInterval);
-
 		var GAME_ROOM_TO_BOTTOM = 40;
 		var waitTime = Constants.GAME_ROOM_WAIT_TIME;
 
@@ -449,6 +447,7 @@
 			gameNameText.show();
 			selARoomText.show();
 			board.alpha = 0;
+			clearInterval(checkForOpponentInterval);
 			displayAllRoomsAJAXCall();
 		});
 
