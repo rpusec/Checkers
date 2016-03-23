@@ -17,7 +17,8 @@
 	,	wmSecondPlayer
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false
-	,	checkForOpponentInterval;
+	,	checkForOpponentInterval
+	,	checkRoomAvailabilityInterval;
 
 	/**
 	 * Initializes the core 
@@ -103,7 +104,7 @@
 	//--------------------------------------------------------------------------------------------
 
 	/**
-	 * AJAX call which, when successfully eyecuted, will escort the player to
+	 * AJAX call which, when successfully executed, will escort the player to
 	 * a game room of player's choice. 
 	 */
 	function toGameRoomAJAXCall(targetRoomID){
@@ -134,6 +135,21 @@
 			dataType: 'json',
 			data:'path=remove-from-game-room',
 			success: offGameSuccessHandler,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}
+
+	function checkGameRoomAvailabilityAJAXCall(){
+		$.ajax({
+			type: 'get',
+			processData: false,
+			contentType: false,
+			url: 'backend/view/RoomView.php',
+			dataType: 'json',
+			data: 'path=check-room-availability',
+			success: checkGameRoomAvailabilitySuccessHandler,
 			error: function(data){
 				console.log(data);
 			}
@@ -272,6 +288,10 @@
 		contGameRoom.y = stage.canvas.height/2 - contGameRoom.getBounds().height/2 - GAME_ROOM_TO_BOTTOM;
 		
 		stage.addChild(contGameRoom);
+
+		checkRoomAvailabilityInterval = setInterval(function(){
+			checkGameRoomAvailabilityAJAXCall();
+		}, Constants.CHECK_ROOM_AVAILABILITY_DELAY);
 	}
 
 	/**
@@ -335,6 +355,24 @@
 		}
 	}
 
+	function checkGameRoomAvailabilitySuccessHandler(data){
+		if(!data.success)
+			return;
+		
+		if(stage.contains(contGameRoom) && contGameRoom.numChildren !== 0)
+		{
+			data.rooms.forEach(function(roomInfo){
+				contGameRoom.children.forEach(function(room){
+					if(room.getRoomID() == roomInfo.targetRoomID)
+					{
+						room.setAsUnavailable(parseInt(roomInfo.userCount) === Constants.MAX_USERS_PER_ROOM);
+						return false;
+					}
+				});
+			});
+		}
+	}
+
 	/**
 	 * Executes when an appropriate AJAX request was handled successfully. 
 	 * Displays the board, the player pawns, and the player profiles on the canvas. 
@@ -359,6 +397,8 @@
 
 			return;
 		}
+
+		//clearInterval(checkRoomAvailabilityInterval);
 
 		contGameRoom.removeAllChildren();
 		stage.removeChild(contGameRoom);

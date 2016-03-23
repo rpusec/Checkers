@@ -113,4 +113,17 @@ class RoomController extends BaseController
 
 		return array('success' => true, 'opponent' => (DB::count() === 1) ? $users[0] : null);
 	}
+
+	public static function checkRoomAvailability()
+	{
+		if(!parent::isUserLogged())
+			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
+
+		parent::startConnection();
+
+		$countQuery = "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
+		$rooms = DB::query("SELECT room.roomID as targetRoomID, ($countQuery) as userCount FROM room");
+
+		return array('success' => true, 'rooms' => $rooms);
+	}
 }

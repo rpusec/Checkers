@@ -26,5 +26,8 @@ else if(isset($_GET['path']))
 		case 'check-for-opponent' : 
 			print json_encode(RoomController::checkForOpponent());
 			break;
+		case 'check-room-availability' : 
+			print json_encode(RoomController::checkRoomAvailability());
+			break;
 	}
 }
