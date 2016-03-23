@@ -62,4 +62,18 @@ class RoomController extends BaseController
 
 		return array('success' => true);
 	}
+
+	public static function checkForOpponent()
+	{
+		if(!parent::isUserLogged())
+			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
+
+		parent::startConnection();
+
+		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username '
+			.'FROM user JOIN room ON (user.ROOM_roomID = room.roomID) '
+			.'WHERE userID <> %i', parent::getLoggedUserID());
+
+		return array('success' => true, 'opponent' => (DB::count() === 1) ? $users[0] : null, 'playerNumber' => parent::getPlayerNumber());
+	}
 }

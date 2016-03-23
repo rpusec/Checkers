@@ -17,7 +17,7 @@
 	,	wmSecondPlayer
 	,	contGameRoom = new createjs.Container()
 	,	gameInitialized = false
-	,	updateGameInterval;
+	,	checkForOpponentInterval;
 
 	/**
 	 * Initializes the core 
@@ -105,7 +105,7 @@
 	 * AJAX call which, when successfully eyecuted, will escort the player to
 	 * a game room of player's choice. 
 	 */
-	function toGameRoomAJAXCall(){
+	function toGameRoomAJAXCall(targetRoomID){
 		$.ajax({
 			type:'get',
 			processData: false,
@@ -159,6 +159,21 @@
 		});
 	}
 
+	function checkForOpponentAJAXCall(){
+		$.ajax({
+			type: 'get',
+			processData: false,
+			contentType: false,
+			url: 'backend/view/RoomView.php',
+			dataType: 'json',
+			data: 'path=check-for-opponent',
+			success: checkForOpponentSuccessHandler,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}
+
 	//-----------------------------------------------------------------------------------------------------
 	//-----------------------------------------------------------------------------------------------------
 	//------- The following functions are responsible for handling success callbacks of AJAX calls. -------
@@ -176,6 +191,8 @@
 	{
 		if(!data.success)
 			return;
+
+		clearInterval(checkForOpponentInterval);
 
 		var GAME_ROOM_TO_BOTTOM = 40;
 		var waitTime = Constants.GAME_ROOM_WAIT_TIME;
@@ -213,7 +230,7 @@
 
 					//setting the GameRoom container below the stage and setting its alpha to zero
 					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
-						toGameRoomAJAXCall();
+						toGameRoomAJAXCall(targetRoomID);
 					});
 				});
 
@@ -239,6 +256,26 @@
 		contGameRoom.y = stage.canvas.height/2 - contGameRoom.getBounds().height/2 - GAME_ROOM_TO_BOTTOM;
 		
 		stage.addChild(contGameRoom);
+	}
+
+	function checkForOpponentSuccessHandler(data){
+		if(!data.success)
+			return;
+
+		if(data.playerNumber === Constants.SECOND_PLAYER)
+		{
+			clearInterval(checkForOpponentInterval);
+			return;
+		}
+
+		if(data.opponent !== null)
+		{
+			playerTwoProfile.setFirstname(data.opponent.firstname);
+			playerTwoProfile.setLastname(data.opponent.lastname);
+			playerTwoProfile.setUsername(data.opponent.username);
+			hideSecondPlayerWaitingMessage();
+			clearInterval(checkForOpponentInterval);
+		}
 	}
 
 	/**
@@ -354,6 +391,10 @@
 				createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 
 				stage.addChild(playerOneProfile, playerTwoProfile);
+
+				checkForOpponentInterval = setInterval(function(){
+					checkForOpponentAJAXCall();
+				}, Constants.UPDATE_GAME_INTERVAL_DURATION);
 			});
 			
 			//spawns the player and opponent pawns 
@@ -411,6 +452,16 @@
 			displayAllRoomsAJAXCall();
 		});
 
+		hideSecondPlayerWaitingMessage();
+	}
+
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	//------- The following functions are simply reusable throughout the script.  -------
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	
+	function hideSecondPlayerWaitingMessage(){
 		createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y - Constants.WM_SP_TO_BOTTOM, alpha: 0}, 1000, createjs.Ease.quadOut).call(function(){
 			stage.removeChild(this);
 		});

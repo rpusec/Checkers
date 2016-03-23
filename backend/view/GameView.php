@@ -8,6 +8,8 @@ if(isset($_GET['path']))
 {
 	switch(strtolower($_GET['path']))
 	{
-		
+		case 'update-game' : 
+			//print json_encode(GameController::updateGame());
+			break;
 	}
 }

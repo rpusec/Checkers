@@ -23,5 +23,8 @@ else if(isset($_GET['path']))
 		case 'remove-from-game-room' : 
 			print json_encode(RoomController::removeFromGameRoom());
 			break;
+		case 'check-for-opponent' : 
+			print json_encode(RoomController::checkForOpponent());
+			break;
 	}
 }

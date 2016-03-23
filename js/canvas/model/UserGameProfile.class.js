@@ -51,7 +51,8 @@
 		.drawRect(0, 0, options.avatar.getBounds().width + options.padding*2, options.avatar.getBounds().height + options.padding*2);
 		pawnFrame.alpha = options.pFrameAlpha;
 
-		var userInfoTxt = new createjs.Text(options.firstname + " " + options.lastname + "\n" + options.username, options.font, options.fontColor);
+		var userInfoTxt = new createjs.Text('', options.font, options.fontColor);
+		updateUserInfoText();
 
 		if(options.side === UserGameProfile.LEFT_SIDE)
 		{
@@ -93,6 +94,25 @@
 		 */
 		this.getFrameStrokeStyle = function(){
 			return options.frameStrokeStyle;
+		}
+
+		this.setFirstname = function(firstname){
+			options.firstname = firstname;
+			updateUserInfoText();
+		}
+
+		this.setLastname = function(lastname){
+			options.lastname = lastname;
+			updateUserInfoText();
+		}
+
+		this.setUsername = function(username){
+			options.username = username;
+			updateUserInfoText();
+		}
+
+		function updateUserInfoText(){
+			userInfoTxt.text = options.firstname + " " + options.lastname + "\n" + options.username;
 		}
 	}
 
