@@ -28,6 +28,7 @@
 			stage = new createjs.Stage('game-canvas');
 
 		window.stage = stage;
+		window.contGameRoom = contGameRoom;
 
 		createjs.Ticker.setFPS(Constants.FPS);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});

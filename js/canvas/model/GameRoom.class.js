@@ -23,6 +23,7 @@
 	 */
 	function GameRoom(options){
 		this.Container_constructor();
+		var self = this;
 
 		if(typeof options === 'undefined')
 			options = {};
@@ -34,13 +35,41 @@
 			width: 75,
 			height: 50,
 			colorO: Constants.COLOR_ONE,
-			colorOUnavailable: Constants.COLOR_ONEAlter,
 			colorE: Constants.COLOR_TWO,
+			unavailableAlpha: 0.25,
 			unavailable: false
 		}, options);
 
 		this.setBounds(0, 0, this._options.width, this._options.height);
-		this.setAsUnavailable(this._options.unavailable);
+		
+		var rectWidth = this._options.width / this._options.numrectsX;
+		var rectHeight = this._options.height / this._options.numrectsY;
+
+		for(var col = 0; col < this._options.numrectsY; col++)
+		{
+			for(var row = 0; row < this._options.numrectsX; row++)
+			{
+				var newRect = new createjs.Shape();
+				newRect.graphics.beginFill(((col+row+1) % 2) == 0 ? this._options.colorE : this._options.colorO);
+				newRect.graphics.drawRect(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
+				newRect.cache(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
+				this.addChild(newRect);
+			}
+		}
+
+		for(var i = 0; i < LINE_NUM; i++)
+		{
+			var line = new RotatingLine({
+				x: this.getBounds().width/2,
+				y: this.getBounds().height/2,
+				radius: this.getBounds().width/1.5,
+				strokeStyle:8,
+				color: this._options.colorO,
+				rotationVal:Math.random()*20
+			});
+			line.startRotation();
+			this.addChild(line);
+		}
 
 		var txtRoomNum = new createjs.Text(this._options.roomID, '30px Arial', '#fff');
 		txtRoomNum.textAlign = 'center';
@@ -51,6 +80,38 @@
 		txtRoomNumBorder.outline = 4;
 		txtRoomNumBorder.color = "#000";
 		this.addChild(txtRoomNumBorder, txtRoomNum);
+
+		var unavailableText = new createjs.Text('unavailable', '20px Arial', this._options.colorO);
+		unavailableText.textAlign = 'center';
+		unavailableText.textBaseline = 'middle';
+		unavailableText.alpha = 0;
+		unavailableText.x = this._options.width/2;
+		unavailableText.y = this._options.height/2;
+		this.addChild(unavailableText);
+
+		this.setAsUnavailable = function(b){
+			if(typeof b !== 'boolean')
+				b = false;
+
+			if(b)
+			{
+				this.children.forEach(function(child){
+					if(child !== unavailableText && child.__proto__.constructor.name !== 'RotatingLine')
+						child.alpha = self._options.unavailableAlpha;
+				});
+				
+				unavailableText.alpha = 1;
+			}
+			else
+			{
+				this.children.forEach(function(child){
+					if(child !== unavailableText && child.__proto__.constructor.name !== 'RotatingLine')
+						child.alpha = 1;
+				});
+
+				unavailableText.alpha = 0;
+			}
+		}
 	}
 
 	var p = createjs.extend(GameRoom, createjs.Container);
@@ -89,40 +150,6 @@
 		this.off('mouseover');
 		this.off('mouseout');
 		this.off('click');
-	}
-
-	p.setAsUnavailable = function(b){
-		if(typeof b !== 'boolean')
-			b = false;
-
-		var rectWidth = this._options.width / this._options.numrectsX;
-		var rectHeight = this._options.height / this._options.numrectsY;
-
-		for(var col = 0; col < this._options.numrectsY; col++)
-		{
-			for(var row = 0; row < this._options.numrectsX; row++)
-			{
-				var newRect = new createjs.Shape();
-				newRect.graphics.beginFill(((col+row+1) % 2) == 0 ? this._options.colorE : !b ? this._options.colorO : this._options.colorOUnavailable);
-				newRect.graphics.drawRect(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
-				newRect.cache(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
-				this.addChild(newRect);
-			}
-		}
-
-		for(var i = 0; i < LINE_NUM; i++)
-		{
-			var line = new RotatingLine({
-				x: this.getBounds().width/2,
-				y: this.getBounds().height/2,
-				radius: this.getBounds().width/1.5,
-				strokeStyle:8,
-				color: !b ? this._options.colorO : this._options.colorOUnavailable,
-				rotationVal:Math.random()*20
-			});
-			line.startRotation();
-			this.addChild(line);
-		}
 	}
 
 	window.GameRoom = createjs.promote(GameRoom, 'Container');

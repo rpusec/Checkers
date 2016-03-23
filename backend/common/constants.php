@@ -9,7 +9,7 @@ define('CANNOT_RETRIEVE_MESSAGES', 'Can\'t retrieve a new message. ' . USER_NOT_
 define('USER_LOGOUT_MSG', 'You logged out of the application. ');
 define('USER_LOGOUT_ERROR_MSG', 'You\'re already logged off. ');
 
-define('CHAT_COLOR_BRIGHTNESS', 200);
+define('CHAT_COLOR_BRIGHTNESS', 222);
 
 define('MAX_MESSAGE_SIZE', 200);
 define('MIN_MESSAGE_SIZE', 1);
