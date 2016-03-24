@@ -216,20 +216,20 @@ class UsersController extends BaseController
 			self::updateAllUserConnStat(parent::getLoggedUserID()); 
 			$results = DB::query('SELECT connected, chatColorR, chatColorG, chatColorB FROM user WHERE userID = %i', parent::getLoggedUserID());
 
+			DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', parent::getLoggedUserID());
+
 			if(!empty($results))
 			{
 				$user = $results[0];
 				if($user['connected'] == 0)
-					session_destroy();
+					parent::destroySession();
 			}
-		
-			DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', parent::getLoggedUserID());
 		}
 
 		$arrReturn = array();
 		$arrReturn['isLogged'] = parent::isUserLogged();
 
-		if(isset($results) && count($results) === 1)
+		if(isset($results) && count($results) === 1 && parent::isUserLogged())
 			$arrReturn['arrUserColor'] = array(
 				'red' => $results[0]['chatColorR'],
 				'green' => $results[0]['chatColorG'],

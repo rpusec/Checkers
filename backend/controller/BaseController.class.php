@@ -88,4 +88,10 @@ class BaseController
 	public static function removePlayerNumber(){
 		unset($_SESSION['playerNumber']);
 	}
+
+	public static function destroySession(){
+		session_destroy();
+		unset($_SESSION['userID']);
+		unset($_SESSION['playerNumber']);
+	}
 }

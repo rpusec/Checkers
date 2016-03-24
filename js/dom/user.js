@@ -296,7 +296,7 @@ $(document).on('ready', function(){
 	});
 
 	var UPDATE_CONN_EXPAR_PING = 2000;
-	var UPDATE_CONN_ALL_USERS_PING = 5000;
+	var UPDATE_CONN_ALL_USERS_PING = 3000;
 
 	//sends request every [UPDATE_CONN_TIME_PING] milliseconds
 	//and updates the user's connection exparation time

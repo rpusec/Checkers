@@ -11,7 +11,7 @@ class ChatController extends BaseController
 {
 	/**
 	 * Adds a message to the database. 
-	 * @see constants.php for the EXPARATION_TIME constant.
+	 * @see constants.php for the MESSAGE_EXPARATION_TIME constant.
 	 * @param String $message Target user's message. 
 	 */
 	public static function addMessage($message)
@@ -20,8 +20,7 @@ class ChatController extends BaseController
 			return array('success' => false, 'errorMessage' => CANNOT_SEND_MESSAGES);
 
 		parent::startConnection();
-		$userID = $_SESSION['userID'];
-		
+
 		ValidationHelper::checkAppropriateInputLength($message, MIN_MESSAGE_SIZE, MAX_MESSAGE_SIZE, 'message');
 	
 		if(ValidationHelper::hasErrors())
@@ -31,9 +30,9 @@ class ChatController extends BaseController
 		);
 	
 		DB::insert('message', array(
-			'USER_userID' => $userID, 
+			'USER_userID' => parent::getLoggedUserID(), 
 			'message' => htmlspecialchars($message),
-			'exparation' => "" . (parent::getTimeInSec() + MESSAGE_EXPARATION_TIME)
+			'exparation' => ''.(parent::getTimeInSec() + MESSAGE_EXPARATION_TIME)
 		));
 
 		return array(
