@@ -24,6 +24,8 @@
 		if(typeof options !== 'object')
 			options = {};
 
+		var pawnList = null;
+
 		options = $.extend({
 			strokeStyle: 3,
 			strokeColor: '#000',
@@ -35,7 +37,8 @@
 			particleRadius: 3,
 			particleDist: 13,
 			particleStorkeStyle: 1,
-			rotationSpeed: 3
+			rotationSpeed: 3,
+			player: null
 		}, options);
 
 		var shape = new createjs.Shape();
@@ -62,6 +65,59 @@
 		particleContainer.alpha = 0;
 		this.addChild(particleContainer);
 		this.setBounds(0, 0, options.radius*2, options.radius*2);
+		this.mouseChildren = false;
+
+		this.whichPlayer = function(){
+			return options.player;
+		}
+
+		this.setPawnList = function(arrPawns){
+			pawnList = arrPawns;
+		}
+
+		this.makeSelectable = function(){
+			this.highlight(true);
+			this.removeAllEventListeners('click');			
+			this.on('click', activateTargetClickHandler);
+		}
+
+		this.makeUnselectable = function(){
+			this.highlight(false);
+			this.removeAllEventListeners('click');
+		}
+
+		function activateTargetClickHandler(){
+			this.highlight(true);
+
+			var self = this;
+
+			console.log('fuck');
+
+			pawnList.forEach(function(targetPawn){
+				if(self !== targetPawn)
+				{
+					targetPawn.highlight(false);
+					targetPawn.alpha = 0.5;
+					targetPawn.makeUnselectable();
+				}
+			});
+
+			this.off('click', activateTargetClickHandler);
+			this.on('click', deactivateTargetClickHandler);
+		}
+
+		function deactivateTargetClickHandler(){
+
+			var self = this;
+
+			pawnList.forEach(function(targetPawn){
+				targetPawn.highlight(true);
+				targetPawn.alpha = 1;
+				targetPawn.makeSelectable();
+			});
+
+			this.off('click', deactivateTargetClickHandler);
+		}
 
 		/**
 		 * Displays the particles
@@ -76,6 +132,7 @@
 			if(b)
 			{
 				createjs.Tween.get(particleContainer).to({alpha: 1}, 500);
+				createjs.Ticker.removeEventListener('tick', onRotation);
 				createjs.Ticker.addEventListener('tick', onRotation);
 			}
 			else

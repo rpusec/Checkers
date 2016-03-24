@@ -13,7 +13,8 @@ var BoardPawnFactory = {};
 			strokeStyle: 2,
 			strokeColor: Constants.COLOR_ONE,
 			bgColor: Constants.COLOR_TWO,
-			radius: 10
+			radius: 10,
+			player: Constants.FIRST_PLAYER
 		};
 	}
 
@@ -22,7 +23,8 @@ var BoardPawnFactory = {};
 			strokeStyle: 2,
 			strokeColor: Constants.COLOR_TWO,
 			bgColor: Constants.COLOR_ONE,
-			radius: 10
+			radius: 10,
+			player: Constants.SECOND_PLAYER
 		};
 	}
 
@@ -34,7 +36,7 @@ var BoardPawnFactory = {};
 	var sides = null;
 
 	/**
-	 * Creates the pawn list for the player. 
+	 * Creates the pawn list for the first player. 
 	 * @see Constants.js for the default amount value. 
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player.  
@@ -44,7 +46,7 @@ var BoardPawnFactory = {};
 	}
 
 	/**
-	 * Creates the pawn list for the player's opponent. 
+	 * Creates the pawn list for the second player. 
 	 * @see Constants.js for the default amount value. 
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player's opponent.  
