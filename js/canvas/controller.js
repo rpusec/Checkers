@@ -141,6 +141,11 @@
 		});
 	}
 
+	/**
+	 * AJAX call which checks if a game room is available
+	 * (that is, if the maximum amount of players has not
+	 * been reached). 
+	 */
 	function checkGameRoomAvailabilityAJAXCall(){
 		$.ajax({
 			type: 'get',
@@ -192,7 +197,10 @@
 		});
 	}
 
-
+	/**
+	 * AJAX Call which checks who's turn it is in the game. 
+	 * @param  {Integer} targetRoomID The room in which the two players are. 
+	 */
 	function whoseTurnAJAXCall(targetRoomID){
 		$.ajax({
 			type: 'get',
@@ -300,6 +308,12 @@
 		}
 	}
 
+	/**
+	 * Is executed when an appropriate AJAX request was executed successfully.
+	 * Checks whose turn it is, and highlights the said player based on the information
+	 * retrieved from the server. 
+	 * @param  {Object} data Data retrieved from the server. 
+	 */
 	function checkWhoseTurnSuccessHandler(data){
 		if(!data.success)
 			return;
@@ -339,6 +353,12 @@
 		}
 	}
 
+	/**
+	 * Is executed when an appropriate AJAX call was handled successfully. 
+	 * Marks game rooms as available or unavailable, depending on the amount
+	 * of users that the rooms contain. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	function checkGameRoomAvailabilitySuccessHandler(data){
 		if(!data.success)
 			return;
@@ -490,7 +510,7 @@
 					{
 						checkForOpponentInterval = setInterval(function(){
 							checkForOpponentAJAXCall();
-						}, Constants.UPDATE_GAME_INTERVAL_DURATION);
+						}, Constants.CHECK_OPPONENT_INTERVAL_DURATION);
 					}
 					else if(data.playerNumber === Constants.SECOND_PLAYER)
 					{

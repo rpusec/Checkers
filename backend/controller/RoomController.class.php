@@ -32,7 +32,8 @@ class RoomController extends BaseController
 	 * be displayed on the screen. The following argument is the 'player number', which tells the client side
 	 * that the authenticated user is either the first player or the second player who got to the game room
 	 * (that way, we can differentiate the first/second player in the client side). 
-	 * 
+	 *
+	 * @see   self::getUserCountQuery()
 	 * @param Integer $roomID The ID value of the target game room. 
 	 * @return Array Success flag indicating that the user is authenticated and that the $roomID is valid. 
 	 *               It also returns a list of users from the room, the 'player number' value of the authenticated player,
@@ -123,6 +124,10 @@ class RoomController extends BaseController
 		return array('success' => true, 'opponent' => (DB::count() === 1) ? $users[0] : null);
 	}
 
+	/**
+	 * Simply returns the list of rooms and the number of users they have. 
+	 * @return Array Returns a success flag, indicating that the user is logged in, and an array of rooms with the number of users they have. 
+	 */
 	public static function checkRoomAvailability()
 	{
 		if(!parent::isUserLogged())
@@ -134,6 +139,13 @@ class RoomController extends BaseController
 		return array('success' => true, 'rooms' => $rooms);
 	}
 
+	/**
+	 * This is a subquery which counts the number of users there are in a particular room. 
+	 * This private function is used in checkRoomAvailability() and addUserToGameRoom() functions
+	 * to subquery the number of users to later ultimately determine if a room is available or unavailable
+	 * based on the number of users that there are. 
+	 * @return String The subquery. 
+	 */
 	private static function getUserCountQuery(){
 		return "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
 	}
