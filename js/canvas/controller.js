@@ -341,8 +341,9 @@
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
 					playerOnePawns.forEach(function(targetPawn){
-						targetPawn.makeSelectable();
+						makeSelectable(targetPawn);
 					});
+					currentPawnList = playerOnePawns;
 				}
 				else
 				{
@@ -357,8 +358,9 @@
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
 					playerTwoPawns.forEach(function(targetPawn){
-						targetPawn.makeSelectable();
+						makeSelectable(targetPawn);
 					});
+					currentPawnList = playerTwoPawns;
 				}
 				else
 				{
@@ -542,12 +544,6 @@
 				(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
 					pawn.scaleX = 0;
 					pawn.scaleY = 0;
-
-					if(pawn.whichPlayer() === Constants.FIRST_PLAYER)
-						pawn.setPawnList(playerOnePawns);
-					else if(pawn.whichPlayer() === Constants.SECOND_PLAYER)
-						pawn.setPawnList(playerTwoPawns);
-
 					createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
 					stage.addChild(pawn);
 				});
@@ -621,6 +617,48 @@
 		createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y - Constants.WM_SP_TO_BOTTOM, alpha: 0}, 1000, createjs.Ease.quadOut).call(function(){
 			stage.removeChild(this);
 		});
+	}
+
+	function makeSelectable(targetPawn){
+		targetPawn.highlight(true);
+		targetPawn.removeAllEventListeners('click');			
+		targetPawn.on('click', activateTargetClickHandler);
+	}
+
+	function makeUnselectable(targetPawn){
+		targetPawn.highlight(false);
+		targetPawn.removeAllEventListeners('click');
+	}
+
+	function activateTargetClickHandler(){
+		this.highlight(true);
+
+		var self = this;
+
+		currentPawnList.forEach(function(targetPawn){
+			if(self !== targetPawn)
+			{
+				targetPawn.highlight(false);
+				targetPawn.alpha = 0.5;
+				makeUnselectable(targetPawn);
+			}
+		});
+
+		this.off('click', activateTargetClickHandler);
+		this.on('click', deactivateTargetClickHandler);
+	}
+
+	function deactivateTargetClickHandler(){
+
+		var self = this;
+
+		currentPawnList.forEach(function(targetPawn){
+			targetPawn.highlight(true);
+			targetPawn.alpha = 1;
+			makeSelectable(targetPawn);
+		});
+
+		this.off('click', deactivateTargetClickHandler);
 	}
 
 }());

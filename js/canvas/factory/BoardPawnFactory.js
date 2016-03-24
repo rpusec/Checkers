@@ -13,8 +13,7 @@ var BoardPawnFactory = {};
 			strokeStyle: 2,
 			strokeColor: Constants.COLOR_ONE,
 			bgColor: Constants.COLOR_TWO,
-			radius: 10,
-			player: Constants.FIRST_PLAYER
+			radius: 10
 		};
 	}
 
@@ -23,8 +22,7 @@ var BoardPawnFactory = {};
 			strokeStyle: 2,
 			strokeColor: Constants.COLOR_TWO,
 			bgColor: Constants.COLOR_ONE,
-			radius: 10,
-			player: Constants.SECOND_PLAYER
+			radius: 10
 		};
 	}
 
