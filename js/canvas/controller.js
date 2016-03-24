@@ -10,8 +10,8 @@
 	,	selARoomText
 	,	board
 	,	btnLeaveGame
-	,	playerPawns
-	,	opponentPawns
+	,	playerOnePawns
+	,	playerTwoPawns
 	,	playerOneProfile
 	,	playerTwoProfile
 	,	wmSecondPlayer
@@ -330,6 +330,9 @@
 				{
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
+					playerOnePawns.forEach(function(targetPawn){
+						targetPawn.highlight();
+					});
 				}
 				else
 				{
@@ -343,6 +346,9 @@
 				{
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
+					playerTwoPawns.forEach(function(targetPawn){
+						targetPawn.highlight();
+					});
 				}
 				else
 				{
@@ -423,19 +429,19 @@
 			//displaying the board to the center of the canvas 
 			createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
 				BoardPawnFactory.resetSides();
-				var pPawns = BoardPawnFactory.createPlayerOnePawns(board);
-				var oPawns = BoardPawnFactory.createPlayerTwoPawns(board);
+				var pOnePawns = BoardPawnFactory.createPlayerOnePawns(board);
+				var pTwoPawns = BoardPawnFactory.createPlayerTwoPawns(board);
 
 				btnLeaveGame.appear(null, function(){
 
 					var playerOneProps = {
 						side: UserGameProfile.RIGHT_SIDE, 
-						avatar: pPawns.avatar
+						avatar: pOnePawns.avatar
 					};
 
 					var playerTwoProps = {
 						side: UserGameProfile.LEFT_SIDE, 
-						avatar: oPawns.avatar
+						avatar: pTwoPawns.avatar
 					};
 
 					//true if the user was the first one to enter a game room
@@ -520,10 +526,10 @@
 				
 				//spawns the player and opponent pawns 
 				//and positiones them accordingly
-				playerPawns = pPawns.list;
-				opponentPawns = oPawns.list;
+				playerOnePawns = pOnePawns.list;
+				playerTwoPawns = pTwoPawns.list;
 
-				(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
+				(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
 					pawn.scaleX = 0;
 					pawn.scaleY = 0;
 					createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
@@ -546,7 +552,7 @@
 
 		btnLeaveGame.disappear();
 
-		(playerPawns.concat(opponentPawns)).forEach(function(pawn){
+		(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn){
 			createjs.Tween.removeTweens(pawn);
 			pawn.scaleX = 1;
 			pawn.scaleY = 1;
