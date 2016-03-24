@@ -31,3 +31,5 @@ define('ALPHABETIC_ERROR_MSG_PART', ' should be alphabetic. ');
 
 define('FIRST_PLAYER', 1);
 define('SECOND_PLAYER', 2);
+
+define('ROOM_MAX_AMOUNT_OF_USERS', 2);

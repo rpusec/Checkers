@@ -247,23 +247,7 @@
 
 				//when a GameRoom icon is clicked 
 				newGameRoom.on('click', function(){
-
-					var targetRoomID = this.getRoomID()
-
-					//hiding the texts 
-					gameNameText.hide();
-					selARoomText.hide();
-
-					//removing all of the mouse events from all 
-					//of the GameRoom display objects 
-					contGameRoom.children.forEach(function(gameRoom){
-						gameRoom.removeMouseEvents();
-					});
-
-					//setting the GameRoom container below the stage and setting its alpha to zero
-					createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
-						toGameRoomAJAXCall(targetRoomID);
-					});
+					toGameRoomAJAXCall(this.getRoomID());
 				});
 
 				//each next GameRoom icon appears [GAME_ROOM_WAIT_TIME] milliseconds before the previous one 
@@ -398,120 +382,135 @@
 			return;
 		}
 
-		//clearInterval(checkRoomAvailabilityInterval);
+		clearInterval(checkRoomAvailabilityInterval);
 
-		contGameRoom.removeAllChildren();
-		stage.removeChild(contGameRoom);
+		//hiding the texts 
+		gameNameText.hide();
+		selARoomText.hide();
 
-		//displaying the board to the center of the canvas 
-		createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
-			BoardPawnFactory.resetSides();
-			var pPawns = BoardPawnFactory.createPlayerOnePawns(board);
-			var oPawns = BoardPawnFactory.createPlayerTwoPawns(board);
+		//removing all of the mouse events from all 
+		//of the GameRoom display objects 
+		contGameRoom.children.forEach(function(gameRoom){
+			gameRoom.removeMouseEvents();
+		});
 
-			btnLeaveGame.appear(null, function(){
+		//setting the GameRoom container below the stage and setting its alpha to zero
+		createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
 
-				var playerOneProps = {
-					side: UserGameProfile.RIGHT_SIDE, 
-					avatar: pPawns.avatar
-				};
+			contGameRoom.removeAllChildren();
+			stage.removeChild(contGameRoom);
 
-				var playerTwoProps = {
-					side: UserGameProfile.LEFT_SIDE, 
-					avatar: oPawns.avatar
-				};
+			//displaying the board to the center of the canvas 
+			createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
+				BoardPawnFactory.resetSides();
+				var pPawns = BoardPawnFactory.createPlayerOnePawns(board);
+				var oPawns = BoardPawnFactory.createPlayerTwoPawns(board);
 
-				//true if the user was the first one to enter a game room
-				if(data.playerNumber === Constants.FIRST_PLAYER)
-				{
-					if(data.users[0].userID == data.loggedUserID)
+				btnLeaveGame.appear(null, function(){
+
+					var playerOneProps = {
+						side: UserGameProfile.RIGHT_SIDE, 
+						avatar: pPawns.avatar
+					};
+
+					var playerTwoProps = {
+						side: UserGameProfile.LEFT_SIDE, 
+						avatar: oPawns.avatar
+					};
+
+					//true if the user was the first one to enter a game room
+					if(data.playerNumber === Constants.FIRST_PLAYER)
 					{
-						playerOneProps.firstname = data.users[0].firstname;
-						playerOneProps.lastname = data.users[0].lastname;
-						playerOneProps.username = data.users[0].username;
+						if(data.users[0].userID == data.loggedUserID)
+						{
+							playerOneProps.firstname = data.users[0].firstname;
+							playerOneProps.lastname = data.users[0].lastname;
+							playerOneProps.username = data.users[0].username;
+						}
+
+						wmSecondPlayer.alpha = 0;
+						wmSecondPlayer.x = stage.canvas.width/2;
+						wmSecondPlayer.y = stage.canvas.height/2 - Constants.WM_SP_TO_BOTTOM;
+
+						//displays a message informing the user that they have to wait for the second player 
+						createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y + Constants.WM_SP_TO_BOTTOM, alpha: 1}, 1000, createjs.Ease.backOut);
+						stage.addChild(wmSecondPlayer);
 					}
 
-					wmSecondPlayer.alpha = 0;
-					wmSecondPlayer.x = stage.canvas.width/2;
-					wmSecondPlayer.y = stage.canvas.height/2 - Constants.WM_SP_TO_BOTTOM;
-
-					//displays a message informing the user that they have to wait for the second player 
-					createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y + Constants.WM_SP_TO_BOTTOM, alpha: 1}, 1000, createjs.Ease.backOut);
-					stage.addChild(wmSecondPlayer);
-				}
-
-				//true if the user was the second one to enter a game room
-				else if(data.playerNumber === Constants.SECOND_PLAYER)
-				{
-					//if the first user on the list is the one who's logged in from
-					//this computer, then they should be represented as the second
-					//player
-					if(data.users[0].userID == data.loggedUserID)
+					//true if the user was the second one to enter a game room
+					else if(data.playerNumber === Constants.SECOND_PLAYER)
 					{
-						playerOneProps.firstname = data.users[1].firstname;
-						playerOneProps.lastname = data.users[1].lastname;
-						playerOneProps.username = data.users[1].username;
+						//if the first user on the list is the one who's logged in from
+						//this computer, then they should be represented as the second
+						//player
+						if(data.users[0].userID == data.loggedUserID)
+						{
+							playerOneProps.firstname = data.users[1].firstname;
+							playerOneProps.lastname = data.users[1].lastname;
+							playerOneProps.username = data.users[1].username;
 
-						playerTwoProps.firstname = data.users[0].firstname;
-						playerTwoProps.lastname = data.users[0].lastname;
-						playerTwoProps.username = data.users[0].username;
+							playerTwoProps.firstname = data.users[0].firstname;
+							playerTwoProps.lastname = data.users[0].lastname;
+							playerTwoProps.username = data.users[0].username;
+						}
+						else if(data.users[1].userID == data.loggedUserID)
+						{
+							playerOneProps.firstname = data.users[0].firstname;
+							playerOneProps.lastname = data.users[0].lastname;
+							playerOneProps.username = data.users[0].username;
+
+							playerTwoProps.firstname = data.users[1].firstname;
+							playerTwoProps.lastname = data.users[1].lastname;
+							playerTwoProps.username = data.users[1].username;
+						}
 					}
-					else if(data.users[1].userID == data.loggedUserID)
+
+					playerOneProfile = new UserGameProfile(playerOneProps);
+					playerTwoProfile = new UserGameProfile(playerTwoProps);
+
+					playerOneProfile.x = board.x + board.getBounds().width - playerOneProfile.getBounds().width + playerOneProfile.getMargin()*2 + playerOneProfile.getPadding()*2 + playerOneProfile.getFrameStrokeStyle();
+					playerOneProfile.y = board.y/2 - playerOneProfile.getBounds().height/2;
+
+					playerTwoProfile.x = board.x;
+					playerTwoProfile.y = board.y + board.getBounds().height + (Math.abs(board.y + board.getBounds().height - stage.canvas.height)/2) - playerTwoProfile.getBounds().height/2;
+
+					playerOneProfile.alpha = 0;
+					playerTwoProfile.alpha = 0;
+
+					playerOneProfile.x += Constants.USER_PROFILE_MOVE;
+					playerTwoProfile.x -= Constants.USER_PROFILE_MOVE;
+
+					//displaying user profiles 
+					createjs.Tween.get(playerOneProfile).to({x: playerOneProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
+					createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
+
+					stage.addChild(playerOneProfile, playerTwoProfile);
+
+					if(data.playerNumber === Constants.FIRST_PLAYER)
 					{
-						playerOneProps.firstname = data.users[0].firstname;
-						playerOneProps.lastname = data.users[0].lastname;
-						playerOneProps.username = data.users[0].username;
-
-						playerTwoProps.firstname = data.users[1].firstname;
-						playerTwoProps.lastname = data.users[1].lastname;
-						playerTwoProps.username = data.users[1].username;
+						checkForOpponentInterval = setInterval(function(){
+							checkForOpponentAJAXCall();
+						}, Constants.UPDATE_GAME_INTERVAL_DURATION);
 					}
-				}
+					else if(data.playerNumber === Constants.SECOND_PLAYER)
+					{
+						whoseTurnAJAXCall(data.roomID);
+					}
+				});
+				
+				//spawns the player and opponent pawns 
+				//and positiones them accordingly
+				playerPawns = pPawns.list;
+				opponentPawns = oPawns.list;
 
-				playerOneProfile = new UserGameProfile(playerOneProps);
-				playerTwoProfile = new UserGameProfile(playerTwoProps);
-
-				playerOneProfile.x = board.x + board.getBounds().width - playerOneProfile.getBounds().width + playerOneProfile.getMargin()*2 + playerOneProfile.getPadding()*2 + playerOneProfile.getFrameStrokeStyle();
-				playerOneProfile.y = board.y/2 - playerOneProfile.getBounds().height/2;
-
-				playerTwoProfile.x = board.x;
-				playerTwoProfile.y = board.y + board.getBounds().height + (Math.abs(board.y + board.getBounds().height - stage.canvas.height)/2) - playerTwoProfile.getBounds().height/2;
-
-				playerOneProfile.alpha = 0;
-				playerTwoProfile.alpha = 0;
-
-				playerOneProfile.x += Constants.USER_PROFILE_MOVE;
-				playerTwoProfile.x -= Constants.USER_PROFILE_MOVE;
-
-				//displaying user profiles 
-				createjs.Tween.get(playerOneProfile).to({x: playerOneProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
-				createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
-
-				stage.addChild(playerOneProfile, playerTwoProfile);
-
-				if(data.playerNumber === Constants.FIRST_PLAYER)
-				{
-					checkForOpponentInterval = setInterval(function(){
-						checkForOpponentAJAXCall();
-					}, Constants.UPDATE_GAME_INTERVAL_DURATION);
-				}
-				else if(data.playerNumber === Constants.SECOND_PLAYER)
-				{
-					whoseTurnAJAXCall(data.roomID);
-				}
+				(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
+					pawn.scaleX = 0;
+					pawn.scaleY = 0;
+					createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
+					stage.addChild(pawn);
+				});
 			});
-			
-			//spawns the player and opponent pawns 
-			//and positiones them accordingly
-			playerPawns = pPawns.list;
-			opponentPawns = oPawns.list;
 
-			(playerPawns.concat(opponentPawns)).forEach(function(pawn, pawnIndex){
-				pawn.scaleX = 0;
-				pawn.scaleY = 0;
-				createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
-				stage.addChild(pawn);
-			});
 		});
 	}
 

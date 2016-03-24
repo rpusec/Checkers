@@ -47,6 +47,15 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array('RoomID was not specified. '));
 
 		parent::startConnection();
+		$rooms = DB::query("SELECT room.roomID as targetRoomID, (" . self::getUserCountQuery() . ") as userCount FROM room WHERE room.roomID = %i", $roomID);
+
+		if(!empty($rooms))
+		{
+			$targetRoom = $rooms[0];
+
+			if($targetRoom['userCount'] == ROOM_MAX_AMOUNT_OF_USERS)
+				return array('success' => false, 'errors' => array('The room is unavailable. Maximum amount of users has already been reached. '));
+		}
 
 		//adding the authenticated user to the game room
 		DB::update('user', array(
@@ -120,10 +129,12 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-
-		$countQuery = "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
-		$rooms = DB::query("SELECT room.roomID as targetRoomID, ($countQuery) as userCount FROM room");
+		$rooms = DB::query("SELECT room.roomID as targetRoomID, (" . self::getUserCountQuery() . ") as userCount FROM room");
 
 		return array('success' => true, 'rooms' => $rooms);
+	}
+
+	private static function getUserCountQuery(){
+		return "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
 	}
 }
