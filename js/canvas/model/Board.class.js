@@ -44,6 +44,7 @@
 
 				var newBlock = new createjs.Shape();
 				newBlock.graphics.beginFill((col % 2) === 0 ? currCOLOR_TWO : currCOLOR_ONE).drawRect(rectWidth*col, rectHeight*row, rectWidth, rectHeight);
+				newBlock.point = new createjs.Point(col, row);
 				this.addChild(newBlock);
 			}
 		}

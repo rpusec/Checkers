@@ -54,7 +54,12 @@
 		for(var i = 0; i < options.particleNum; i++)
 		{
 			var newParticle = new createjs.Shape();
-			newParticle.graphics.setStrokeStyle(options.particleStorkeStyle).beginStroke(options.strokeColor).beginFill(options.bgColor).drawCircle(0, 0, options.particleRadius);
+			newParticle.graphics
+			.setStrokeStyle(options.particleStorkeStyle)
+			.beginStroke(options.strokeColor)
+			.beginFill(options.bgColor)
+			.drawCircle(0, 0, options.particleRadius);
+			
 			var angle = partAngleFragment*i;
 			newParticle.x = Math.cos(angle) * options.particleDist;
 			newParticle.y = Math.sin(angle) * options.particleDist;

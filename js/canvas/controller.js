@@ -6,19 +6,36 @@
 (function(){
 
 	var stage
+
+	//texts
 	,	gameNameText
 	,	selARoomText
+
+	//board
 	,	board
+	
+	//btns
 	,	btnLeaveGame
+
+	//pawns
 	,	playerOnePawns
 	,	playerTwoPawns
+	,	currentlySelectedPawn = null
+
+	//player profiles
 	,	playerOneProfile
 	,	playerTwoProfile
+
+	//WaitingMessages
 	,	wmSecondPlayer
-	,	contGameRoom = new createjs.Container()
-	,	gameInitialized = false
+
+	//interval references
 	,	checkForOpponentInterval
-	,	checkRoomAvailabilityInterval;
+	,	checkRoomAvailabilityInterval
+
+	//miscellaneous
+	,	contGameRoom = new createjs.Container()
+	,	gameInitialized = false;
 
 	/**
 	 * Initializes the core 
@@ -78,6 +95,10 @@
 		board.y = stage.canvas.height;
 		board.alpha = 0;
 
+		board.children.forEach(function(boardBlock){
+			boardBlock.on('click', boardBlockClickHandler);
+		});
+
 		gameNameText.show();
 		selARoomText.show();
 
@@ -87,7 +108,8 @@
 	}
 
 	/**
-	 * Removes all children, tweens, and events from the canvas. 
+	 * Removes all children, tweens, 
+	 * and events from the canvas. 
 	 */
 	window.uninitializeGame = function(){
 		createjs.Tween.removeAllTweens();
@@ -341,7 +363,7 @@
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
 					playerOnePawns.forEach(function(targetPawn){
-						makeSelectable(targetPawn);
+						makePawnSelectable(targetPawn);
 					});
 					currentPawnList = playerOnePawns;
 				}
@@ -358,7 +380,7 @@
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
 					playerTwoPawns.forEach(function(targetPawn){
-						makeSelectable(targetPawn);
+						makePawnSelectable(targetPawn);
 					});
 					currentPawnList = playerTwoPawns;
 				}
@@ -598,15 +620,15 @@
 		hideSecondPlayerWaitingMessage();
 	}
 
-	//-----------------------------------------------------------------------------------//
-	//-----------------------------------------------------------------------------------//
-	//-----------------------------------------------------------------------------------//
-	//-----------------------------------------------------------------------------------//
-	//------- The following functions are simply reusable throughout the script.  -------//
-	//-----------------------------------------------------------------------------------//
-	//-----------------------------------------------------------------------------------//
-	//-----------------------------------------------------------------------------------//
-	//-----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
+	//------- The following functions are simply reusable throughout the script. -------//
+	//----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
+	//----------------------------------------------------------------------------------//
 	
 	/**
 	 * Hides the WaitingMessage object which informs the user that they 
@@ -619,20 +641,31 @@
 		});
 	}
 
-	function makeSelectable(targetPawn){
+	//---------------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------------//
+	//------- The following functions provide mouse interaction with the pawns. -------//
+	//---------------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------------//
+
+	function makePawnSelectable(targetPawn){
 		targetPawn.highlight(true);
 		targetPawn.removeAllEventListeners('click');			
-		targetPawn.on('click', activateTargetClickHandler);
+		targetPawn.on('click', activateTargetPawnClickHandler);
 	}
 
-	function makeUnselectable(targetPawn){
+	function makePawnUnselectable(targetPawn){
 		targetPawn.highlight(false);
 		targetPawn.removeAllEventListeners('click');
 	}
 
-	function activateTargetClickHandler(){
+	function activateTargetPawnClickHandler(){
 		this.highlight(true);
 
+		currentlySelectedPawn = this;
 		var self = this;
 
 		currentPawnList.forEach(function(targetPawn){
@@ -640,25 +673,34 @@
 			{
 				targetPawn.highlight(false);
 				targetPawn.alpha = 0.5;
-				makeUnselectable(targetPawn);
+				makePawnUnselectable(targetPawn);
 			}
 		});
 
-		this.off('click', activateTargetClickHandler);
-		this.on('click', deactivateTargetClickHandler);
+		this.off('click', activateTargetPawnClickHandler);
+		this.on('click', deactivateTargetPawnClickHandler);
 	}
 
-	function deactivateTargetClickHandler(){
+	function deactivateTargetPawnClickHandler(){
 
+		currentlySelectedPawn = null;
 		var self = this;
 
 		currentPawnList.forEach(function(targetPawn){
 			targetPawn.highlight(true);
 			targetPawn.alpha = 1;
-			makeSelectable(targetPawn);
+			makePawnSelectable(targetPawn);
 		});
 
-		this.off('click', deactivateTargetClickHandler);
+		this.off('click', deactivateTargetPawnClickHandler);
+	}
+
+	function boardBlockClickHandler(){
+		if(currentlySelectedPawn === null)
+			return;
+
+		console.log('selected pawn: ' + currentlySelectedPawn.point.toString());
+		console.log('selected block: ' + this.point.toString());
 	}
 
 }());

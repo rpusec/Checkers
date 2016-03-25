@@ -51,7 +51,7 @@ $(document).on('ready', function(){
 		});
 	});
 
-	var GET_MESSAGES_PING_TIME = 1000;
+	var GET_MESSAGES_PING_TIME = 1500;
 	var CHECK_WHO_IS_ONLINE_PING_TIME = 2500;
 
 	var lastMessageID = -1;

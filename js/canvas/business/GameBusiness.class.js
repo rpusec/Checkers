@@ -11,7 +11,7 @@ var GameBusiness = {};
 	gb.makePawnsSelectable = function(arrPawns){
 
 		arrPawns.forEach(function(pawn){
-			pawn.makeSelectable();
+			pawn.makePawnSelectable();
 		});
 	}
 

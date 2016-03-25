@@ -8,6 +8,9 @@ var BoardPawnFactory = {};
 
 (function(){
 
+	/**
+	 * @see BoardPawn.class.js for clarification. 
+	 */
 	function getPlayerOnePawnOptions(){
 		return {
 			strokeStyle: 2,
@@ -17,6 +20,9 @@ var BoardPawnFactory = {};
 		};
 	}
 
+	/**
+	 * @see BoardPawn.class.js for clarification. 
+	 */
 	function getPlayerTwoPawnOptions(){
 		return {
 			strokeStyle: 2,
@@ -68,16 +74,16 @@ var BoardPawnFactory = {};
 	 * functions. 
 	 * 
 	 * @see Constants.js for the default amount value. 
-	 * @see positionPawns() to understand the purpose of the 'board' and 'isPlayer' properties. 
+	 * @see positionPawns() to understand the purpose of the 'board' and 'isPlayerOne' properties. 
 	 * @see BoardPawn.class.js for the list of possible options for a pawn display object. 
 	 * 
-	 * @param  {Integer} amount     The amount of pawns to be specified. 
-	 * @param  {Object} pawnOptions Plain object which contains options for each pawn in the list. 
-	 * @param  {Board} board        Board reference. 
-	 * @param  {Boolean} isPlayer   Specifies whether the pawns belong to the player or to the opponent. 
-	 * @return {Array}             	An array of pawns. 
+	 * @param  {Integer} amount        The amount of pawns to be specified. 
+	 * @param  {Object} pawnOptions    Plain object which contains options for each pawn in the list. 
+	 * @param  {Board} board           Board reference. 
+	 * @param  {Boolean} isPlayerOne   Specifies whether the pawns belong to the player or to the opponent. 
+	 * @return {Array}             	   An array of pawns. 
 	 */
-	function createPawns(amount, pawnOptions, board, isPlayer){
+	function createPawns(amount, pawnOptions, board, isPlayerOne){
 		if(typeof amount !== 'number')
 			amount = Constants.PAWN_AMOUNT;
 
@@ -118,7 +124,7 @@ var BoardPawnFactory = {};
 			radius: Constants.USER_PROFILE_AVATAR_SIZE
 		});
 
-		positionPawns(pawnList, board, isPlayer);
+		positionPawns(pawnList, board, isPlayerOne);
 
 		return {list: pawnList, avatar: new BoardPawn(avatarOptions)};
 	}
@@ -131,37 +137,43 @@ var BoardPawnFactory = {};
 	 * reference their X and Y positions in the game. 
 	 *
 	 * The function also has to know whether the pawns belong to the 
-	 * player or the opponent to position them appropriately, since the 
+	 * first player or the second player to position them appropriately, since the 
 	 * player's pawns are positioned from the top of the board whereas 
 	 * the opponent's are positioned from below. 
 	 * 
-	 * @param  {Array}   arrPawn  The target array of pawns. 
-	 * @param  {Board}   board    The board reference. 
-	 * @param  {Boolean} isPlayer Do these pawns belong to the player, and not the opponent. 
+	 * @param  {Array}   arrPawn     The target array of pawns. 
+	 * @param  {Board}   board       The board reference. 
+	 * @param  {Boolean} isPlayerOne True if these pawns belong to the first player, false if they belong to the second one.  
 	 */
-	function positionPawns(arrPawn, board, isPlayer)
+	function positionPawns(arrPawn, board, isPlayerOne)
 	{
-		if(typeof isPlayer !== 'boolean')
-			isPlayer = true;
+		if(typeof isPlayerOne !== 'boolean')
+			isPlayerOne = true;
 
-		var posX = isPlayer ? 0 : 1;
+		var playerTwoPosPawnsY = arrPawn.length/(board.getColAmount()/2);
+
+		var posX = isPlayerOne ? 0 : 1;
 		var posY = 0;
 		arrPawn.forEach(function(pawn){
 			pawn.x = board.x + board.getRectDimensions().width/2;
-			pawn.y = board.y + (isPlayer ? board.getRectDimensions().height/2 : board.getBounds().height - board.getRectDimensions().height*3 + board.getRectDimensions().height/2);
+			pawn.y = board.y + (isPlayerOne ? board.getRectDimensions().height/2 : board.getBounds().height - board.getRectDimensions().height*playerTwoPosPawnsY + board.getRectDimensions().height/2);
 
 			pawn.x += board.getRectDimensions().width * posX;
 			pawn.y += board.getRectDimensions().height * posY;
+			pawn.point = new createjs.Point(posX, posY + (!isPlayerOne ? board.getRowAmount() - playerTwoPosPawnsY : 0));
 
 			posX += 2;
 
 			if(((posY+1) % 2) === 0)
-				pawn.x -= board.getRectDimensions().width * (isPlayer ? -1 : 1);
+			{
+				pawn.x -= board.getRectDimensions().width * (isPlayerOne ? -1 : 1);
+				pawn.point.x -= (isPlayerOne ? -1 : 1);
+			}
 
 			if(posX >= board.getRowAmount())
 			{
 				posY++;
-				posX = isPlayer ? 0 : 1;
+				posX = isPlayerOne ? 0 : 1;
 			}
 		});
 	}
