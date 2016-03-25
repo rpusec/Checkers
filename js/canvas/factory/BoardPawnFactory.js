@@ -140,6 +140,10 @@ var BoardPawnFactory = {};
 	 * first player or the second player to position them appropriately, since the 
 	 * player's pawns are positioned from the top of the board whereas 
 	 * the opponent's are positioned from below. 
+	 *
+	 * Each pawn is provided a point object (which is represented by createjs.Point) that
+	 * marks the position of the pawn on the board, which is used by the server to validate
+	 * new points when a pawn is moved. 
 	 * 
 	 * @param  {Array}   arrPawn     The target array of pawns. 
 	 * @param  {Board}   board       The board reference. 

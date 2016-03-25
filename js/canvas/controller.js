@@ -1,6 +1,5 @@
 /**
- * This file handles all of the necessary 
- * functionalities relating to the game itself. 
+ * Handles all of the necessary functionalities relating to the canvas section of the application. 
  * @author Roman Pusec
  */
 (function(){
@@ -136,17 +135,10 @@
 	 * a game room of player's choice. 
 	 */
 	function toGameRoomAJAXCall(targetRoomID){
-		$.ajax({
-			type:'get',
-			processData: false,
-			contentType: false,
-			url:'backend/view/RoomView.php',
-			dataType: 'json',
+		runAjax({
+			url: 'backend/view/RoomView.php',
 			data:'path=add-to-game-room&gameRoomID=' + targetRoomID,
-			success: toGameRoomSuccessHandler,
-			error: function(data){
-				console.log(data);
-			}
+			success: toGameRoomSuccessHandler
 		});
 	}
 
@@ -155,17 +147,10 @@
 	 * back to the list of game rooms. 
 	 */
 	function offGameRoomAJAXCall(){
-		$.ajax({
-			type:'get',
-			processData: false,
-			contentType: false,
-			url:'backend/view/RoomView.php',
-			dataType: 'json',
-			data:'path=remove-from-game-room',
-			success: offGameSuccessHandler,
-			error: function(data){
-				console.log(data);
-			}
+		runAjax({
+			url: 'backend/view/RoomView.php',
+			data: 'path=remove-from-game-room',
+			success: offGameSuccessHandler
 		});
 	}
 
@@ -175,17 +160,10 @@
 	 * been reached). 
 	 */
 	function checkGameRoomAvailabilityAJAXCall(){
-		$.ajax({
-			type: 'get',
-			processData: false,
-			contentType: false,
+		runAjax({
 			url: 'backend/view/RoomView.php',
-			dataType: 'json',
 			data: 'path=check-room-availability',
-			success: checkGameRoomAvailabilitySuccessHandler,
-			error: function(data){
-				console.log(data);
-			}
+			success: checkGameRoomAvailabilitySuccessHandler
 		});
 	}
 
@@ -193,17 +171,10 @@
 	 * AJAX call which displays all game rooms from the database.  
 	 */
 	function displayAllRoomsAJAXCall(){
-		$.ajax({
-			type: 'get',
-			processData: false,
-			contentType: false,
+		runAjax({
 			url: 'backend/view/RoomView.php',
-			dataType: 'json',
 			data: 'path=get-all-rooms',
-			success: displayAllRoomsSuccessHandler,
-			error: function(data){
-				console.log(data);
-			}
+			success: displayAllRoomsSuccessHandler
 		});
 	}
 
@@ -211,17 +182,10 @@
 	 * AJAX call which checks for player's opponent. 
 	 */
 	function checkForOpponentAJAXCall(){
-		$.ajax({
-			type: 'get',
-			processData: false,
-			contentType: false,
+		runAjax({
 			url: 'backend/view/RoomView.php',
-			dataType: 'json',
 			data: 'path=check-for-opponent',
-			success: checkForOpponentSuccessHandler,
-			error: function(data){
-				console.log(data);
-			}
+			success: checkForOpponentSuccessHandler
 		});
 	}
 
@@ -230,18 +194,28 @@
 	 * @param  {Integer} targetRoomID The room in which the two players are. 
 	 */
 	function whoseTurnAJAXCall(targetRoomID){
-		$.ajax({
+		runAjax({
+			url: 'backend/view/GameView.php',
+			data: 'path=check-whose-turn&gameRoomID=' + targetRoomID,
+			success: checkWhoseTurnSuccessHandler
+		});
+	}
+
+	/**
+	 * Runs an AJAX call. Includes default properties that are shared among
+	 * all AJAX requests. 
+	 * @param  {Object} options Represents parameters. 
+	 * @see jQuery AJAX documentation for param clarifications. 
+	 */
+	function runAjax(options){
+		options = $.extend({
 			type: 'get',
 			processData: false,
 			contentType: false,
-			url: 'backend/view/GameView.php',
 			dataType: 'json',
-			data: 'path=check-whose-turn&gameRoomID=' + targetRoomID,
-			success: checkWhoseTurnSuccessHandler,
-			error: function(data){
-				console.log(data);
-			}
-		});
+			error: function(data){console.log(data);}
+		}, options);
+		$.ajax(options);
 	}
 
 	//-----------------------------------------------------------------------------------------------------//
@@ -645,23 +619,37 @@
 	//---------------------------------------------------------------------------------//
 	//---------------------------------------------------------------------------------//
 	//---------------------------------------------------------------------------------//
-	//------- The following functions provide mouse interaction with the pawns. -------//
+	//------- The following functions provide mouse interaction in the game. ----------//
 	//---------------------------------------------------------------------------------//
 	//---------------------------------------------------------------------------------//
 	//---------------------------------------------------------------------------------//
 	//---------------------------------------------------------------------------------//
 
+	/**
+	 * Makes a board pawn selectable (meaning that you can choose it and 
+	 * move it around the canvas). 
+	 * @param  {BoardPawn} targetPawn The target pawn. 
+	 */
 	function makePawnSelectable(targetPawn){
 		targetPawn.highlight(true);
 		targetPawn.removeAllEventListeners('click');			
 		targetPawn.on('click', activateTargetPawnClickHandler);
 	}
 
+	/**
+	 * Makes a board pawn selectable. 
+	 * @param  {BoardPawn} targetPawn The target pawn. 
+	 */
 	function makePawnUnselectable(targetPawn){
 		targetPawn.highlight(false);
 		targetPawn.removeAllEventListeners('click');
 	}
 
+	/**
+	 * Handles the click event which is responsible for making a 
+	 * pawn selectable. 
+	 * @event click
+	 */
 	function activateTargetPawnClickHandler(){
 		this.highlight(true);
 
@@ -681,6 +669,11 @@
 		this.on('click', deactivateTargetPawnClickHandler);
 	}
 
+	/**
+	 * Handles the click event if we want to unselect 
+	 * the target pawn that we first selected. 
+	 * @event click
+	 */
 	function deactivateTargetPawnClickHandler(){
 
 		currentlySelectedPawn = null;
@@ -695,6 +688,11 @@
 		this.off('click', deactivateTargetPawnClickHandler);
 	}
 
+	/**
+	 * Handles the click event if we had already selected a particular 
+	 * pawn and if we want to move it to a particular place on the board. 
+	 * @event click
+	 */
 	function boardBlockClickHandler(){
 		if(currentlySelectedPawn === null)
 			return;
