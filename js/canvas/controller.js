@@ -201,6 +201,14 @@
 		});
 	}
 
+	function evaluatePlayerMoveAJAXCall(prevX, prevY, newX, newY, pawnPlayerNumber){
+		runAjax({
+			url: 'backend/view/GameView.php',
+			data: 'path=evaluate-player-move&prevX=' + prevX + '&prevY=' + prevY + '&newX=' + newX + '&newY=' + newY + '&playerNumber=' + pawnPlayerNumber,
+			success: evaluatePlayerMoveSuccessHandler
+		});
+	}
+
 	/**
 	 * Runs an AJAX call. Includes default properties that are shared among
 	 * all AJAX requests. 
@@ -594,6 +602,33 @@
 		hideSecondPlayerWaitingMessage();
 	}
 
+	function evaluatePlayerMoveSuccessHandler(data){
+		if(!data.success)
+			return;
+
+		var targetPawn = null;
+		var pcSplit = data.prevCoordinate.split('|');
+		var prevCoordinate = new createjs.Point(parseInt(pcSplit[0]), parseInt(pcSplit[1]));
+
+		(parseInt(data.playerNumber) === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).forEach(function(pawn){
+			if(pawn.point.x === prevCoordinate.x && pawn.point.y === prevCoordinate.y)
+			{
+				targetPawn = pawn;
+				return false;
+			}
+		});
+
+		if(targetPawn !== null)
+		{
+			var ncSplit = data.newCoordinate.split('|');
+			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
+			createjs.Tween.get(targetPawn).to({
+				x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 
+				y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
+			}, 500, createjs.Ease.circOut);
+		}
+	}
+
 	//----------------------------------------------------------------------------------//
 	//----------------------------------------------------------------------------------//
 	//----------------------------------------------------------------------------------//
@@ -697,8 +732,12 @@
 		if(currentlySelectedPawn === null)
 			return;
 
-		console.log('selected pawn: ' + currentlySelectedPawn.point.toString());
-		console.log('selected block: ' + this.point.toString());
+		evaluatePlayerMoveAJAXCall(
+			currentlySelectedPawn.point.x,
+			currentlySelectedPawn.point.y,
+			this.point.x,
+			this.point.y,
+			currentlySelectedPawn.getWhichPlayer());
 	}
 
 }());

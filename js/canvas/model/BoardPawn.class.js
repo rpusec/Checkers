@@ -14,6 +14,7 @@
 	 *                         - {Number} particleDist => The distance of each individual particle from the pawn. 
 	 *                         - {Integer} particleStorkeStyle => The stroke style for a particle. 
 	 *                         - {Number} rotationSpeed => How fast should the particles rotate around the pawn. 
+	 *                         - {Integer} player => Indicates whether this pawn belongs to the first or the second player. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Shape}
 	 * @see Easeljs createjs.Shape API documentation. 
@@ -37,7 +38,8 @@
 			particleRadius: 3,
 			particleDist: 13,
 			particleStorkeStyle: 1,
-			rotationSpeed: 3
+			rotationSpeed: 3,
+			player: -1
 		}, options);
 
 		var shape = new createjs.Shape();
@@ -70,6 +72,10 @@
 		this.addChild(particleContainer);
 		this.setBounds(0, 0, options.radius*2, options.radius*2);
 		this.mouseChildren = false;
+
+		this.getWhichPlayer = function(){
+			return options.player;
+		}
 
 		/**
 		 * Displays the particles

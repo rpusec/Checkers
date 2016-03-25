@@ -34,4 +34,11 @@ class GameController extends BaseController
 
 		return array('success' => true, 'whoseTurn' => $turn, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
+
+	public static function evaluatePlayerMove($prevX, $prevY, $newX, $newY, $playerNumber){
+
+		//TODO: perform validation
+		
+		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => $playerNumber);
+	}
 }
