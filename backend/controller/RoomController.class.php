@@ -72,10 +72,14 @@ class RoomController extends BaseController
 
 		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
 
+		//randomly setting who's turn it is in the database when the second player joins the game 
 		if(parent::getPlayerNumber() === SECOND_PLAYER)
 		{
 			$randUserInt = mt_rand(0,1);
-			DB::update('room', array('whose_turn' => $users[$randUserInt]['userID']), 'roomID=%i', $roomID);
+			DB::update('room', array(
+				'whose_turn' => $users[$randUserInt]['userID'],
+				'stringifiedBoard' => self::constructStringifiedBoard()
+			), 'roomID=%i', $roomID);
 		}
 
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID(), 'roomID' => $roomID);
@@ -148,5 +152,57 @@ class RoomController extends BaseController
 	 */
 	private static function getUserCountQuery(){
 		return "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
+	}
+
+	private static function constructStringifiedBoard(){
+		define('COL_SEPARATOR', ',');
+		define('ROW_SEPARATOR', '|');
+		define('PLAYER_ONE_MAX_ID', 12);
+		define('PLAYER_TWO_MAX_ID', 24);
+		define('BOARD_BG', 0);
+		define('PLAYER_TWO_ROW_POSITION', 6);
+
+		$resultStr = "";
+		$pawnCurrId = 1;
+
+		for($row = 1; $row <= BOARD_MAX_ROW_AMOUNT; $row++)
+		{
+			for($col = 1; $col <= BOARD_MAX_COL_AMOUNT; $col++)
+			{
+				$colModByTwo = $col % 2;
+				if(($row % 2) !== 0 ? $colModByTwo === 0 : $colModByTwo !== 0)
+				{
+					$resultStr .= BOARD_BG;
+				}
+				else
+				{
+					if($pawnCurrId <= PLAYER_ONE_MAX_ID)
+					{
+						$resultStr .= $pawnCurrId;
+						$pawnCurrId++;
+					}
+					else if($row >= PLAYER_TWO_ROW_POSITION)
+					{
+						if($pawnCurrId <= PLAYER_TWO_MAX_ID)
+						{
+							$resultStr .= $pawnCurrId;
+							$pawnCurrId++;
+						}
+						else
+							$resultStr .= BOARD_BG;
+					}
+					else
+						$resultStr .= BOARD_BG;
+				}
+
+				if($col !== BOARD_MAX_COL_AMOUNT)
+					$resultStr .= COL_SEPARATOR;
+			}
+
+			if($row !== BOARD_MAX_ROW_AMOUNT)
+				$resultStr .= ROW_SEPARATOR;
+		}
+
+		return $resultStr;
 	}
 }

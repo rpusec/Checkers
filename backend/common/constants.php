@@ -33,3 +33,6 @@ define('FIRST_PLAYER', 1);
 define('SECOND_PLAYER', 2);
 
 define('ROOM_MAX_AMOUNT_OF_USERS', 2);
+
+define('BOARD_MAX_COL_AMOUNT', 8);
+define('BOARD_MAX_ROW_AMOUNT', 8);

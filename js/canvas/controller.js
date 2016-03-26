@@ -648,7 +648,11 @@
 			}, 500, createjs.Ease.circOut);
 
 			targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
-			BlockSelectabilityBusiness.makeBoardBlockUnselectable();
+			BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
+
+			currentPawnList.forEach(function(pawn){
+				makePawnUnselectable(pawn);
+			});
 		}
 	}
 
@@ -701,6 +705,7 @@
 	function makePawnUnselectable(targetPawn){
 		targetPawn.highlight(false);
 		targetPawn.removeAllEventListeners('click');
+		targetPawn.alpha = 1;
 	}
 
 	/**
@@ -754,6 +759,9 @@
 	 */
 	function boardBlockClickHandler(){
 		if(currentlySelectedPawn === null || !this.selectable)
+			return;
+
+		if(currentlySelectedPawn.point.x === this.point.x && currentlySelectedPawn.point.y === this.point.y)
 			return;
 
 		evaluatePlayerMoveAJAXCall(

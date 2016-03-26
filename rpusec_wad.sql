@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2016 at 04:04 PM
+-- Generation Time: Mar 26, 2016 at 08:58 PM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `message` (
   `exparation` bigint(100) NOT NULL,
   PRIMARY KEY (`MessageID`),
   KEY `fk_MESSAGE_USER` (`USER_UserID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `message` (
 CREATE TABLE IF NOT EXISTS `room` (
   `roomID` int(11) NOT NULL AUTO_INCREMENT,
   `whose_turn` int(11) DEFAULT NULL,
+  `stringifiedBoard` varchar(150) NOT NULL,
   PRIMARY KEY (`roomID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
@@ -53,13 +54,13 @@ CREATE TABLE IF NOT EXISTS `room` (
 -- Dumping data for table `room`
 --
 
-INSERT INTO `room` (`roomID`, `whose_turn`) VALUES
-(1, NULL),
-(2, NULL),
-(3, 2),
-(4, NULL),
-(5, NULL),
-(6, 1);
+INSERT INTO `room` (`roomID`, `whose_turn`, `stringifiedBoard`) VALUES
+(1, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24'),
+(2, 2, ''),
+(3, 1, ''),
+(4, 1, ''),
+(5, 2, ''),
+(6, 1, '');
 
 -- --------------------------------------------------------
 
@@ -87,9 +88,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`UserID`, `FName`, `LName`, `Username`, `Password`, `connected`, `connexparation`, `chatColorR`, `chatColorG`, `chatColorB`, `ROOM_roomID`) VALUES
-(1, 'namor', 'asdfsad', 'test', 'test', 1, 1458745476, '255', '223', '200', 0),
-(2, 'roman', 'pusec', 'lawl', 'lawl', 0, 1458745355, '200', '255', '222', 0),
-(3, 'tino', 'herljevic', 'therljevic', '11111111', 0, 1458288904, '206', '200', '255', 0);
+(1, 'namor', 'asdfsad', 'test123', 'test', 1, 1459022295, '239', '255', '222', 0),
+(2, 'roman', 'pusec', 'lawl', 'lawl', 0, 1459022207, '255', '254', '222', 0),
+(3, 'tino', 'herljevic', 'therljevic', '11111111', 0, 1458820706, '255', '230', '222', 0);
 
 --
 -- Constraints for dumped tables

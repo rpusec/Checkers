@@ -39,7 +39,7 @@ var BlockSelectabilityBusiness = {};
 	 * Unselects all board blocks that had 
 	 * been marked as selectable. 
 	 */
-	BlockSelectabilityBusiness.makeBoardBlockUnselectable = function(){
+	BlockSelectabilityBusiness.makeBoardBlocksUnselectable = function(){
 		targetBoardBlocks.forEach(function(boardBlock){
 			board.markBlockAsUnselectable(boardBlock);
 		});
