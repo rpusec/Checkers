@@ -94,7 +94,7 @@
 		board.y = stage.canvas.height;
 		board.alpha = 0;
 
-		GameBusiness.setBoard(board);
+		BlockSelectabilityBusiness.setBoard(board);
 
 		board.children.forEach(function(boardBlock){
 			boardBlock.on('click', boardBlockClickHandler);
@@ -555,8 +555,8 @@
 				playerOnePawns = pOnePawns.list;
 				playerTwoPawns = pTwoPawns.list;
 
-				GameBusiness.setPlayerOnePawns(playerOnePawns);
-				GameBusiness.setPlayerTwoPawns(playerTwoPawns);
+				BlockSelectabilityBusiness.setPlayerOnePawns(playerOnePawns);
+				BlockSelectabilityBusiness.setPlayerTwoPawns(playerTwoPawns);
 
 				(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
 					pawn.scaleX = 0;
@@ -615,6 +615,12 @@
 		hideSecondPlayerWaitingMessage();
 	}
 
+	/**
+	 * Executes when an appropriate AJAX request was handled successfully. 
+	 * If the current player's move was validated successfully on the backend, then 
+	 * the game moves the pawn to the location that the player desired. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	function evaluatePlayerMoveSuccessHandler(data){
 		if(!data.success)
 			return;
@@ -642,7 +648,7 @@
 			}, 500, createjs.Ease.circOut);
 
 			targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
-			GameBusiness.makeBoardBlockUnselectable();
+			BlockSelectabilityBusiness.makeBoardBlockUnselectable();
 		}
 	}
 
@@ -717,7 +723,7 @@
 			}
 		});
 
-		GameBusiness.makeBoardBlockSelectable(currentlySelectedPawn);
+		BlockSelectabilityBusiness.makeBoardBlocksSelectable(currentlySelectedPawn);
 
 		this.off('click', activateTargetPawnClickHandler);
 		this.on('click', deactivateTargetPawnClickHandler);
@@ -739,14 +745,6 @@
 		});
 
 		this.off('click', deactivateTargetPawnClickHandler);
-	}
-
-	function makeBoardBlockSelectable(boardBlock){
-
-	}
-
-	function makeBoardBlockUnselectable(boardBlock){
-
 	}
 
 	/**
