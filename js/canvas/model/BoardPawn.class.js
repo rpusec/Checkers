@@ -16,7 +16,7 @@
 	 *                         - {Number} rotationSpeed => How fast should the particles rotate around the pawn. 
 	 *                         - {Integer} player => Indicates whether this pawn belongs to the first or the second player. 
 	 * @author Roman Pusec
-	 * @augments {createjs.Shape}
+	 * @augments {createjs.Container}
 	 * @see Easeljs createjs.Shape API documentation. 
 	 */
 	function BoardPawn(options){
@@ -73,6 +73,11 @@
 		this.setBounds(0, 0, options.radius*2, options.radius*2);
 		this.mouseChildren = false;
 
+		/**
+		 * Returns the player identification (e.g. either Constants.FIRST_PLAYER or Constants.SECOND_PLAYER).
+		 * @see Constants.js for appropriate constants. 
+		 * @return {Integer} Player identification. 
+		 */
 		this.getWhichPlayer = function(){
 			return options.player;
 		}

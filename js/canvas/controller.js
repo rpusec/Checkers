@@ -94,6 +94,8 @@
 		board.y = stage.canvas.height;
 		board.alpha = 0;
 
+		GameBusiness.setBoard(board);
+
 		board.children.forEach(function(boardBlock){
 			boardBlock.on('click', boardBlockClickHandler);
 		});
@@ -201,6 +203,15 @@
 		});
 	}
 
+	/**
+	 * AJAX Call which evaluates the move the player made (that is, if 
+	 * the move was valid and obeys the rules of the game). 
+	 * @param  {Number} prevX             The initial X coordinate of the selected pawn. 
+	 * @param  {Number} prevY             The initial Y coordinate of the selected pawn. 
+	 * @param  {Number} newX              The new X coordinate of the selected pawn. 
+	 * @param  {Number} newY              The new X coordinate of the selected pawn. 
+	 * @param  {Integer} pawnPlayerNumber Indicating whether the pawn belongs to player one or player two. @see Constants.js for FIRST_PLAYER and SECOND_PLAYER constants. 
+	 */
 	function evaluatePlayerMoveAJAXCall(prevX, prevY, newX, newY, pawnPlayerNumber){
 		runAjax({
 			url: 'backend/view/GameView.php',
@@ -216,14 +227,13 @@
 	 * @see jQuery AJAX documentation for param clarifications. 
 	 */
 	function runAjax(options){
-		options = $.extend({
+		$.ajax($.extend({
 			type: 'get',
 			processData: false,
 			contentType: false,
 			dataType: 'json',
 			error: function(data){console.log(data);}
-		}, options);
-		$.ajax(options);
+		}, options));
 	}
 
 	//-----------------------------------------------------------------------------------------------------//
@@ -545,6 +555,9 @@
 				playerOnePawns = pOnePawns.list;
 				playerTwoPawns = pTwoPawns.list;
 
+				GameBusiness.setPlayerOnePawns(playerOnePawns);
+				GameBusiness.setPlayerTwoPawns(playerTwoPawns);
+
 				(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
 					pawn.scaleX = 0;
 					pawn.scaleY = 0;
@@ -622,10 +635,14 @@
 		{
 			var ncSplit = data.newCoordinate.split('|');
 			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
+			
 			createjs.Tween.get(targetPawn).to({
 				x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 
 				y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
 			}, 500, createjs.Ease.circOut);
+
+			targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
+			GameBusiness.makeBoardBlockUnselectable();
 		}
 	}
 
@@ -700,6 +717,8 @@
 			}
 		});
 
+		GameBusiness.makeBoardBlockSelectable(currentlySelectedPawn);
+
 		this.off('click', activateTargetPawnClickHandler);
 		this.on('click', deactivateTargetPawnClickHandler);
 	}
@@ -710,7 +729,6 @@
 	 * @event click
 	 */
 	function deactivateTargetPawnClickHandler(){
-
 		currentlySelectedPawn = null;
 		var self = this;
 
@@ -723,13 +741,21 @@
 		this.off('click', deactivateTargetPawnClickHandler);
 	}
 
+	function makeBoardBlockSelectable(boardBlock){
+
+	}
+
+	function makeBoardBlockUnselectable(boardBlock){
+
+	}
+
 	/**
-	 * Handles the click event if we had already selected a particular 
+	 * Handles the click event on the board (its children). Is executed only if we had already selected a particular 
 	 * pawn and if we want to move it to a particular place on the board. 
 	 * @event click
 	 */
 	function boardBlockClickHandler(){
-		if(currentlySelectedPawn === null)
+		if(currentlySelectedPawn === null || !this.selectable)
 			return;
 
 		evaluatePlayerMoveAJAXCall(

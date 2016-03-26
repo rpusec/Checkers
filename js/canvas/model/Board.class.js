@@ -9,6 +9,7 @@
 	 *                         - {Integer} [colAmount] => The amount of blocks on the X axis. 
 	 *                         - {String} [COLOR_ONE] => The color specified for each block who's position is divisable by three. 
 	 *                         - {String} [COLOR_TWO] => The color specified for each block who's position is divisable by two. 
+	 *                         - {String} [selectableBlockColor] => The color of a selectable block. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
 	 */
@@ -26,7 +27,8 @@
 			COLOR_ONE: Constants.COLOR_ONE,
 			COLOR_TWO: Constants.COLOR_TWO,
 			borderColor: Constants.COLOR_ONE,
-			borderWidth: 3
+			borderWidth: 3,
+			selectableBlockColor: '#fff'
 		}, options);
 
 		//width and height of each rectangle 
@@ -37,23 +39,41 @@
 		{
 			for(var col = 0; col < options.colAmount; col++)
 			{
-				//each row which is divisable by two (so second, fourth, sixth, etc...) 
-				//has the opposite color scheme 
+				//each row which is divisable by two (so second, fourth, sixth, etc...) has the opposite color scheme 
 				var currCOLOR_TWO = ((row % 2) === 0) ? options.COLOR_TWO : options.COLOR_ONE;
 				var currCOLOR_ONE = ((row % 2) === 0) ? options.COLOR_ONE : options.COLOR_TWO;
 
+				//the same goes for columns 
+				var blockColor = (col % 2) === 0 ? currCOLOR_TWO : currCOLOR_ONE;
 				var newBlock = new createjs.Shape();
-				newBlock.graphics.beginFill((col % 2) === 0 ? currCOLOR_TWO : currCOLOR_ONE).drawRect(rectWidth*col, rectHeight*row, rectWidth, rectHeight);
+				newBlock.graphics.beginFill(blockColor).drawRect(rectWidth*col, rectHeight*row, rectWidth, rectHeight);
 				newBlock.point = new createjs.Point(col, row);
+				newBlock.unselectableColor = blockColor;
+				newBlock.row = row;
+				newBlock.col = col;
+				newBlock.selectable = false;
 				this.addChild(newBlock);
 			}
 		}
 
 		var boardBorder = new createjs.Shape();
 		boardBorder.graphics.setStrokeStyle(options.borderWidth).beginStroke(options.borderColor).drawRect(0, 0, options.width, options.height);
+		boardBorder.boardBorder = true;
 		this.addChild(boardBorder);
 
 		this.cache(0, 0, options.width, options.height);
+
+		this.markBlockAsSelectable = function(targetBlock){
+			targetBlock.graphics.clear().beginFill(options.selectableBlockColor).drawRect(rectWidth*targetBlock.col, rectHeight*targetBlock.row, rectWidth, rectHeight);
+			targetBlock.selectable = true;
+			this.updateCache();
+		}
+
+		this.markBlockAsUnselectable = function(targetBlock){
+			targetBlock.graphics.clear().beginFill(targetBlock.unselectableColor).drawRect(rectWidth*targetBlock.col, rectHeight*targetBlock.row, rectWidth, rectHeight);
+			targetBlock.selectable = false;
+			this.updateCache();
+		}
 
 		/**
 		 * Returns the dimensions of a block. 
