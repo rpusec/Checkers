@@ -170,6 +170,10 @@ class GameController extends BaseController
 		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => parent::getPlayerNumber(), 'stringifiedBoard' => $newStringifiedBoard);
 	}
 
+	/**
+	 * Checks whether player's opponent already made their move. 
+	 * @return Array Success flag indicating that it is indeed the player's turn, the player number value, and the last move in JSON format. 
+	 */
 	public static function checkIfOpponentIsDone()
 	{
 		if(!parent::isUserLogged())
