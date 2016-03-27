@@ -120,7 +120,9 @@ var BoardPawnFactory = {};
 		var pawnList = [];
 
 		for(var i = 0; i < amount; i++)
-			pawnList.push(new BoardPawn(pawnOptions));
+			pawnList.push(new BoardPawn($.extend({}, pawnOptions, {
+				id: i+1
+			})));
 
 		var avatarOptions = $.extend({}, pawnOptions, {
 			radius: Constants.USER_PROFILE_AVATAR_SIZE

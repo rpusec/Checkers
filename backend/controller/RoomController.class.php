@@ -154,11 +154,12 @@ class RoomController extends BaseController
 		return "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
 	}
 
+	/**
+	 * Constructs an initial 'stringified' board, with all pawns (denoted with integers 
+	 * from 1 to 24) all in place the way they are at the start of a game of checkers. 
+	 * @return String Stringified board. 
+	 */
 	private static function constructStringifiedBoard(){
-		define('COL_SEPARATOR', ',');
-		define('ROW_SEPARATOR', '|');
-		define('PLAYER_ONE_MAX_ID', 12);
-		define('PLAYER_TWO_MAX_ID', 24);
 		define('BOARD_BG', 0);
 		define('PLAYER_TWO_ROW_POSITION', 6);
 
@@ -176,14 +177,14 @@ class RoomController extends BaseController
 				}
 				else
 				{
-					if($pawnCurrId <= PLAYER_ONE_MAX_ID)
+					if($pawnCurrId <= PLAYER_PAWNS_AMOUNT)
 					{
 						$resultStr .= $pawnCurrId;
 						$pawnCurrId++;
 					}
 					else if($row >= PLAYER_TWO_ROW_POSITION)
 					{
-						if($pawnCurrId <= PLAYER_TWO_MAX_ID)
+						if($pawnCurrId <= PLAYER_PAWNS_AMOUNT*2)
 						{
 							$resultStr .= $pawnCurrId;
 							$pawnCurrId++;
@@ -196,11 +197,11 @@ class RoomController extends BaseController
 				}
 
 				if($col !== BOARD_MAX_COL_AMOUNT)
-					$resultStr .= COL_SEPARATOR;
+					$resultStr .= BOARD_COL_SEPARATOR;
 			}
 
 			if($row !== BOARD_MAX_ROW_AMOUNT)
-				$resultStr .= ROW_SEPARATOR;
+				$resultStr .= BOARD_ROW_SEPARATOR;
 		}
 
 		return $resultStr;

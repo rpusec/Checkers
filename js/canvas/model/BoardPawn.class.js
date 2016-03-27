@@ -39,7 +39,8 @@
 			particleDist: 13,
 			particleStorkeStyle: 1,
 			rotationSpeed: 3,
-			player: -1
+			player: -1,
+			id: -1
 		}, options);
 
 		var shape = new createjs.Shape();
@@ -72,6 +73,10 @@
 		this.addChild(particleContainer);
 		this.setBounds(0, 0, options.radius*2, options.radius*2);
 		this.mouseChildren = false;
+
+		this.getID = function(){
+			return options.id;
+		}
 
 		/**
 		 * Returns the player identification (e.g. either Constants.FIRST_PLAYER or Constants.SECOND_PLAYER).

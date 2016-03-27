@@ -36,3 +36,7 @@ define('ROOM_MAX_AMOUNT_OF_USERS', 2);
 
 define('BOARD_MAX_COL_AMOUNT', 8);
 define('BOARD_MAX_ROW_AMOUNT', 8);
+define('PLAYER_PAWNS_AMOUNT', 12);
+
+define('BOARD_COL_SEPARATOR', ',');
+define('BOARD_ROW_SEPARATOR', '|');

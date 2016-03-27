@@ -209,13 +209,12 @@
 	 * @param  {Number} prevX             The initial X coordinate of the selected pawn. 
 	 * @param  {Number} prevY             The initial Y coordinate of the selected pawn. 
 	 * @param  {Number} newX              The new X coordinate of the selected pawn. 
-	 * @param  {Number} newY              The new X coordinate of the selected pawn. 
-	 * @param  {Integer} pawnPlayerNumber Indicating whether the pawn belongs to player one or player two. @see Constants.js for FIRST_PLAYER and SECOND_PLAYER constants. 
+	 * @param  {Number} newY              The new X coordinate of the selected pawn.  
 	 */
-	function evaluatePlayerMoveAJAXCall(prevX, prevY, newX, newY, pawnPlayerNumber){
+	function evaluatePlayerMoveAJAXCall(prevX, prevY, newX, newY){
 		runAjax({
 			url: 'backend/view/GameView.php',
-			data: 'path=evaluate-player-move&prevX=' + prevX + '&prevY=' + prevY + '&newX=' + newX + '&newY=' + newY + '&playerNumber=' + pawnPlayerNumber,
+			data: 'path=evaluate-player-move&prevX=' + prevX + '&prevY=' + prevY + '&newX=' + newX + '&newY=' + newY,
 			success: evaluatePlayerMoveSuccessHandler
 		});
 	}
@@ -622,8 +621,12 @@
 	 * @param  {Object} data Data from the server. 
 	 */
 	function evaluatePlayerMoveSuccessHandler(data){
+
 		if(!data.success)
+		{
+			console.log('error: ' + data.error);
 			return;
+		}
 
 		var targetPawn = null;
 		var pcSplit = data.prevCoordinate.split('|');
@@ -768,8 +771,7 @@
 			currentlySelectedPawn.point.x,
 			currentlySelectedPawn.point.y,
 			this.point.x,
-			this.point.y,
-			currentlySelectedPawn.getWhichPlayer());
+			this.point.y);
 	}
 
 }());
