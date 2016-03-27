@@ -28,7 +28,6 @@ var BlockSelectabilityBusiness = {};
 	BlockSelectabilityBusiness.makeBoardBlocksSelectable = function(currSelPawn){
 		var pawnX = currSelPawn.point.x
 		,	pawnY = currSelPawn.point.y;
-
 		makeBoardBlocksSelectableFrom(createPointForLeftUp(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_UP);
 		makeBoardBlocksSelectableFrom(createPointForRightUp(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_RIGHT_UP);
 		makeBoardBlocksSelectableFrom(createPointForLeftDown(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_DOWN);
@@ -78,7 +77,7 @@ var BlockSelectabilityBusiness = {};
 	 * @return {Array|createjs.Shape(board block)|null} Either returns an array of board blocks, or a single board block 
 	 *                                                  if there's only one element in the array, or null if the array is empty. 
 	 */
-	function findBoardBlockByCoordinates(){
+	BlockSelectabilityBusiness.findBoardBlockByCoordinates = function(){
 		var arrResult = [];
 
 		for(var i = 0; i < arguments.length; i++)
@@ -150,7 +149,7 @@ var BlockSelectabilityBusiness = {};
 	 */
 	function makeBoardBlocksSelectableFromCase(targetCoordinate, playerNumber, whichSide, createPointForFunction){
 		//the initial opponent pawn
-		var initialOpponentPawn = findBoardPawnByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, targetCoordinate); 
+		var initialOpponentPawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, targetCoordinate); 
 		
 		//if an opponent exists, look for another opponent
 		if(initialOpponentPawn !== null)
@@ -159,14 +158,14 @@ var BlockSelectabilityBusiness = {};
 			var ipCoorLeftUp = createPointForFunction(initialOpponentPawn.point.x, initialOpponentPawn.point.y, 1); //interference pawn
 
 			//another opponent, and pawn between the initial opponent and target opponent (interference)
-			var targetOpponentPawn = findBoardPawnByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, opCoorLeftUp);
-			var interferencePawn = findBoardPawnByCoordinates(-1, ipCoorLeftUp);
+			var targetOpponentPawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, opCoorLeftUp);
+			var interferencePawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(-1, ipCoorLeftUp);
 
 			if(interferencePawn === null)
 			{
 				if(ipCoorLeftUp !== null)
 				{
-					var targetBlock = findBoardBlockByCoordinates(ipCoorLeftUp);
+					var targetBlock = BlockSelectabilityBusiness.findBoardBlockByCoordinates(ipCoorLeftUp);
 					if(targetBlock !== null)
 					{
 						board.markBlockAsSelectable(targetBlock);
@@ -177,14 +176,14 @@ var BlockSelectabilityBusiness = {};
 			
 			//if the interference does not exist, and if the target opponent exists, search for another opponent
 			if(targetOpponentPawn !== null && interferencePawn === null)
-				makeBoardBlockSelectableFrom(opCoorLeftUp, playerNumber, whichSide);
+				makeBoardBlocksSelectableFrom(opCoorLeftUp, playerNumber, whichSide);
 		}
 		else
 		{
 			//checking if there's a pawn that belongs to the player, if there isn't, that means that we can mark that spot as selectable 
-			if(findBoardPawnByCoordinates(playerNumber, targetCoordinate) === null)
+			if(BlockSelectabilityBusiness.findBoardPawnByCoordinates(playerNumber, targetCoordinate) === null)
 			{
-				var targetBlock = findBoardBlockByCoordinates(targetCoordinate);
+				var targetBlock = BlockSelectabilityBusiness.findBoardBlockByCoordinates(targetCoordinate);
 				if(targetBlock !== null)
 				{
 					board.markBlockAsSelectable(targetBlock);
@@ -201,7 +200,7 @@ var BlockSelectabilityBusiness = {};
 	 * @return {Array|BoardPawn|null} Either returns an array of pawns, or a single pawn if there's 
 	 *                                only one element in the array, or null if the array is empty. 
 	 */
-	function findBoardPawnByCoordinates(playerNumber){
+	BlockSelectabilityBusiness.findBoardPawnByCoordinates = function(playerNumber){
 
 		var arrResult = [];
 

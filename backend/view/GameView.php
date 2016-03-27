@@ -14,5 +14,8 @@ if(isset($_GET['path']))
 		case 'evaluate-player-move' : 
 			print json_encode(GameController::evaluatePlayerMove($_GET['prevX'], $_GET['prevY'], $_GET['newX'], $_GET['newY']));
 			break;
+		case 'check-if-opponent-is-done' : 
+			print json_encode(GameController::checkIfOpponentIsDone());
+			break;
 	}
 }

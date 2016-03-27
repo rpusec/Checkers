@@ -31,6 +31,7 @@
 	//interval references
 	,	checkForOpponentInterval
 	,	checkRoomAvailabilityInterval
+	,	checkIfOpponentIsDoneInterval
 
 	//miscellaneous
 	,	contGameRoom = new createjs.Container()
@@ -120,6 +121,7 @@
 		gameInitialized = false;
 		clearInterval(checkRoomAvailabilityInterval);
 		clearInterval(checkForOpponentInterval);
+		clearInterval(checkIfOpponentIsDoneInterval);
 	}
 
 	//--------------------------------------------------------------------------------------------//
@@ -219,6 +221,14 @@
 		});
 	}
 
+	function checkIfOpponentIsDoneAJAXCall(){
+		runAjax({
+			url: 'backend/view/GameView.php',
+			data: 'path=check-if-opponent-is-done',
+			success: checkIfOpponentIsDoneSuccessHandler
+		});
+	}
+
 	/**
 	 * Runs an AJAX call. Includes default properties that are shared among
 	 * all AJAX requests. 
@@ -306,7 +316,7 @@
 
 		checkRoomAvailabilityInterval = setInterval(function(){
 			checkGameRoomAvailabilityAJAXCall();
-		}, Constants.CHECK_ROOM_AVAILABILITY_DELAY);
+		}, Constants.CHECK_ROOM_AVAILABILITY_INTERVAL_DURATION);
 	}
 
 	/**
@@ -356,13 +366,17 @@
 					playerOnePawns.forEach(function(targetPawn){
 						makePawnSelectable(targetPawn);
 					});
-					currentPawnList = playerOnePawns;
 				}
 				else
 				{
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
+					checkIfOpponentIsDoneInterval = setInterval(function(){
+						checkIfOpponentIsDoneAJAXCall();
+					}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
 				}
+
+				currentPawnList = playerOnePawns;
 			}
 			else if(data.playerNumber === Constants.SECOND_PLAYER)
 			{
@@ -373,13 +387,17 @@
 					playerTwoPawns.forEach(function(targetPawn){
 						makePawnSelectable(targetPawn);
 					});
-					currentPawnList = playerTwoPawns;
 				}
 				else
 				{
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
+					checkIfOpponentIsDoneInterval = setInterval(function(){
+						checkIfOpponentIsDoneAJAXCall();
+					}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
 				}
+
+				currentPawnList = playerTwoPawns;
 			}
 		}
 	}
@@ -602,11 +620,13 @@
 			stage.removeChild(this);
 		});
 
+		clearInterval(checkForOpponentInterval);
+		clearInterval(checkIfOpponentIsDoneInterval);
+
 		createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
 			gameNameText.show();
 			selARoomText.show();
-			board.alpha = 0;
-			clearInterval(checkForOpponentInterval);
+			board.alpha = 0;	
 			contGameRoom.alpha = 1;
 			displayAllRoomsAJAXCall();
 		});
@@ -644,19 +664,59 @@
 		{
 			var ncSplit = data.newCoordinate.split('|');
 			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
-			
-			createjs.Tween.get(targetPawn).to({
-				x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 
-				y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
-			}, 500, createjs.Ease.circOut);
 
-			targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
+			movePawn(targetPawn, newCoordinate, function(){
+				if(data.playerNumber === Constants.FIRST_PLAYER)
+				{
+					playerOneProfile.understate();
+					playerTwoProfile.highlight();
+				}
+				else if(data.playerNumber === Constants.SECOND_PLAYER)
+				{
+					playerOneProfile.highlight();
+					playerTwoProfile.understate();
+				}
+			});
+
 			BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
 
 			currentPawnList.forEach(function(pawn){
 				makePawnUnselectable(pawn);
 			});
+
+			checkIfOpponentIsDoneInterval = setInterval(function(){
+				checkIfOpponentIsDoneAJAXCall();
+			}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
 		}
+	}
+
+	function checkIfOpponentIsDoneSuccessHandler(data){
+		if(!data.success)
+			return;
+
+		data.playerNumber = parseInt(data.playerNumber);
+
+		if(data.playerNumber === Constants.FIRST_PLAYER)
+		{
+			playerOneProfile.highlight();
+			playerTwoProfile.understate();
+		}
+		else if(data.playerNumber === Constants.SECOND_PLAYER)
+		{
+			playerOneProfile.understate();
+			playerTwoProfile.highlight();
+		}
+
+		var lastMove = JSON.parse(data.lastMove);
+		var targetPawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
+
+		movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
+			currentPawnList.forEach(function(pawn){
+				makePawnSelectable(pawn);
+			});
+		});
+
+		clearInterval(checkIfOpponentIsDoneInterval);
 	}
 
 	//----------------------------------------------------------------------------------//
@@ -678,6 +738,14 @@
 		createjs.Tween.get(wmSecondPlayer).to({y: wmSecondPlayer.y - Constants.WM_SP_TO_BOTTOM, alpha: 0}, 1000, createjs.Ease.quadOut).call(function(){
 			stage.removeChild(this);
 		});
+	}
+
+	function movePawn(targetPawn, newCoordinate, onCompleteFunct){
+		createjs.Tween.get(targetPawn).to({
+			x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 
+			y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
+		}, 500, createjs.Ease.circOut).call(onCompleteFunct);
+		targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
 	}
 
 	//---------------------------------------------------------------------------------//

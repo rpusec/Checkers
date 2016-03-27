@@ -35,8 +35,8 @@ class GameController extends BaseController
 		return array('success' => true, 'whoseTurn' => $turn, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
 
-	public static function evaluatePlayerMove($prevX, $prevY, $newX, $newY){
-
+	public static function evaluatePlayerMove($prevX, $prevY, $newX, $newY)
+	{
 		$prevX = intval($prevX);
 		$prevY = intval($prevY);
 		$newX = intval($newX);
@@ -70,7 +70,7 @@ class GameController extends BaseController
 		}
 
 		parent::startConnection();
-		$rooms = DB::query("SELECT stringifiedBoard, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
+		$rooms = DB::query("SELECT roomID, stringifiedBoard, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
 
 		if(empty($rooms))
 			return array('success' => false);
@@ -143,7 +143,48 @@ class GameController extends BaseController
 			if($boardRowKey !== count($boardRows)-1)
 				$newStringifiedBoard .= BOARD_ROW_SEPARATOR;
 		}
+
+		$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
+		$newWhoseTurn = null;
+
+		if(!empty($users) && count($users) === 2)
+		{
+			$userOne = $users[0];
+			$userTwo = $users[1];
+
+			if($targetRoom['whose_turn'] == parent::getLoggedUserID())
+			{
+				if($userOne['userID'] == parent::getLoggedUserID())
+					$newWhoseTurn = $userTwo['userID'];
+				else if($userTwo['userID'] == parent::getLoggedUserID())
+					$newWhoseTurn = $userOne['userID'];
+			}
+		}
+
+		DB::update('room', array(
+			'whose_turn' => $newWhoseTurn,
+			'stringifiedBoard' => $newStringifiedBoard,
+			'lastMove' => "{\"id\":".parent::getLoggedUserID().",\"prevX\":$prevX,\"prevY\":$prevY,\"newX\":$newX,\"newY\":$newY}"
+		), 'roomID=%i', $targetRoom['roomID']);
 		
 		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => parent::getPlayerNumber(), 'stringifiedBoard' => $newStringifiedBoard);
+	}
+
+	public static function checkIfOpponentIsDone()
+	{
+		if(!parent::isUserLogged())
+			return array('success' => false);
+
+		parent::startConnection();
+
+		$users = DB::query("SELECT whose_turn, lastMove FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%s", parent::getLoggedUserID());
+		if(!empty($users))
+		{
+			$targetUser = $users[0];
+
+			if($targetUser['whose_turn'] == parent::getLoggedUserID())
+				return array('success' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove']);
+			return array('success' => false);
+		}
 	}
 }
