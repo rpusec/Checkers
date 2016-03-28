@@ -173,7 +173,7 @@ var BlockSelectabilityBusiness = {};
 					}
 				}
 			}
-			
+
 			//if the interference does not exist, and if the target opponent exists, search for another opponent
 			if(targetOpponentPawn !== null && interferencePawn === null)
 				makeBoardBlocksSelectableFrom(opCoorLeftUp, playerNumber, whichSide);
@@ -185,7 +185,8 @@ var BlockSelectabilityBusiness = {};
 			{
 				var targetBlock = BlockSelectabilityBusiness.findBoardBlockByCoordinates(targetCoordinate);
 				if(targetBlock !== null)
-				{
+				{console.log(8);
+
 					board.markBlockAsSelectable(targetBlock);
 					targetBoardBlocks.push(targetBlock);
 				}
@@ -219,7 +220,7 @@ var BlockSelectabilityBusiness = {};
 			else
 				targetArrPawn = playerOnePawns.concat(playerTwoPawns);
 
-			(playerNumber === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).forEach(function(pawn){
+			targetArrPawn.forEach(function(pawn){
 				if(targetCoor.x === pawn.point.x && targetCoor.y === pawn.point.y){
 					arrResult.push(pawn);
 					return false;

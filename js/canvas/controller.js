@@ -7,7 +7,7 @@
 	var 
 	
 	// stage reference
-	stage
+		stage
 
 	//texts
 	,	gameNameText
@@ -46,8 +46,7 @@
 	 * attributes of the game. 
 	 */
 	window.init = function(){
-		if(typeof stage === 'undefined')
-			stage = new createjs.Stage('game-canvas');
+		stage = new createjs.Stage('game-canvas');
 
 		window.stage = stage;
 
@@ -876,7 +875,6 @@
 		});
 
 		BlockSelectabilityBusiness.makeBoardBlocksSelectable(currentlySelectedPawn);
-
 		this.off('click', activateTargetPawnClickHandler);
 		this.on('click', deactivateTargetPawnClickHandler);
 	}
@@ -888,7 +886,6 @@
 	 */
 	function deactivateTargetPawnClickHandler(){
 		currentlySelectedPawn = null;
-		var self = this;
 
 		currentPawnList.forEach(function(targetPawn){
 			targetPawn.highlight(true);
@@ -896,6 +893,7 @@
 			makePawnSelectable(targetPawn);
 		});
 
+		BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
 		this.off('click', deactivateTargetPawnClickHandler);
 	}
 
