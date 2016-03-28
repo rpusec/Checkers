@@ -147,7 +147,7 @@ class GameController extends BaseController
 		$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
 		$newWhoseTurn = null;
 
-		if(!empty($users) && count($users) === 2)
+		if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
 		{
 			$userOne = $users[0];
 			$userTwo = $users[1];
@@ -160,6 +160,8 @@ class GameController extends BaseController
 					$newWhoseTurn = $userOne['userID'];
 			}
 		}
+		else
+			return array('success' => false);
 
 		DB::update('room', array(
 			'whose_turn' => $newWhoseTurn,
@@ -187,8 +189,31 @@ class GameController extends BaseController
 			$targetUser = $users[0];
 
 			if($targetUser['whose_turn'] == parent::getLoggedUserID())
-				return array('success' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove']);
-			return array('success' => false);
+				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove']);
+			return array('success' => true, 'isDone' => false);
 		}
+	}
+
+	public static function checkIfAPlayerLeft()
+	{
+		if(!parent::isUserLogged())
+			return array('success' => false);
+
+		parent::startConnection();
+
+		$roomFromUser = DB::query("SELECT roomID FROM room JOIN user ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", parent::getLoggedUserID());
+
+		if(empty($roomFromUser))
+			return array('success' => false);
+
+		$targetRoomID = $roomFromUser[0];
+		$targetRoomID = $targetRoomID['roomID'];
+		$users = DB::query("SELECT userID FROM room JOIN user ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoomID);
+		
+		$shouldExitRoom = false;
+		if(count($users) < ROOM_MAX_AMOUNT_OF_USERS)
+			$shouldExitRoom = true;
+
+		return array('success' => true, 'shouldExitRoom' => $shouldExitRoom);
 	}
 }

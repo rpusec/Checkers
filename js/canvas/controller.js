@@ -4,7 +4,10 @@
  */
 (function(){
 
-	var stage
+	var 
+	
+	// stage reference
+	stage
 
 	//texts
 	,	gameNameText
@@ -32,6 +35,7 @@
 	,	checkForOpponentInterval
 	,	checkRoomAvailabilityInterval
 	,	checkIfOpponentIsDoneInterval
+	,	checkIfAPlayerLeftInterval
 
 	//miscellaneous
 	,	contGameRoom = new createjs.Container()
@@ -46,7 +50,6 @@
 			stage = new createjs.Stage('game-canvas');
 
 		window.stage = stage;
-		window.contGameRoom = contGameRoom;
 
 		createjs.Ticker.setFPS(Constants.FPS);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
@@ -122,6 +125,7 @@
 		clearInterval(checkRoomAvailabilityInterval);
 		clearInterval(checkForOpponentInterval);
 		clearInterval(checkIfOpponentIsDoneInterval);
+		clearInterval(checkIfAPlayerLeftInterval);
 	}
 
 	//--------------------------------------------------------------------------------------------//
@@ -176,7 +180,8 @@
 	}
 
 	/**
-	 * AJAX call which displays all game rooms from the database.  
+	 * AJAX call which displays all game 
+	 * rooms from the database.  
 	 */
 	function displayAllRoomsAJAXCall(){
 		runAjax({
@@ -187,7 +192,8 @@
 	}
 
 	/**
-	 * AJAX call which checks if a player's opponent entered the game.  
+	 * AJAX call which checks if a player's 
+	 * opponent entered the game.  
 	 */
 	function checkForOpponentAJAXCall(){
 		runAjax({
@@ -234,6 +240,14 @@
 			url: 'backend/view/GameView.php',
 			data: 'path=check-if-opponent-is-done',
 			success: checkIfOpponentIsDoneSuccessHandler
+		});
+	}
+
+	function checkIfAPlayerLeftAJAXCall(){
+		runAjax({
+			url: 'backend/view/GameView.php',
+			data: 'path=check-if-a-player-left',
+			success: checkIfAPlayerLeftSuccessHandler
 		});
 	}
 
@@ -412,6 +426,10 @@
 				currentPawnList = playerTwoPawns;
 			}
 		}
+
+		checkIfAPlayerLeftInterval = setInterval(function(){
+			checkIfAPlayerLeftAJAXCall();
+		}, Constants.CHECK_IF_A_PLAYER_LEFT_INTERVAL_DURATION);
 	}
 
 	/**
@@ -634,6 +652,7 @@
 
 		clearInterval(checkForOpponentInterval);
 		clearInterval(checkIfOpponentIsDoneInterval);
+		clearInterval(checkIfAPlayerLeftInterval);
 
 		createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
 			gameNameText.show();
@@ -709,7 +728,7 @@
 	 * @param  {Object} data Data from the server. 
 	 */
 	function checkIfOpponentIsDoneSuccessHandler(data){
-		if(!data.success)
+		if(!data.success || !data.isDone)
 			return;
 
 		data.playerNumber = parseInt(data.playerNumber);
@@ -737,6 +756,19 @@
 		clearInterval(checkIfOpponentIsDoneInterval);
 	}
 
+	function checkIfAPlayerLeftSuccessHandler(data){
+		if(!data.success || !data.shouldExitRoom)
+			return;
+
+		offGameRoomAJAXCall();
+
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_INFO,
+			title: "Game status",
+			message: 'Your opponent left the game. '
+		});
+	}
+
 	//----------------------------------------------------------------------------------//
 	//----------------------------------------------------------------------------------//
 	//----------------------------------------------------------------------------------//
@@ -762,6 +794,12 @@
 		});
 	}
 
+	/**
+	 * Moves a pawn to a particular location on the board. 
+	 * @param  {BoardPawn} targetPawn           The target pawn to move. 
+	 * @param  {createjs.Point} newCoordinate   The new location of the pawn. 
+	 * @param  {Function} onCompleteFunct       Function which is executed once the pawn has been moved. 
+	 */
 	function movePawn(targetPawn, newCoordinate, onCompleteFunct){
 		createjs.Tween.get(targetPawn).to({
 			x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 

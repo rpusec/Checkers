@@ -17,5 +17,8 @@ if(isset($_GET['path']))
 		case 'check-if-opponent-is-done' : 
 			print json_encode(GameController::checkIfOpponentIsDone());
 			break;
+		case 'check-if-a-player-left' : 
+			print json_encode(GameController::checkIfAPlayerLeft());
+			break;
 	}
 }

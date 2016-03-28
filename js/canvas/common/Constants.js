@@ -1,27 +1,46 @@
 /**
- * Object which contains different constants used in the game. 
- * @type {Object}
+ * Object which contains different 
+ * constants used in the game. 
  * @author Roman Pusec
  */
 var Constants = {
+	
+	//base game config
 	FPS: 60,
 	MOUSE_OVER_FREQ: 5,
+
+	//two repeating colors
 	COLOR_ONE: '#fff', 
-	COLOR_TWO: '#000',
+	COLOR_TWO: '#1A1A1B',
+	
+	//game display object alignment 
 	TEXT_PADDING: 25,
 	WM_SP_TO_BOTTOM: 40,
-	GAME_ROOMS_PER_ROW: 3,
-	GAME_ROOM_WAIT_TIME: 100,
-	POLIGON_POINT_TYPE: [4, 6, 8, 10],
-	PAWN_AMOUNT: 12,
 	DISAPPEARANCE_DIST: 60,
 	USER_PROFILE_MOVE: 50,
 	GAME_ROOM_PADDING: 70,
 	USER_PROFILE_AVATAR_SIZE: 30,
+
+	//different types of pawns
+	POLIGON_POINT_TYPE: [4, 6, 8, 10],
+	
+	//amount of pawns
+	PAWN_AMOUNT: 12,
+	GAME_ROOMS_PER_ROW: 3,
+
+	//dalays
+	GAME_ROOM_WAIT_TIME: 100,
+
+	//first and second player constants
 	FIRST_PLAYER: 1,
 	SECOND_PLAYER: 2,
+	
+	//interval duration constants
 	CHECK_ROOM_AVAILABILITY_INTERVAL_DURATION: 2000,
+	CHECK_IF_A_PLAYER_LEFT_INTERVAL_DURATION: 2000,
 	CHECK_OPPONENT_INTERVAL_DURATION: 3000,
 	CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION: 3000,
+	
+	//max users per room
 	MAX_USERS_PER_ROOM: 2
 };
