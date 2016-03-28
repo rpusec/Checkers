@@ -39,7 +39,7 @@ class UsersController extends BaseController
 
 	/**
 	 * Registers users to the database. If a field is an empty string, then it 
-	 * is not included in the sql update statement. 
+	 * is not included in the update statement. 
 	 * @see 'checkIfLoggedAndInputNotEmpty' function. 
 	 * @param  String $firstname First name of the user. 
 	 * @param  String $lastname  Last name of the user. 
@@ -49,10 +49,15 @@ class UsersController extends BaseController
 	 */
 	public static function registerUser($firstname, $lastname, $username, $password, $passwordConfirm)
 	{
+		parent::startConnection();
+		
 		if(self::checkIfLoggedAndInputNotEmpty($username))
 		{
 			ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
 			ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ', true);
+			DB::query("SELECT userID FROM user WHERE username=%s", $username);
+			if(DB::count() > 0)
+				ValidationHelper::addError(USERNAME_NOT_UNIQUE_ERROR_MSG);
 		}
 
 		if(self::checkIfLoggedAndInputNotEmpty($password))
@@ -78,8 +83,6 @@ class UsersController extends BaseController
 
 		if(ValidationHelper::hasErrors())
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());
-
-		parent::startConnection();
 
 		if(!parent::isUserLogged())
 		{
@@ -122,7 +125,7 @@ class UsersController extends BaseController
 	 * Since our aim is to evaluate only the input fields that were provided by the authenticated user,
 	 * the function should return true if the input field isn't empty, since in that case we should 
 	 * conduct input validation. Otherwise, it would return false since then the validation wouldn't be necessary 
-	 * since the fields would not be included in the update statement of the 'registerUser' function.
+	 * since the fields would not be included in the update statement of the self::registerUser() function.
 	 * 
 	 * @param Boolean $input True if the user is logged in and input isn't an empty string, false otherwise. 
 	 */
@@ -139,6 +142,13 @@ class UsersController extends BaseController
 
 	/**
 	 * Logs the user in. 
+	 *
+	 * This function checks for a number of things. It checks first for cross site scripting value inputs. 
+	 * It then updates the user's connection exparation date, to see if the user's connection had expired. 
+	 * After it had searched for the user, it checks if the user's connection value from the database returned
+	 * true, that would mean that there's a high probability that the user is already logged in from another session. 
+	 * It then updates user's chat color to a different one if the authentication process has passed. 
+	 * 
 	 * @param  String $username User's username. 
 	 * @param  String $password User's password.
 	 * @return Array            Array with a flag, indicating whether the authentication procedure was successful. It also includes user chat bubble colors. 

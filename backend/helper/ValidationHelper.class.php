@@ -85,4 +85,12 @@ class ValidationHelper
 		if($value1 != $value2)
 			self::$errors[] = ucfirst($label1) . ' value is inequivalent to ' . $label2 . ' value. ';
 	}
+
+	/**
+	 * Adds an error message. 
+	 * @param [String] $errorMessage The target error message. 
+	 */
+	public static function addError($errorMessage){
+		self::$errors[] = $errorMessage;
+	}
 }

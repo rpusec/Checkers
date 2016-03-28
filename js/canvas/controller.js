@@ -118,9 +118,12 @@
 	 */
 	window.uninitializeGame = function(){
 		createjs.Tween.removeAllTweens();
-		stage.removeAllChildren();
-		contGameRoom.removeAllChildren();
-		stage.update();
+		if(typeof stage !== 'undefined')
+			stage.removeAllChildren();
+		if(typeof contGameRoom !== 'undefined')
+			contGameRoom.removeAllChildren();
+		if(typeof stage !== 'undefined')
+			stage.update();
 		gameInitialized = false;
 		clearInterval(checkRoomAvailabilityInterval);
 		clearInterval(checkForOpponentInterval);
