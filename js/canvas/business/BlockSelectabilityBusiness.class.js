@@ -26,12 +26,10 @@ var BlockSelectabilityBusiness = {};
 	 * @param  {BoardPawn} currSelPawn The currently selected pawn. 
 	 */
 	BlockSelectabilityBusiness.makeBoardBlocksSelectable = function(currSelPawn){
-		var pawnX = currSelPawn.point.x
-		,	pawnY = currSelPawn.point.y;
-		makeBoardBlocksSelectableFrom(createPointForLeftUp(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_UP);
-		makeBoardBlocksSelectableFrom(createPointForRightUp(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_RIGHT_UP);
-		makeBoardBlocksSelectableFrom(createPointForLeftDown(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_DOWN);
-		makeBoardBlocksSelectableFrom(createPointForRightDown(pawnX, pawnY, 1), currSelPawn.getWhichPlayer(), MBBSF_RIGHT_DOWN);
+		makeBoardBlocksSelectableFrom(createPointForLeftUp(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_UP);
+		makeBoardBlocksSelectableFrom(createPointForRightUp(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_RIGHT_UP);
+		makeBoardBlocksSelectableFrom(createPointForLeftDown(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_DOWN);
+		makeBoardBlocksSelectableFrom(createPointForRightDown(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_RIGHT_DOWN);
 	}
 
 	/**
@@ -95,14 +93,7 @@ var BlockSelectabilityBusiness = {};
 			});
 		}
 
-		if(arrResult.length > 0)
-		{
-			if(arrResult.length === 1)
-				return arrResult[0];
-			return arrResult;
-		}
-
-		return null;
+		return emitSingleElementOrFullList(arrResult);
 	}
 
 	/**
@@ -149,7 +140,7 @@ var BlockSelectabilityBusiness = {};
 	 */
 	function makeBoardBlocksSelectableFromCase(targetCoordinate, playerNumber, whichSide, createPointForFunction){
 		//the initial opponent pawn
-		var initialOpponentPawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, targetCoordinate); 
+		var initialOpponentPawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, targetCoordinate); 
 		
 		//if an opponent exists, look for another opponent
 		if(initialOpponentPawn !== null)
@@ -158,8 +149,8 @@ var BlockSelectabilityBusiness = {};
 			var ipCoorLeftUp = createPointForFunction(initialOpponentPawn.point.x, initialOpponentPawn.point.y, 1); //interference pawn
 
 			//another opponent, and pawn between the initial opponent and target opponent (interference)
-			var targetOpponentPawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, opCoorLeftUp);
-			var interferencePawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(-1, ipCoorLeftUp);
+			var targetOpponentPawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, opCoorLeftUp);
+			var interferencePawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(-1, ipCoorLeftUp);
 
 			if(interferencePawn === null)
 			{
@@ -181,17 +172,41 @@ var BlockSelectabilityBusiness = {};
 		else
 		{
 			//checking if there's a pawn that belongs to the player, if there isn't, that means that we can mark that spot as selectable 
-			if(BlockSelectabilityBusiness.findBoardPawnByCoordinates(playerNumber, targetCoordinate) === null)
+			if(BlockSelectabilityBusiness.findBoardPawnsByCoordinates(playerNumber, targetCoordinate) === null)
 			{
 				var targetBlock = BlockSelectabilityBusiness.findBoardBlockByCoordinates(targetCoordinate);
 				if(targetBlock !== null)
-				{console.log(8);
-
+				{
 					board.markBlockAsSelectable(targetBlock);
 					targetBoardBlocks.push(targetBlock);
 				}
 			}
 		}
+	}
+
+	BlockSelectabilityBusiness.findBoardPawnsByIds = function(){
+		if(arguments.length === 0)
+			return null;
+
+		if(Array.isArray(arguments[0]))
+			arguments = arguments[0];
+
+		var selectedBoardPawns = [];
+
+		for(var i = 0; i < arguments.length; i++)
+		{
+			var targetId = arguments[i];
+
+			playerOnePawns.concat(playerTwoPawns).forEach(function(pawn){
+				if(targetId === pawn.getID())
+				{
+					selectedBoardPawns.push(pawn);
+					return false;
+				}
+			});
+		}
+
+		return emitSingleElementOrFullList(selectedBoardPawns);
 	}
 
 	/**
@@ -201,7 +216,7 @@ var BlockSelectabilityBusiness = {};
 	 * @return {Array|BoardPawn|null} Either returns an array of pawns, or a single pawn if there's 
 	 *                                only one element in the array, or null if the array is empty. 
 	 */
-	BlockSelectabilityBusiness.findBoardPawnByCoordinates = function(playerNumber){
+	BlockSelectabilityBusiness.findBoardPawnsByCoordinates = function(playerNumber){
 
 		var arrResult = [];
 
@@ -228,11 +243,21 @@ var BlockSelectabilityBusiness = {};
 			});
 		}
 
-		if(arrResult.length > 0)
+		return emitSingleElementOrFullList(arrResult);
+	}
+
+	/**
+	 * Returns a single element from the specified array (if there's only 
+	 * one element), otherwise it either returns null or the full array. 
+	 * @param  {Array} targetArray      The target array. 
+	 * @return {Array|AnyObject|null}   Either an array, a single element from the array, or null.  
+	 */
+	function emitSingleElementOrFullList(targetArray){
+		if(targetArray.length > 0)
 		{
-			if(arrResult.length === 1)
-				return arrResult[0];
-			return arrResult;
+			if(targetArray.length === 1)
+				return targetArray[0];
+			return targetArray;
 		}
 
 		return null;

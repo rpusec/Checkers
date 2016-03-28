@@ -15,6 +15,7 @@
 	 *                         - {Integer} particleStorkeStyle => The stroke style for a particle. 
 	 *                         - {Number} rotationSpeed => How fast should the particles rotate around the pawn. 
 	 *                         - {Integer} player => Indicates whether this pawn belongs to the first or the second player. 
+	 *                         - {Integer} id => The unique identifier for the target pawn. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
 	 * @see Easeljs createjs.Shape API documentation. 
@@ -74,6 +75,10 @@
 		this.setBounds(0, 0, options.radius*2, options.radius*2);
 		this.mouseChildren = false;
 
+		/**
+		 * Returns the id supplied from the options constructor parameter. 
+		 * @return {Integer} The ID of the pawn. 
+		 */
 		this.getID = function(){
 			return options.id;
 		}
@@ -108,6 +113,18 @@
 				createjs.Tween.get(particleContainer).to({alpha: 0}, 500);
 				createjs.Ticker.removeEventListener('tick', onRotation);
 			}
+		}
+
+		this.killOff = function(stage, rotationAmount){
+			createjs.Tween.get(this).to({
+				y: stage.canvas.height - options.radius,
+				rotation: Math.random()*rotationAmount * (Math.random() < 0.5 ? -1 : 1)
+			}, 2000, createjs.Ease.bounceOut).call(function(){
+				createjs.Tween.get(this).to({alpha: 0}, 5000).call(function(){
+					if(this.parent !== null)
+						this.parent.removeChild(this);
+				});
+			});
 		}
 
 		/**

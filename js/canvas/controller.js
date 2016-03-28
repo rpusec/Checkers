@@ -712,6 +712,10 @@
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
 				}
+
+				var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(data.removedPawns);
+				if(removedPawns !== null)
+					removePawnsFromBoard(removedPawns);
 			});
 
 			BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
@@ -750,12 +754,17 @@
 		}
 
 		var lastMove = JSON.parse(data.lastMove);
-		var targetPawn = BlockSelectabilityBusiness.findBoardPawnByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
+		var targetPawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
 
 		movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
 			currentPawnList.forEach(function(pawn){
 				makePawnSelectable(pawn);
 			});
+
+			var removedPawnsIds = JSON.parse(data.removedPawns);
+			var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(removedPawnsIds);
+			if(removedPawns !== null)
+				removePawnsFromBoard(removedPawns);
 		});
 
 		clearInterval(checkIfOpponentIsDoneInterval);
@@ -817,6 +826,20 @@
 			y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
 		}, 500, createjs.Ease.circOut).call(onCompleteFunct);
 		targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
+	}
+
+	/**
+	 * Removes a list of pawns from the board. 
+	 * @param  {[Array<BoardPawn>|BoardPawn]} targetPawns The pawns to remove. Can be a single pawn or an array of Pawns. 
+	 */
+	function removePawnsFromBoard(targetPawns){
+		if(!Array.isArray(targetPawns))
+			targetPawns = [targetPawns];
+
+		targetPawns.forEach(function(pawn){
+			(pawn.getWhichPlayer() === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).splice(playerOnePawns.indexOf(pawn), 1);
+			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT);
+		});
 	}
 
 	//---------------------------------------------------------------------------------//

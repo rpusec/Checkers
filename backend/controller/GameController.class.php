@@ -128,6 +128,16 @@ class GameController extends BaseController
 		#
 		#
 
+		define('DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR', 0);
+		define('DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR', 1);
+		define('DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR', 2);
+		define('DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR', 3);
+
+		$removedPawnIds = self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR);
+		$removedPawnIds = array_merge($removedPawnIds, self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR));
+		$removedPawnIds = array_merge($removedPawnIds, self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR));
+		$removedPawnIds = array_merge($removedPawnIds, self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR));
+		
 		//setting the previous position to zero, indicating that the pawn has moved from that position
 		$boardRows[$prevY][$prevX] = 0;
 
@@ -166,10 +176,11 @@ class GameController extends BaseController
 		DB::update('room', array(
 			'whose_turn' => $newWhoseTurn,
 			'stringifiedBoard' => $newStringifiedBoard,
-			'lastMove' => "{\"id\":".parent::getLoggedUserID().",\"prevX\":$prevX,\"prevY\":$prevY,\"newX\":$newX,\"newY\":$newY}"
+			'lastMove' => "{\"id\":".parent::getLoggedUserID().",\"prevX\":$prevX,\"prevY\":$prevY,\"newX\":$newX,\"newY\":$newY}",
+			'removedPawns' => json_encode($removedPawnIds)
 		), 'roomID=%i', $targetRoom['roomID']);
 		
-		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => parent::getPlayerNumber(), 'stringifiedBoard' => $newStringifiedBoard);
+		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => parent::getPlayerNumber(), 'removedPawns' => $removedPawnIds);
 	}
 
 	/**
@@ -183,13 +194,13 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$users = DB::query("SELECT whose_turn, lastMove FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%s", parent::getLoggedUserID());
+		$users = DB::query("SELECT whose_turn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%s", parent::getLoggedUserID());
 		if(!empty($users))
 		{
 			$targetUser = $users[0];
 
 			if($targetUser['whose_turn'] == parent::getLoggedUserID())
-				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove']);
+				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove'], 'removedPawns' => $targetUser['removedPawns']);
 			return array('success' => true, 'isDone' => false);
 		}
 	}
@@ -215,5 +226,68 @@ class GameController extends BaseController
 			$shouldExitRoom = true;
 
 		return array('success' => true, 'shouldExitRoom' => $shouldExitRoom);
+	}
+
+	private static function diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, &$boardRows, $direction)
+	{
+		$removedPawnIds = array();
+
+		switch($direction)
+		{
+			case DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR : 
+				$diffX = -1;
+				$diffY = -1;
+				break;
+			case DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR : 
+				$diffX = 1;
+				$diffY = -1;
+				break;
+			case DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR : 
+				$diffX = -1;
+				$diffY = 1;
+				break;
+			case DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR : 
+				$diffX = 1;
+				$diffY = 1;
+				break;
+			default:
+				return null; 
+		}
+
+		$possiblePositions = array(2, 4, 6, 8);
+
+		foreach($possiblePositions as $possiblePosition)
+		{
+			if($prevX+($diffX*$possiblePosition) === $newX && $prevY+($diffY*$possiblePosition) === $newY)
+			{
+				while(true)
+				{
+					if(	$prevY+$diffY < 0 || 
+						$prevX+$diffX < 0 || 
+						$prevY+$diffY > count($boardRows)-1 || 
+						$prevX+$diffX > count($boardRows)-1)
+						break;
+
+					if($prevX === $newX && $prevY === $newY)
+						break;
+
+					$posEvaluation = parent::getPlayerNumber() === FIRST_PLAYER ? 
+						($boardRows[$prevY+$diffY][$prevX+$diffX] > PLAYER_PAWNS_AMOUNT) : 
+						($boardRows[$prevY+$diffY][$prevX+$diffX] > 0 && $boardRows[$prevY+$diffY][$prevX+$diffX] <= PLAYER_PAWNS_AMOUNT);
+
+					if($posEvaluation)
+					{
+						$removedPawnIds[] = intval($boardRows[$prevY+$diffY][$prevX+$diffX]);
+						$boardRows[$prevY+$diffY][$prevX+$diffX] = 0;
+						$prevX+=$diffX*2;
+						$prevY+=$diffY*2;
+					}
+					else
+						break;
+				}
+			}
+		}
+
+		return $removedPawnIds;
 	}
 }

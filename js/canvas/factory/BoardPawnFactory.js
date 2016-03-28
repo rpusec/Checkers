@@ -119,7 +119,7 @@ var BoardPawnFactory = {};
 
 		var pawnList = [];
 
-		for(var i = 0; i < amount; i++)
+		for(var i = isPlayerOne ? 0 : amount; i < amount*(isPlayerOne ? 1 : 2); i++)
 			pawnList.push(new BoardPawn($.extend({}, pawnOptions, {
 				id: i+1
 			})));
