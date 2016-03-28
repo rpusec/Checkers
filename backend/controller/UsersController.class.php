@@ -18,6 +18,9 @@ require_once('../helper/ValidationHelper.class.php');
  */
 class UsersController extends BaseController
 {
+	const SEARCH_BY_ID = 1;
+	const SEARCH_BY_USERNAME = 2;
+
 	/**
 	 * Returns a user by their ID. 
 	 * @param  Integer $userID The user ID. 
@@ -149,12 +152,17 @@ class UsersController extends BaseController
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());
 
 		parent::startConnection();
-		$results = DB::query("SELECT userID, username, password FROM user WHERE username = %s AND password = %s", $username, $password);
+		self::updateAllUserConnStat($username, self::SEARCH_BY_USERNAME);
+		$results = DB::query("SELECT userID, username, password, connected FROM user WHERE username = %s AND password = %s", $username, $password);
 		$flag = false;
 
 		if(count($results) === 1)
 		{
 			$targetUser = $results[0];
+
+			if(intval($targetUser['connected']) === 1)
+				return array('success' => false, 'errors' => array(ALREADY_CONNECTED_ERROR_MSG));
+
 			if($targetUser['username'] === $username && $targetUser['password'] === $password)
 			{
 				$arrRandColor = self::getRandomColor(CHAT_COLOR_BRIGHTNESS);
@@ -282,10 +290,10 @@ class UsersController extends BaseController
 	 * Marks all users as 'disconnected' whose connection has expired. 
 	 * @see the class description. 
 	 */
-	public static function updateAllUserConnStat($userID = null)
+	public static function updateAllUserConnStat($credential = null, $searchBy = self::SEARCH_BY_ID)
 	{
 		parent::startConnection();
-		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($userID !== null ? ' AND userID=%i' : ''), parent::getTimeInSec(), $userID);
+		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($credential !== null ? ' AND ' . ($searchBy === self::SEARCH_BY_ID ? 'userID=%i' : 'username=%s') : ''), parent::getTimeInSec(), $credential);
 		return array('success' => true);
 	}
 
