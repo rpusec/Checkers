@@ -243,6 +243,9 @@
 		});
 	}
 
+	/**
+	 * Checks whether the opponent left the game
+	 */
 	function checkIfAPlayerLeftAJAXCall(){
 		runAjax({
 			url: 'backend/view/GameView.php',
@@ -756,6 +759,12 @@
 		clearInterval(checkIfOpponentIsDoneInterval);
 	}
 
+	/**
+	 * Executes when an appropriate AJAX request was handled successfully. 
+	 * Notifies the user that their opponent left and escorts them back to the
+	 * list of game rooms. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	function checkIfAPlayerLeftSuccessHandler(data){
 		if(!data.success || !data.shouldExitRoom)
 			return;
