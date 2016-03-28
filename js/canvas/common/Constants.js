@@ -20,6 +20,7 @@ var Constants = {
 	USER_PROFILE_MOVE: 50,
 	GAME_ROOM_PADDING: 70,
 	USER_PROFILE_AVATAR_SIZE: 30,
+	PAWN_KILL_OFF_ROTATION_AMOUNT: 100,
 
 	//different types of pawns
 	POLIGON_POINT_TYPE: [4, 6, 8, 10],
@@ -30,6 +31,8 @@ var Constants = {
 
 	//dalays
 	GAME_ROOM_WAIT_TIME: 100,
+	PAWN_KILL_OFF_DELAY: 1500,
+	PAWN_DISAPPEAR_DELAY: 10000,
 
 	//first and second player constants
 	FIRST_PLAYER: 1,
@@ -42,8 +45,5 @@ var Constants = {
 	CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION: 3000,
 	
 	//max users per room
-	MAX_USERS_PER_ROOM: 2,
-
-	PAWN_KILL_OFF_X_OFFSET: 50,
-	PAWN_KILL_OFF_ROTATION_AMOUNT: 100
+	MAX_USERS_PER_ROOM: 2
 };

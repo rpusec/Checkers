@@ -115,12 +115,12 @@
 			}
 		}
 
-		this.killOff = function(stage, rotationAmount){
+		this.killOff = function(stage, rotationAmount, killOffDelay, disappearDelay){
 			createjs.Tween.get(this).to({
 				y: stage.canvas.height - options.radius,
 				rotation: Math.random()*rotationAmount * (Math.random() < 0.5 ? -1 : 1)
-			}, 2000, createjs.Ease.bounceOut).call(function(){
-				createjs.Tween.get(this).to({alpha: 0}, 5000).call(function(){
+			}, killOffDelay, createjs.Ease.bounceOut).call(function(){
+				createjs.Tween.get(this).to({alpha: 0}, disappearDelay).call(function(){
 					if(this.parent !== null)
 						this.parent.removeChild(this);
 				});

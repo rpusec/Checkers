@@ -757,14 +757,14 @@
 		var targetPawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
 
 		movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
-			currentPawnList.forEach(function(pawn){
-				makePawnSelectable(pawn);
-			});
-
 			var removedPawnsIds = JSON.parse(data.removedPawns);
 			var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(removedPawnsIds);
 			if(removedPawns !== null)
 				removePawnsFromBoard(removedPawns);
+
+			currentPawnList.forEach(function(pawn){
+				makePawnSelectable(pawn);
+			});
 		});
 
 		clearInterval(checkIfOpponentIsDoneInterval);
@@ -838,7 +838,7 @@
 
 		targetPawns.forEach(function(pawn){
 			(pawn.getWhichPlayer() === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).splice(playerOnePawns.indexOf(pawn), 1);
-			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT);
+			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY, Constants.PAWN_DISAPPEAR_DELAY);
 		});
 	}
 
