@@ -10,11 +10,20 @@ require_once('../helper/ValidationHelper.class.php');
  */
 class GameController extends BaseController
 {
+	const DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR = 0;
+	const DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR = 1;
+	const DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR = 2;
+	const DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR = 3;
+
+	const MIN_POSITION = 2;
+	const MAX_POSITION = 8;
+	const ILLEGAL_POS_TEXT = 'Illegal position: ';
+
 	/**
 	 * Notifies the client side of who's turn it is in the game. 
 	 * The 'whoseTurn' value represents the ID value of the user
 	 * who's turn it is in the game.  
-	 * @param  Integer $roomID The database ID of the room. 
+	 * @param  [Integer] $roomID The database ID of the room. 
 	 */
 	public static function checkWhoseTurn($roomID)
 	{
@@ -24,7 +33,7 @@ class GameController extends BaseController
 		parent::startConnection();
 		$turn = DB::query('SELECT whose_turn FROM room WHERE roomID=%i', $roomID);
 
-		if(count($turn) === 1)
+		if(!empty($turn))
 		{
 			$turn = $turn[0];
 			$turn = $turn['whose_turn'];
@@ -35,6 +44,26 @@ class GameController extends BaseController
 		return array('success' => true, 'whoseTurn' => $turn, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
 
+	/**
+	 * Determines if the move that the player had made is legal, in the sense that it obeys the rules
+	 * of the game checkers. 
+	 *
+	 * It looks for the following illegal actions: 
+	 * - Whether the player chose a position where there already is a pawn. 
+	 * - Whether the player chose a position that is marked by a white square, instead of a black square. 
+	 * - Whether the player chose a position that is the same as the position of the pawn they have selected. 
+	 * - Whether the player selected an appropriate position when diagonally searching for opponent's squares to kill them off. 
+	 *
+	 * The function then updates the stringified board in the database, afterwards it adds the 'move' that the player 
+	 * made in the database, so that the opponent can see it. 
+	 * Lastly, the function also marks in the database that it is the opponent's turn in the game. 
+	 * 
+	 * @param  [Integer] $prevX The initial position on the X-axis of the target pawn. 
+	 * @param  [Integer] $prevY The initial position on the Y-axis of the target pawn. 
+	 * @param  [Integer] $newX  The new position on the X-axis of the target pawn. 
+	 * @param  [Integer] $newY  The new position on the Y-axis of the target pawn. 
+	 * @return [Array]          Success flag, previous and new pawn position, the player number of the user, the array of id values of killed off pawns. 
+	 */
 	public static function evaluatePlayerMove($prevX, $prevY, $newX, $newY)
 	{
 		$prevX = intval($prevX);
@@ -120,24 +149,22 @@ class GameController extends BaseController
 		if($newPosition > 0)
 			return array('success' => false, 'error' => 'New position should not be a pawn, but an empty field. ');
 
-		define('DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR', 0);
-		define('DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR', 1);
-		define('DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR', 2);
-		define('DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR', 3);
-
+		//checks if opponent's pawns should be removed and also whether the player 
+		//chose an illegal position when searching for opponent's pawns
 		$removedPawnIds = array();
 		$diagonallyDissOppErrorMsg = "";
-		self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+		self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		
 		if(empty($removedPawnIds))
-			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		
 		if(empty($removedPawnIds))
-			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		
 		if(empty($removedPawnIds))
-			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		
+		//if there had been an error in the process, forward the error
 		if($diagonallyDissOppErrorMsg !== "")
 			return array('success' => false, 'error' => $diagonallyDissOppErrorMsg);
 
@@ -160,6 +187,7 @@ class GameController extends BaseController
 		$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
 		$newWhoseTurn = null;
 
+		//setting the opponent's turn
 		if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
 		{
 			$userOne = $users[0];
@@ -188,7 +216,7 @@ class GameController extends BaseController
 
 	/**
 	 * Checks whether player's opponent already made their move. 
-	 * @return Array Success flag indicating that it is indeed the player's turn, the player number value, and the last move in JSON format. 
+	 * @return [Array] Success flag indicating that it is indeed the player's turn, the player number value, and the last move in JSON format. 
 	 */
 	public static function checkIfOpponentIsDone()
 	{
@@ -208,6 +236,11 @@ class GameController extends BaseController
 		}
 	}
 
+	/**
+	 * Checks whether the opponent left the game. If everything went well, it returns 
+	 * a boolean indicating whether the player should exit the room or not. 
+	 * @return [Array] A success flag indicating whether everything went well, and a boolean indicating whether the player had left the game. 
+	 */
 	public static function checkIfAPlayerLeft()
 	{
 		if(!parent::isUserLogged())
@@ -231,23 +264,35 @@ class GameController extends BaseController
 		return array('success' => true, 'shouldExitRoom' => $shouldExitRoom);
 	}
 
+	/**
+	 * Checks whether, based on the player's move, there are any opponent's pawns that can be killed off. 
+	 * This function also evaluates if the player chose a legal move in the process. 
+	 * @param  [Integer] $prevX                  The initial position on the X-axis of the target pawn. 
+	 * @param  [Integer] $prevY                  The initial position on the Y-axis of the target pawn. 
+	 * @param  [Integer] $newX                   The new position on the X-axis of the target pawn. 
+	 * @param  [Integer] $newY                   The new position on the Y-axis of the target pawn. 
+	 * @param  [Array<Integer>] &$boardRows      The reference of the boardRows array (parsed from the stringified board). 
+	 * @param  [Integer] $direction              Which diagonal direction should the search follow. See appropriate constants (DIAGONALLY_DISMISS_OPPONENTS_[direction]_DIR). 
+	 * @param  [Array<Integer>] &$removedPawnIds An array which will save and forward all of the ids of the pawns that had been killed off.  
+	 * @param  [String] &$errorMsg               The error message that will be forwarded later outside of the class. 
+	 */
 	private static function diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, &$boardRows, $direction, &$removedPawnIds, &$errorMsg)
 	{
 		switch($direction)
 		{
-			case DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR : 
+			case self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR : 
 				$diffX = -1;
 				$diffY = -1;
 				break;
-			case DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR : 
+			case self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR : 
 				$diffX = 1;
 				$diffY = -1;
 				break;
-			case DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR : 
+			case self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR : 
 				$diffX = -1;
 				$diffY = 1;
 				break;
-			case DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR : 
+			case self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR : 
 				$diffX = 1;
 				$diffY = 1;
 				break;
@@ -255,13 +300,13 @@ class GameController extends BaseController
 				return null; 
 		}
 
-		for($possiblePosition = 2; $possiblePosition <= 8; $possiblePosition++)
+		for($possiblePosition = self::MIN_POSITION; $possiblePosition <= self::MAX_POSITION; $possiblePosition++)
 		{
 			if($prevX+($diffX*$possiblePosition) === $newX && $prevY+($diffY*$possiblePosition) === $newY)
 			{
 				if(($possiblePosition % 2) !== 0)
 				{
-					$errorMsg = "Illegal position: " . $possiblePosition;
+					$errorMsg = self::ILLEGAL_POS_TEXT . $possiblePosition;
 					return;
 				}
 
@@ -294,7 +339,7 @@ class GameController extends BaseController
 						//if the algorithm didn't reach the end that means that the chosen position is 
 						//illegal since newX and newY and the last opponent are too far apart
 						if($prevX !== $newX && $prevY !== $newY)
-							$errorMsg = "Illegal position: " . $possiblePosition;
+							$errorMsg = self::ILLEGAL_POS_TEXT . $possiblePosition;
 						return;
 					}
 				}
