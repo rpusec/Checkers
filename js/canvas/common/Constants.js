@@ -31,8 +31,7 @@ var Constants = {
 
 	//dalays
 	GAME_ROOM_WAIT_TIME: 100,
-	PAWN_KILL_OFF_DELAY: 1500,
-	PAWN_DISAPPEAR_DELAY: 10000,
+	PAWN_KILL_OFF_DELAY: 500,
 
 	//first and second player constants
 	FIRST_PLAYER: 1,

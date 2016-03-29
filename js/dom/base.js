@@ -14,20 +14,24 @@ $(document).ready(function(){
 	$('#profile-option-link').on('click', function(){
 		$('#modal-account-settings').modal('show');
 	});
-
-	//ajax request which checks if the user already is logged in 
-	$.ajax({
-		type:'get',
-		processData: false,
-		contentType: false,
-		url:'backend/view/UsersView.php',
-		dataType: 'json',
-		data:'path=is-user-logged',
-		success: isUserLoggedHandlerSuccess,
-		error: function(data){
-			console.log(data);
-		}
-	});
+	
+	/**
+	 * Ajax request which checks if the user already is logged in.
+	 */
+	window.checkLoginStatusAJAXCall = function(){
+		$.ajax({
+			type:'get',
+			processData: false,
+			contentType: false,
+			url:'backend/view/UsersView.php',
+			dataType: 'json',
+			data:'path=is-user-logged',
+			success: isUserLoggedHandlerSuccess,
+			error: function(data){
+				console.log(data);
+			}
+		});
+	}
 
 	/**
 	 * Activates the modal window for user login. 

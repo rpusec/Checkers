@@ -115,15 +115,14 @@
 			}
 		}
 
-		this.killOff = function(stage, rotationAmount, killOffDelay, disappearDelay){
+		this.killOff = function(stage, rotationAmount, killOffDelay){
 			createjs.Tween.get(this).to({
-				y: stage.canvas.height - options.radius,
+				scaleX: 0,
+				scaleY: 0,
 				rotation: Math.random()*rotationAmount * (Math.random() < 0.5 ? -1 : 1)
-			}, killOffDelay, createjs.Ease.bounceOut).call(function(){
-				createjs.Tween.get(this).to({alpha: 0}, disappearDelay).call(function(){
-					if(this.parent !== null)
-						this.parent.removeChild(this);
-				});
+			}, killOffDelay, createjs.Ease.getBackIn(3)).call(function(){
+				if(this.parent !== null)
+					this.parent.removeChild(this);
 			});
 		}
 

@@ -53,6 +53,8 @@
 		createjs.Ticker.setFPS(Constants.FPS);
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
 		stage.enableMouseOver(Constants.MOUSE_OVER_FREQ);
+
+		checkLoginStatusAJAXCall();
 	}
 
 	/**
@@ -366,6 +368,7 @@
 			playerTwoProfile.setFirstname(data.opponent.firstname);
 			playerTwoProfile.setLastname(data.opponent.lastname);
 			playerTwoProfile.setUsername(data.opponent.username);
+			createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 			hideSecondPlayerWaitingMessage();
 			clearInterval(checkForOpponentInterval);
 			whoseTurnAJAXCall(data.opponent.roomID);
@@ -584,9 +587,10 @@
 					playerOneProfile.x += Constants.USER_PROFILE_MOVE;
 					playerTwoProfile.x -= Constants.USER_PROFILE_MOVE;
 
-					//displaying user profiles 
 					createjs.Tween.get(playerOneProfile).to({x: playerOneProfile.x - Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
-					createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
+
+					if(data.playerNumber === Constants.SECOND_PLAYER)
+						createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 
 					stage.addChild(playerOneProfile, playerTwoProfile);
 
@@ -837,8 +841,9 @@
 			targetPawns = [targetPawns];
 
 		targetPawns.forEach(function(pawn){
-			(pawn.getWhichPlayer() === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).splice(playerOnePawns.indexOf(pawn), 1);
-			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY, Constants.PAWN_DISAPPEAR_DELAY);
+			var targetPawnArray = pawn.getWhichPlayer() === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns;
+			targetPawnArray.splice(targetPawnArray.indexOf(pawn), 1);
+			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY);
 		});
 	}
 

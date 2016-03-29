@@ -114,30 +114,33 @@ class GameController extends BaseController
 
 		//checking if the new position is equivalend to the old one, which should not happen
 		if($newPosition === $prevPosition)
-			return array('success' => false, 'error' => 'Illegally supplied previous position. ');
+			return array('success' => false, 'error' => 'Previous position should not be equivalent to the new position. ');
 
 		//checking if the new position represents a pawn
 		if($newPosition > 0)
 			return array('success' => false, 'error' => 'New position should not be a pawn, but an empty field. ');
-
-		#
-		#
-		#
-		/* @TODO => Validate if the player pawn jumps recursively correctly over multiple opponet pawns. */
-		#
-		#
-		#
 
 		define('DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR', 0);
 		define('DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR', 1);
 		define('DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR', 2);
 		define('DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR', 3);
 
-		$removedPawnIds = self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR);
-		$removedPawnIds = array_merge($removedPawnIds, self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR));
-		$removedPawnIds = array_merge($removedPawnIds, self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR));
-		$removedPawnIds = array_merge($removedPawnIds, self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR));
+		$removedPawnIds = array();
+		$diagonallyDissOppErrorMsg = "";
+		self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		
+		if(empty($removedPawnIds))
+			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+		
+		if(empty($removedPawnIds))
+			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+		
+		if(empty($removedPawnIds))
+			self::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
+		
+		if($diagonallyDissOppErrorMsg !== "")
+			return array('success' => false, 'error' => $diagonallyDissOppErrorMsg);
+
 		//setting the previous position to zero, indicating that the pawn has moved from that position
 		$boardRows[$prevY][$prevX] = 0;
 
@@ -228,10 +231,8 @@ class GameController extends BaseController
 		return array('success' => true, 'shouldExitRoom' => $shouldExitRoom);
 	}
 
-	private static function diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, &$boardRows, $direction)
+	private static function diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, &$boardRows, $direction, &$removedPawnIds, &$errorMsg)
 	{
-		$removedPawnIds = array();
-
 		switch($direction)
 		{
 			case DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR : 
@@ -254,27 +255,33 @@ class GameController extends BaseController
 				return null; 
 		}
 
-		$possiblePositions = array(2, 4, 6, 8);
-
-		foreach($possiblePositions as $possiblePosition)
+		for($possiblePosition = 2; $possiblePosition <= 8; $possiblePosition++)
 		{
 			if($prevX+($diffX*$possiblePosition) === $newX && $prevY+($diffY*$possiblePosition) === $newY)
 			{
+				if(($possiblePosition % 2) !== 0)
+				{
+					$errorMsg = "Illegal position: " . $possiblePosition;
+					return;
+				}
+
 				while(true)
 				{
 					if(	$prevY+$diffY < 0 || 
 						$prevX+$diffX < 0 || 
 						$prevY+$diffY > count($boardRows)-1 || 
 						$prevX+$diffX > count($boardRows)-1)
-						break;
+						return;
 
+					//it should not search further if previous and new positions are the same
 					if($prevX === $newX && $prevY === $newY)
-						break;
+						return;
 
 					$posEvaluation = parent::getPlayerNumber() === FIRST_PLAYER ? 
 						($boardRows[$prevY+$diffY][$prevX+$diffX] > PLAYER_PAWNS_AMOUNT) : 
 						($boardRows[$prevY+$diffY][$prevX+$diffX] > 0 && $boardRows[$prevY+$diffY][$prevX+$diffX] <= PLAYER_PAWNS_AMOUNT);
 
+					//checking if an opponent pawn had been spotted
 					if($posEvaluation)
 					{
 						$removedPawnIds[] = intval($boardRows[$prevY+$diffY][$prevX+$diffX]);
@@ -283,11 +290,15 @@ class GameController extends BaseController
 						$prevY+=$diffY*2;
 					}
 					else
-						break;
+					{
+						//if the algorithm didn't reach the end that means that the chosen position is 
+						//illegal since newX and newY and the last opponent are too far apart
+						if($prevX !== $newX && $prevY !== $newY)
+							$errorMsg = "Illegal position: " . $possiblePosition;
+						return;
+					}
 				}
 			}
 		}
-
-		return $removedPawnIds;
 	}
 }
