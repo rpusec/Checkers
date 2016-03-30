@@ -131,16 +131,25 @@
 			updateUserInfoText();
 		}
 
+		/**
+		 * Updates the text object in the display object. 
+		 */
 		function updateUserInfoText(){
 			userInfoTxt.text = options.firstname + " " + options.lastname + "\n" + options.username;
 		}
 
+		/**
+		 * Highlights the user profile. 
+		 */
 		this.highlight = function(){
 			arrRotatingLine.forEach(function(rotatingLine){
 				createjs.Tween.get(rotatingLine).to({alpha: rotatingLine.getInitialAlpha()}, 500);
 			});
 		}
 
+		/**
+		 * Understates the user profile. 
+		 */
 		this.understate = function(){
 			arrRotatingLine.forEach(function(rotatingLine){
 				createjs.Tween.get(rotatingLine).to({alpha: 0}, 500);

@@ -668,6 +668,7 @@
 			selARoomText.show();
 			board.alpha = 0;	
 			contGameRoom.alpha = 1;
+			BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
 			displayAllRoomsAJAXCall();
 		});
 

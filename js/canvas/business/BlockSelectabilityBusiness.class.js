@@ -184,6 +184,12 @@ var BlockSelectabilityBusiness = {};
 		}
 	}
 
+	/**
+	 * Returns boards pawns by their ID values. 
+	 * @param {...<createjs.Point>} ids The ID values of the target pawns. 
+	 * @return {Array|BoardPawn|null} Either returns an array of pawns, or a single pawn if there's 
+	 *                                only one element in the array, or null if the array is empty.
+	 */
 	BlockSelectabilityBusiness.findBoardPawnsByIds = function(){
 		if(arguments.length === 0)
 			return null;

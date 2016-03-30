@@ -89,6 +89,10 @@
 		unavailableText.y = this._options.height/2;
 		this.addChild(unavailableText);
 
+		/**
+		 * Marks the room as unavailable. 
+		 * @param {Boolean} b Indicates whether the room should be marked as unavailable. 
+		 */
 		this.setAsUnavailable = function(b){
 			if(typeof b !== 'boolean')
 				b = false;
@@ -116,10 +120,17 @@
 
 	var p = createjs.extend(GameRoom, createjs.Container);
 
+	/**
+	 * Returns the database ID of the room. 
+	 * @return {Integer} The ID of the room. 
+	 */
 	p.getRoomID = function(){
 		return this._options.roomID;
 	}
 
+	/**
+	 * Adds mouse listeners to the game room. 
+	 */
 	p.addMouseEvents = function(){
 		var ON_MOUSE_MOVE_AMOUNT = 10;
 		var ON_MOUSE_SPEED_AMOUNT = 100;
@@ -146,6 +157,9 @@
 		}
 	}
 
+	/**
+	 * Removes mouse listeners from the game room. 
+	 */
 	p.removeMouseEvents = function(){
 		this.off('mouseover');
 		this.off('mouseout');

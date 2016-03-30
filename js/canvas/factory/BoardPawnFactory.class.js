@@ -1,6 +1,7 @@
 /**
  * Includes functions to create appropriate pawns for 
  * both player and player's opponent. 
+ * @class 
  * @author Roman Pusec
  * @requires BoardPawn.class.js
  */

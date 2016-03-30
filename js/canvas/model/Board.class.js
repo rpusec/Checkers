@@ -60,19 +60,27 @@
 		boardBorder.graphics.setStrokeStyle(options.borderWidth).beginStroke(options.borderColor).drawRect(0, 0, options.width, options.height);
 		boardBorder.boardBorder = true;
 		this.addChild(boardBorder);
-
+		this.setBounds(0, 0, options.width, options.height);
 		this.cache(0, 0, options.width, options.height);
 
+		/**
+		 * Marks a particular block as selectable, that is, that the player can move their pawn towards that spot. 
+		 * @param  {craetejs.Shape} targetBlock The target board block. 
+		 */
 		this.markBlockAsSelectable = function(targetBlock){
 			targetBlock.graphics.clear().beginFill(options.selectableBlockColor).drawRect(rectWidth*targetBlock.col, rectHeight*targetBlock.row, rectWidth, rectHeight);
-			targetBlock.selectable = true;
 			this.updateCache();
+			targetBlock.selectable = true;
 		}
 
+		/**
+		 * Marks a particular block as selectable, that is, that the player can move their pawn towards that spot. 
+		 * @param  {craetejs.Shape} targetBlock The target board block. 
+		 */
 		this.markBlockAsUnselectable = function(targetBlock){
 			targetBlock.graphics.clear().beginFill(targetBlock.unselectableColor).drawRect(rectWidth*targetBlock.col, rectHeight*targetBlock.row, rectWidth, rectHeight);
-			targetBlock.selectable = false;
 			this.updateCache();
+			targetBlock.selectable = false;
 		}
 
 		/**
@@ -83,10 +91,18 @@
 			return {width: rectWidth, height: rectHeight};
 		}
 
+		/**
+		 * Returns the amount of rows. 
+		 * @return {Integer} The amount of rows. 
+		 */
 		this.getRowAmount = function(){
 			return options.rowAmount;
 		}
 
+		/**
+		 * Returns the amount of columns. 
+		 * @return {Integer} The amount of columns. 
+		 */
 		this.getColAmount = function(){
 			return options.colAmount;
 		}

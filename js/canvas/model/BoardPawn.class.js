@@ -115,6 +115,12 @@
 			}
 		}
 
+		/**
+		 * Removes the target pawn from the board
+		 * @param  {createjs.Stage} stage          The stage reference
+		 * @param  {Number} rotationAmount         How much should the pawn move, rotation wise. 
+		 * @param  {Number} killOffDelay           How long (in milliseconds) should the animation last. 
+		 */
 		this.killOff = function(stage, rotationAmount, killOffDelay){
 			createjs.Tween.get(this).to({
 				scaleX: 0,
