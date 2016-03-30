@@ -254,6 +254,10 @@ $(document).on('ready', function(){
 				$(fcVal).val('');
 				$(fcVal).attr('disabled', 'disabled');
 			});
+
+			$.each($('#modal-account-settings').find('.enable-input-change'), function(fcKey, fcVal){
+				$(fcVal).text('Change?');
+			});
 			
 			$('#modal-account-settings').modal('hide');
 		}
