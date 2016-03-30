@@ -327,15 +327,15 @@ class UsersController extends BaseController
 		switch($nonRandomizedColor){
 			case GRC_RED : 
 				$colors['red'] = $brightness;
-				$colors = self::proccessRandomizedColors($colors, 'blue', 'green', $brightness);
+				self::proccessRandomizedColors($colors, 'blue', 'green', $brightness);
 				break;
 			case GRC_GREEN : 
 				$colors['green'] = $brightness;
-				$colors = self::proccessRandomizedColors($colors, 'red', 'blue', $brightness);
+				self::proccessRandomizedColors($colors, 'red', 'blue', $brightness);
 				break;
 			case GRC_BLUE : 
 				$colors['blue'] = $brightness;
-				$colors = self::proccessRandomizedColors($colors, 'red', 'green', $brightness);
+				self::proccessRandomizedColors($colors, 'red', 'green', $brightness);
 				break;
 		}
 
@@ -348,7 +348,7 @@ class UsersController extends BaseController
 	 * @param  String $color1 First color. 
 	 * @param  String $color2 Second color. 
 	 */
-	private static function proccessRandomizedColors($colors, $color1, $color2, $brightness){
+	private static function proccessRandomizedColors(&$colors, $color1, $color2, $brightness){
 		if(rand(0, 1) === 0)
 		{
 			$colors[$color1] = rand($brightness, 255);
