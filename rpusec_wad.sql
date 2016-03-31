@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 29, 2016 at 12:29 AM
+-- Generation Time: Mar 31, 2016 at 11:55 PM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `room` (
   `roomID` int(11) NOT NULL AUTO_INCREMENT,
   `whose_turn` int(11) DEFAULT NULL,
   `stringifiedBoard` varchar(150) NOT NULL,
-  `lastMove` varchar(70) NOT NULL,
-  `removedPawns` varchar(100) NOT NULL,
+  `lastMove` varchar(70) DEFAULT NULL,
+  `removedPawns` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`roomID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
@@ -57,9 +57,9 @@ CREATE TABLE IF NOT EXISTS `room` (
 --
 
 INSERT INTO `room` (`roomID`, `whose_turn`, `stringifiedBoard`, `lastMove`, `removedPawns`) VALUES
-(1, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', '', ''),
-(2, 2, '15,0,2,0,3,0,4,0|0,0,0,6,0,7,0,0|1,0,0,0,0,0,8,0|0,9,0,0,0,0,0,16|13,0,0,0,0,0,19,0|0,17,0,14,0,0,0,0|0,0,18,0,0,0,20,0|0,21,0,22,0,23,0,24', '{"id":1,"prevX":4,"prevY":4,"newX":0,"newY":0}', '[10,5]'),
-(3, 2, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', '', ''),
+(1, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', NULL, NULL),
+(2, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', NULL, NULL),
+(3, 2, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', NULL, NULL),
 (4, 1, '', '', ''),
 (5, 2, '', '', ''),
 (6, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', '', '');
@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`UserID`, `FName`, `LName`, `Username`, `Password`, `connected`, `connexparation`, `chatColorR`, `chatColorG`, `chatColorB`, `ROOM_roomID`) VALUES
-(1, 'tzutuz', 'asdfsad', 'test123', 'test', 1, 1459202055, '255', '239', '222', 0),
-(2, 'roman', 'pusec', 'lawl', 'lawl', 0, 1459202028, '224', '255', '222', 0),
+(1, 'testtest', 'asdfsad', 'test123', 'test', 1, 1459461334, '237', '255', '222', 0),
+(2, 'roman', 'pusec', 'lawl', 'lawl', 0, 1459461291, '255', '228', '222', 0),
 (3, 'tino', 'herljevic', 'therljevic', '11111111', 0, 1458820706, '255', '230', '222', 0);
 
 --

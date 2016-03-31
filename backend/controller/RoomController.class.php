@@ -78,7 +78,9 @@ class RoomController extends BaseController
 			$randUserInt = mt_rand(0,1);
 			DB::update('room', array(
 				'whose_turn' => $users[$randUserInt]['userID'],
-				'stringifiedBoard' => self::constructStringifiedBoard()
+				'stringifiedBoard' => self::constructStringifiedBoard(),
+				'lastMove' => null,
+				'removedPawns' => null,
 			), 'roomID=%i', $roomID);
 		}
 
@@ -100,7 +102,7 @@ class RoomController extends BaseController
 		DB::update('user', array(
 			'ROOM_roomID' => 0
 		), 'userID=%i', parent::getLoggedUserID());
-		
+
 		parent::removePlayerNumber();
 
 		return array('success' => true);
