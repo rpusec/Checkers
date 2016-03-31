@@ -39,6 +39,7 @@
 
 	//miscellaneous
 	,	contGameRoom = new createjs.Container()
+	,	turnTimer
 	,	gameInitialized = false;
 
 	/**
@@ -108,8 +109,15 @@
 		gameNameText.show();
 		selARoomText.show();
 
+		turnTimer = new TurnTimer({onEndHandler: function(){
+			console.log('test');
+		}});
+
+		turnTimer.x = stage.canvas.width - turnTimer.getRadius();
+		turnTimer.y = stage.canvas.height - turnTimer.getRadius();
+
 		gameInitialized = true;
-		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board);
+		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board, turnTimer);
 		displayAllRoomsAJAXCall();
 	}
 
@@ -379,6 +387,7 @@
 	 * Is executed when an appropriate AJAX request was executed successfully.
 	 * Checks whose turn it is, and highlights the said player based on the information
 	 * retrieved from the server. 
+	 * The turn timer is displayed to the authenticated user IF it's their turn. 
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
 	function checkWhoseTurnSuccessHandler(data){
@@ -400,6 +409,8 @@
 					playerOnePawns.forEach(function(targetPawn){
 						makePawnSelectable(targetPawn);
 					});
+					turnTimer.startTimer();
+
 				}
 				else
 				{
@@ -421,6 +432,7 @@
 					playerTwoPawns.forEach(function(targetPawn){
 						makePawnSelectable(targetPawn);
 					});
+					turnTimer.startTimer();
 				}
 				else
 				{
@@ -673,6 +685,7 @@
 		});
 
 		hideSecondPlayerWaitingMessage();
+		turnTimer.endTimer();
 	}
 
 	/**
@@ -773,6 +786,7 @@
 		});
 
 		clearInterval(checkIfOpponentIsDoneInterval);
+		turnTimer.startTimer();
 	}
 
 	/**
@@ -937,6 +951,8 @@
 
 		if(currentlySelectedPawn.point.x === this.point.x && currentlySelectedPawn.point.y === this.point.y)
 			return;
+
+		turnTimer.endTimer();
 
 		evaluatePlayerMoveAJAXCall(
 			currentlySelectedPawn.point.x,

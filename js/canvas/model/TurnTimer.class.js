@@ -19,6 +19,8 @@
 			popDistance: 50
 		}, options);
 
+		this.alpha = 0;
+
 		var initialStartTime = options.startTime;
 		this.initialY;
 

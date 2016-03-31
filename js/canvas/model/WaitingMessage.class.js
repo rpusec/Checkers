@@ -62,6 +62,10 @@
 			text.text = options.text;
 			textBorder.text = options.text;
 		}
+
+		this.getRadius = function(){
+			return options.radius;
+		}
 	}
 
 	var p = createjs.extend(WaitingMessage, createjs.Container);
