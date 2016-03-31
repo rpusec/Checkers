@@ -359,7 +359,5 @@ class UsersController extends BaseController
 			$colors[$color2] = rand($brightness, 255);
 			$colors[$color1] = 255;
 		}
-
-		return $colors;
 	}
 }
