@@ -56,6 +56,12 @@
 		textBorder.color = options.textBorderColor;
 
 		this.addChild(textBorder, text);
+
+		this.setText = function(newText){
+			options.text = newText;
+			text.text = options.text;
+			textBorder.text = options.text;
+		}
 	}
 
 	var p = createjs.extend(WaitingMessage, createjs.Container);

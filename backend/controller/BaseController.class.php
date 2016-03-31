@@ -1,6 +1,6 @@
 <?php
 
-require_once('../connparams.php');
+require_once('../../dbinfo.php');
 require_once('../libs/meekrodb.2.3.class.php');
 require_once('../common/constants.php');
 
