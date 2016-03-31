@@ -110,7 +110,7 @@
 		selARoomText.show();
 
 		turnTimer = new TurnTimer({onEndHandler: function(){
-			console.log('test');
+			notifyTimeOutAJAXCall();
 		}});
 
 		turnTimer.x = stage.canvas.width - turnTimer.getRadius();
@@ -263,6 +263,14 @@
 			url: 'backend/view/GameView.php',
 			data: 'path=check-if-a-player-left',
 			success: checkIfAPlayerLeftSuccessHandler
+		});
+	}
+
+	function notifyTimeOutAJAXCall(){
+		runAjax({
+			url: 'backend/view/GameView.php',
+			data: 'path=notify-turn-time-out',
+			success: notifyTimeOutSuccessHandler
 		});
 	}
 
@@ -805,6 +813,22 @@
 			type: BootstrapDialog.TYPE_INFO,
 			title: "Game status",
 			message: 'Your opponent left the game. '
+		});
+	}
+
+	function notifyTimeOutSuccessHandler(data){
+		console.log(data);
+
+		if(!data.success)
+			return;
+
+		turnTimer.endTimer();
+		checkIfOpponentIsDoneAJAXCall();
+
+		currentPawnList.forEach(function(targetPawn){
+				targetPawn.highlight(false);
+				targetPawn.alpha = 1;
+				makePawnUnselectable(targetPawn);
 		});
 	}
 

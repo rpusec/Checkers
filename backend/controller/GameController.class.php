@@ -264,6 +264,46 @@ class GameController extends BaseController
 		return array('success' => true, 'shouldExitRoom' => $shouldExitRoom);
 	}
 
+	public static function notifyTurnTimeout(){
+
+		if(!parent::isUserLogged())
+			return array('success' => false);
+
+		parent::startConnection();
+
+		$rooms = DB::query("SELECT roomID, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
+
+		if(!empty($rooms))
+			$targetRoom = $rooms[0];
+		else
+			return array('success' => false);
+
+		$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
+		$newWhoseTurn = null;
+
+		if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
+		{
+			$userOne = $users[0];
+			$userTwo = $users[1];
+
+			if($targetRoom['whose_turn'] == parent::getLoggedUserID())
+			{
+				if($userOne['userID'] == parent::getLoggedUserID())
+					$newWhoseTurn = $userTwo['userID'];
+				else if($userTwo['userID'] == parent::getLoggedUserID())
+					$newWhoseTurn = $userOne['userID'];
+			}
+		}
+		else
+			return array('success' => false);
+
+		DB::update('room', array(
+			'whose_turn' => $newWhoseTurn
+		), 'roomID=%i', $targetRoom['roomID']);
+
+		return array('success' => true);
+	}
+
 	/**
 	 * Checks whether, based on the player's move, there are any opponent's pawns that can be killed off. 
 	 * This function also evaluates if the player chose a legal move in the process. 

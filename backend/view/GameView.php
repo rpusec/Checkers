@@ -20,5 +20,8 @@ if(isset($_GET['path']))
 		case 'check-if-a-player-left' : 
 			print json_encode(GameController::checkIfAPlayerLeft());
 			break;
+		case 'notify-turn-time-out' :
+			print json_encode(GameController::notifyTurnTimeout());
+			break;
 	}
 }
