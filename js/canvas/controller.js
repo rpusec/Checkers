@@ -728,12 +728,23 @@
 			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
 
 			movePawn(targetPawn, newCoordinate, function(){
-				if(data.playerNumber === Constants.FIRST_PLAYER)
+				/*if(data.playerNumber === Constants.FIRST_PLAYER)
 				{
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
 				}
 				else if(data.playerNumber === Constants.SECOND_PLAYER)
+				{
+					playerOneProfile.highlight();
+					playerTwoProfile.understate();
+				}*/
+
+				if(playerOneProfile.isHighlighted())
+				{
+					playerOneProfile.understate();
+					playerTwoProfile.highlight();
+				}
+				else if(playerTwoProfile.isHighlighted())
 				{
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
@@ -763,34 +774,39 @@
 	 * @param  {Object} data Data from the server. 
 	 */
 	function checkIfOpponentIsDoneSuccessHandler(data){
+		console.log('isDone: ' + data.isDone);
+
 		if(!data.success || !data.isDone)
 			return;
 
 		data.playerNumber = parseInt(data.playerNumber);
 
-		if(data.playerNumber === Constants.FIRST_PLAYER)
-		{
-			playerOneProfile.highlight();
-			playerTwoProfile.understate();
-		}
-		else if(data.playerNumber === Constants.SECOND_PLAYER)
+		if(playerOneProfile.isHighlighted())
 		{
 			playerOneProfile.understate();
 			playerTwoProfile.highlight();
 		}
+		else if(playerTwoProfile.isHighlighted())
+		{
+			playerOneProfile.highlight();
+			playerTwoProfile.understate();
+		}
 
-		var lastMove = JSON.parse(data.lastMove);
-		var targetPawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
+		if(data.lastMove !== null)
+		{
+			var lastMove = JSON.parse(data.lastMove);
+			var targetPawn = BlockSelectabilityBusiness.findBoardPawnsByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
 
-		movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
-			var removedPawnsIds = JSON.parse(data.removedPawns);
-			var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(removedPawnsIds);
-			if(removedPawns !== null)
-				removePawnsFromBoard(removedPawns);
-
-			currentPawnList.forEach(function(pawn){
-				makePawnSelectable(pawn);
+			movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
+				var removedPawnsIds = JSON.parse(data.removedPawns);
+				var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(removedPawnsIds);
+				if(removedPawns !== null)
+					removePawnsFromBoard(removedPawns);
 			});
+		}
+
+		currentPawnList.forEach(function(pawn){
+			makePawnSelectable(pawn);
 		});
 
 		clearInterval(checkIfOpponentIsDoneInterval);
@@ -817,18 +833,27 @@
 	}
 
 	function notifyTimeOutSuccessHandler(data){
-		console.log(data);
-
 		if(!data.success)
 			return;
 
+		if(playerOneProfile.isHighlighted())
+		{
+			playerOneProfile.understate();
+			playerTwoProfile.highlight();
+		}
+		else if(playerTwoProfile.isHighlighted())
+		{
+			playerOneProfile.highlight();
+			playerTwoProfile.understate();
+		}
+
 		turnTimer.endTimer();
-		checkIfOpponentIsDoneAJAXCall();
+		checkIfOpponentIsDoneInterval = setInterval(function(){
+			checkIfOpponentIsDoneAJAXCall();
+		}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
 
 		currentPawnList.forEach(function(targetPawn){
-				targetPawn.highlight(false);
-				targetPawn.alpha = 1;
-				makePawnUnselectable(targetPawn);
+			makePawnUnselectable(targetPawn);
 		});
 	}
 

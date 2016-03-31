@@ -100,7 +100,7 @@ class RoomController extends BaseController
 		DB::update('user', array(
 			'ROOM_roomID' => 0
 		), 'userID=%i', parent::getLoggedUserID());
-
+		
 		parent::removePlayerNumber();
 
 		return array('success' => true);

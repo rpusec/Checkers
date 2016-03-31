@@ -286,19 +286,18 @@ class GameController extends BaseController
 			$userOne = $users[0];
 			$userTwo = $users[1];
 
-			if($targetRoom['whose_turn'] == parent::getLoggedUserID())
-			{
-				if($userOne['userID'] == parent::getLoggedUserID())
-					$newWhoseTurn = $userTwo['userID'];
-				else if($userTwo['userID'] == parent::getLoggedUserID())
-					$newWhoseTurn = $userOne['userID'];
-			}
+			if($userOne['userID'] == parent::getLoggedUserID())
+				$newWhoseTurn = $userTwo['userID'];
+			else if($userTwo['userID'] == parent::getLoggedUserID())
+				$newWhoseTurn = $userOne['userID'];
 		}
 		else
 			return array('success' => false);
 
 		DB::update('room', array(
-			'whose_turn' => $newWhoseTurn
+			'whose_turn' => $newWhoseTurn,
+			'lastMove' => null,
+			'removedPawns' => null
 		), 'roomID=%i', $targetRoom['roomID']);
 
 		return array('success' => true);

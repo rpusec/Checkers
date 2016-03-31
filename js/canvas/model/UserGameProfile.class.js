@@ -47,6 +47,8 @@
 			lineRadius: 10
 		}, options);
 
+		var highlight = false;
+
 		var pawnFrame = new createjs.Shape();
 		pawnFrame.graphics
 		.setStrokeStyle(options.frameStrokeStyle)
@@ -131,6 +133,10 @@
 			updateUserInfoText();
 		}
 
+		this.isHighlighted = function(){
+			return highlight;
+		}
+
 		/**
 		 * Updates the text object in the display object. 
 		 */
@@ -145,6 +151,7 @@
 			arrRotatingLine.forEach(function(rotatingLine){
 				createjs.Tween.get(rotatingLine).to({alpha: rotatingLine.getInitialAlpha()}, 500);
 			});
+			highlight = true;
 		}
 
 		/**
@@ -154,6 +161,7 @@
 			arrRotatingLine.forEach(function(rotatingLine){
 				createjs.Tween.get(rotatingLine).to({alpha: 0}, 500);
 			});
+			highlight = false;
 		}
 	}
 
