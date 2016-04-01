@@ -36,10 +36,12 @@ class GameController extends BaseController
 		if(!empty($turn))
 		{
 			$turn = $turn[0];
-			$turn = $turn['whose_turn'];
+			$turn = intval($turn['whose_turn']);
 		}
 		else
 			$turn = null;
+
+		self::setBeginningTurnTime();
 
 		return array('success' => true, 'whoseTurn' => $turn, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID());
 	}
@@ -204,6 +206,9 @@ class GameController extends BaseController
 		else
 			return array('success' => false);
 
+		if((parent::getTimeInSec() - self::getBeginningTurnTime()) > TURN_DURATION)
+			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . parent::getTimeInSec() . ' ' . self::getBeginningTurnTime());
+
 		DB::update('room', array(
 			'whose_turn' => $newWhoseTurn,
 			'stringifiedBoard' => $newStringifiedBoard,
@@ -231,7 +236,11 @@ class GameController extends BaseController
 			$targetUser = $users[0];
 
 			if($targetUser['whose_turn'] == parent::getLoggedUserID())
+			{
+				self::setBeginningTurnTime();
 				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove'], 'removedPawns' => $targetUser['removedPawns']);
+			}
+
 			return array('success' => true, 'isDone' => false);
 		}
 	}
@@ -384,5 +393,13 @@ class GameController extends BaseController
 				}
 			}
 		}
+	}
+
+	private static function setBeginningTurnTime(){
+		$_SESSION['beginningTurnTime'] = parent::getTimeInSec();
+	}
+
+	private static function getBeginningTurnTime(){
+		return isset($_SESSION['beginningTurnTime']) ? $_SESSION['beginningTurnTime'] : null;
 	}
 }
