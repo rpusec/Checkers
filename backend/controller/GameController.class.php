@@ -2,6 +2,7 @@
 
 require_once('BaseController.class.php');
 require_once('../helper/ValidationHelper.class.php');
+require_once('UsersController.class.php');
 
 /**
  * Controller class which provides all functionality
@@ -207,7 +208,11 @@ class GameController extends BaseController
 			return array('success' => false);
 
 		if((parent::getTimeInSec() - self::getBeginningTurnTime()) > TURN_DURATION)
-			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . parent::getTimeInSec() . ' ' . self::getBeginningTurnTime());
+		{
+			UsersController::logoutUser(false);
+			parent::destroySession();
+			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . (parent::getTimeInSec() - self::getBeginningTurnTime()), 'errorType' => 'turnDurationError');
+		}
 
 		DB::update('room', array(
 			'whose_turn' => $newWhoseTurn,

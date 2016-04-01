@@ -261,7 +261,7 @@ class UsersController extends BaseController
 	 * Logs the user out. 
 	 * @return Array A two item array, with a success flag, indicating whether the user was logged out, and a message explaining the user's logout status. 
 	 */
-	public static function logoutUser()
+	public static function logoutUser($destroySession=true)
 	{
 		if(!parent::isUserLogged())
 			return array('success' => false, 'message' => USER_LOGOUT_ERROR_MSG);
@@ -273,7 +273,9 @@ class UsersController extends BaseController
 			'ROOM_roomID' => 0
 		), 'userID=%i', parent::getLoggedUserID());
 
-		unset($_SESSION["userID"]);
+		if($destroySession)
+			parent::destroySession();
+		
 		return array('success' => true, 'message' => USER_LOGOUT_MSG);
 	}
 

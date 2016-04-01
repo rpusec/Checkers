@@ -130,7 +130,10 @@
 		if(typeof stage !== 'undefined')
 			stage.removeAllChildren();
 		if(typeof contGameRoom !== 'undefined')
+		{
 			contGameRoom.removeAllChildren();
+			contGameRoom.alpha = 1;
+		}
 		if(typeof stage !== 'undefined')
 			stage.update();
 		gameInitialized = false;
@@ -706,7 +709,17 @@
 
 		if(!data.success)
 		{
-			console.log('error: ' + data.error);
+			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
+			{
+				checkLoginStatusAJAXCall();
+
+				BootstrapDialog.show({
+					type: BootstrapDialog.TYPE_DANGER,
+					title: "Error",
+					message: data.error
+				});
+			}
+
 			return;
 		}
 
@@ -728,17 +741,6 @@
 			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
 
 			movePawn(targetPawn, newCoordinate, function(){
-				/*if(data.playerNumber === Constants.FIRST_PLAYER)
-				{
-					playerOneProfile.understate();
-					playerTwoProfile.highlight();
-				}
-				else if(data.playerNumber === Constants.SECOND_PLAYER)
-				{
-					playerOneProfile.highlight();
-					playerTwoProfile.understate();
-				}*/
-
 				if(playerOneProfile.isHighlighted())
 				{
 					playerOneProfile.understate();
@@ -774,8 +776,6 @@
 	 * @param  {Object} data Data from the server. 
 	 */
 	function checkIfOpponentIsDoneSuccessHandler(data){
-		console.log('isDone: ' + data.isDone);
-
 		if(!data.success || !data.isDone)
 			return;
 
