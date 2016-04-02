@@ -1,5 +1,6 @@
 /**
- * Handles all of the necessary functionalities relating to the canvas section of the application. 
+ * Handles all of the necessary functionalities relating 
+ * to the canvas section of the application. 
  * @author Roman Pusec
  */
 (function(){
@@ -524,7 +525,7 @@
 			gameRoom.removeMouseEvents();
 		});
 
-		//setting the GameRoom container below the stage and setting its alpha to zero
+		//setting the GameRoom container below the canvas and setting its alpha to zero
 		createjs.Tween.get(contGameRoom).to({y: stage.canvas.height, alpha: 0}, 1000).call(function(){
 
 			contGameRoom.removeAllChildren();

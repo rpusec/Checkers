@@ -60,6 +60,9 @@ class GameController extends BaseController
 	 * The function then updates the stringified board in the database, afterwards it adds the 'move' that the player 
 	 * made in the database, so that the opponent can see it. 
 	 * Lastly, the function also marks in the database that it is the opponent's turn in the game. 
+	 *
+	 * The function also checks whether the turn duration is legitimate, that is, if it's less or 
+	 * equal to the TURN_DURATION constant. If it's not, then the player will be kicked out of the game.  
 	 * 
 	 * @param  [Integer] $prevX The initial position on the X-axis of the target pawn. 
 	 * @param  [Integer] $prevY The initial position on the Y-axis of the target pawn. 
@@ -77,29 +80,14 @@ class GameController extends BaseController
 		if(!parent::isUserLogged())
 			return array('success' => false);
 
-		//checking if the initial coordinate is positioned appropriately
-		if(($prevY % 2) === 0)
-		{
-			if(($prevX % 2) !== 0)
-				return array('success' => false, 'error' => 'The initial position [x='.$prevX.',y='.$prevY.'] should be divisable by two. ');
-		}
-		else
-		{
-			if(($prevX % 2) === 0)
-				return array('success' => false, 'error' => 'The initial position [x='.$prevX.',y='.$prevY.'] should not be divisable by two. ');
-		}
+		$prevCoor = self::isCoordinateInitializedAppropriately($prevX, $prevY, 2);
+		$nextCoor = self::isCoordinateInitializedAppropriately($newX, $newY, 2);
 
-		//checking if the new coordinate is positioned appropriately
-		if(($newY % 2) === 0)
-		{
-			if(($newX % 2) !== 0)
-				return array('success' => false, 'error' => 'The new position [x='.$newX.',y='.$newY.'] should not be divisable by two. ');
-		}
-		else
-		{
-			if(($newX % 2) === 0)
-				return array('success' => false, 'error' => 'The new position [x='.$newX.',y='.$newY.'] should be divisable by two. ');
-		}
+		if(is_array($prevCoor))
+			return $prevCoor;
+
+		if(is_array($nextCoor))
+			return $nextCoor;
 
 		parent::startConnection();
 		$rooms = DB::query("SELECT roomID, stringifiedBoard, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
@@ -192,21 +180,12 @@ class GameController extends BaseController
 
 		//setting the opponent's turn
 		if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
-		{
-			$userOne = $users[0];
-			$userTwo = $users[1];
-
 			if($targetRoom['whose_turn'] == parent::getLoggedUserID())
-			{
-				if($userOne['userID'] == parent::getLoggedUserID())
-					$newWhoseTurn = $userTwo['userID'];
-				else if($userTwo['userID'] == parent::getLoggedUserID())
-					$newWhoseTurn = $userOne['userID'];
-			}
-		}
+				$newWhoseTurn = self::switchUserTurn($users[0], $users[1]);
 		else
 			return array('success' => false);
 
+		//checks if the turn duration is legal, that is, if it's not less than the specified coordinate 
 		if((parent::getTimeInSec() - self::getBeginningTurnTime()) > TURN_DURATION)
 		{
 			UsersController::logoutUser(false);
@@ -278,6 +257,11 @@ class GameController extends BaseController
 		return array('success' => true, 'shouldExitRoom' => $shouldExitRoom);
 	}
 
+	/**
+	 * Executes when the turn timeout runs out. When that happens, the method 
+	 * then sets the turn to the opponent on the database.  
+	 * @return [Array] Success flag indicating whether everything went as expected. 
+	 */
 	public static function notifyTurnTimeout(){
 
 		if(!parent::isUserLogged())
@@ -296,15 +280,7 @@ class GameController extends BaseController
 		$newWhoseTurn = null;
 
 		if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
-		{
-			$userOne = $users[0];
-			$userTwo = $users[1];
-
-			if($userOne['userID'] == parent::getLoggedUserID())
-				$newWhoseTurn = $userTwo['userID'];
-			else if($userTwo['userID'] == parent::getLoggedUserID())
-				$newWhoseTurn = $userOne['userID'];
-		}
+			$newWhoseTurn = self::switchUserTurn($users[0], $users[1]);
 		else
 			return array('success' => false);
 
@@ -400,11 +376,56 @@ class GameController extends BaseController
 		}
 	}
 
+	/**
+	 * Sets the beginning turn time. This value will help evaluate whether 
+	 * the time it took for player to finish their move was legal. The value
+	 * that's set is the current time in seconds. 
+	 */
 	private static function setBeginningTurnTime(){
 		$_SESSION['beginningTurnTime'] = parent::getTimeInSec();
 	}
 
+	/**
+	 * Returns the turn time. 
+	 * @return [Integer] Turn time. 
+	 */
 	private static function getBeginningTurnTime(){
 		return isset($_SESSION['beginningTurnTime']) ? $_SESSION['beginningTurnTime'] : null;
+	}
+
+	/**
+	 * Checks whether the coordinate is positioned accurately. 
+	 * @param  [Integer]  $xAxis         The X axis. 
+	 * @param  [Integer]  $yAxis         The Y axis. 
+	 * @param  [Integer]  $numToDiviseBy The number to divide by. 
+	 * @return Array                  If it was an illegal move, it'll return an array with a success flag and the error message, otherwise it'll return null.  
+	 */
+	private static function isCoordinateInitializedAppropriately($xAxis, $yAxis, $numToDiviseBy){
+		if(($yAxis % $numToDiviseBy) === 0)
+		{
+			if(($xAxis % $numToDiviseBy) !== 0)
+				return array('success' => false, 'error' => 'The initial position [x='.$xAxis.',y='.$yAxis.'] should be divisable by ' . $numToDiviseBy . '. ');
+		}
+		else
+		{
+			if(($xAxis % $numToDiviseBy) === 0)
+				return array('success' => false, 'error' => 'The initial position [x='.$xAxis.',y='.$yAxis.'] should not be divisable by ' . $numToDiviseBy . '. ');
+		}
+
+		return null;
+	}
+
+	/**
+	 * Switches the turn from one player to another. The first two 
+	 * parameters have to be the users directly fetched from the database. 
+	 * @param  [Array]   $userOne       The first user. 
+	 * @param  [Array]   $userTwo       The second user. 
+	 * @return [Integer]                The ID of the user who's turn it is. 
+	 */
+	private static function switchUserTurn($userOne, $userTwo){
+		if($userOne['userID'] == parent::getLoggedUserID())
+			return $userTwo['userID'];
+		else if($userTwo['userID'] == parent::getLoggedUserID())
+			return $userOne['userID'];
 	}
 }

@@ -57,12 +57,20 @@
 
 		this.addChild(textBorder, text);
 
+		/**
+		 * Sets the text and updates the display object. 
+		 * @param {String} newText The new text. 
+		 */
 		this.setText = function(newText){
 			options.text = newText;
 			text.text = options.text;
 			textBorder.text = options.text;
 		}
 
+		/**
+		 * Returns the radius. 
+		 * @return {Number} The radius. 
+		 */
 		this.getRadius = function(){
 			return options.radius;
 		}
