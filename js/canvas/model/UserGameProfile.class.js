@@ -19,7 +19,6 @@
 	 *                         - {BoardPawn} avatar => The avatar to display. 
 	 *                         - {Integer} lineAmount => The amount of rotating lines. 
 	 *                         - {Integer} lineRadius => The thickness of a rotating line. 
-	 *                         
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
 	 * @requires BoardPawn.class.js
@@ -118,21 +117,36 @@
 			return options.frameStrokeStyle;
 		}
 
+		/**
+		 * Sets the first name and updates the display object. 
+		 * @param {String} firstname 
+		 */
 		this.setFirstname = function(firstname){
 			options.firstname = firstname;
 			updateUserInfoText();
 		}
 
+		/**
+		 * Sets the last name and updates the display object. 
+		 * @param {String} lastname 
+		 */
 		this.setLastname = function(lastname){
 			options.lastname = lastname;
 			updateUserInfoText();
 		}
 
+		/**
+		 * Sets the username and updates the display object. 
+		 * @param {String} username 
+		 */
 		this.setUsername = function(username){
 			options.username = username;
 			updateUserInfoText();
 		}
 
+		/**
+		 * Checks whether the game profile is highlighted. 
+		 */
 		this.isHighlighted = function(){
 			return highlight;
 		}
@@ -146,6 +160,7 @@
 
 		/**
 		 * Highlights the user profile. 
+		 * Basically used on a user who's turn it is. 
 		 */
 		this.highlight = function(){
 			arrRotatingLine.forEach(function(rotatingLine){
@@ -156,6 +171,7 @@
 
 		/**
 		 * Understates the user profile. 
+		 * Basically used on a user who's turn it isn't. 
 		 */
 		this.understate = function(){
 			arrRotatingLine.forEach(function(rotatingLine){

@@ -49,18 +49,32 @@
 
 		this.rotation = options.rotationVal;
 
+		/**
+		 * Starts the rotation. 
+		 */
 		this.startRotation = function(){
 			createjs.Ticker.addEventListener('tick', onRotation);
 		}
 
+		/**
+		 * Ends the rotation. 
+		 */
 		this.endRotation = function(){
 			createjs.Ticker.removeEventListener('tick', onRotation);
 		}
 
+		/**
+		 * Returns the initial alpha value. Used in order to restore the 
+		 * previous alpha value if the alpha value of the object was altered. 
+		 * @return {Decimal} The initial alpha value. 
+		 */
 		this.getInitialAlpha = function(){
 			return options.alpha;
 		}
 
+		/**
+		 * Handler function which rotates the rotation line. 
+		 */
 		function onRotation(){
 			if(self.parent !== null)
 			{
