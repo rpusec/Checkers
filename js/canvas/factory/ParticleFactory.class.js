@@ -1,0 +1,76 @@
+/**
+ * Factory class which creates particles 
+ * and displays them on the screen. 
+ * @class 
+ * @author Roman Pusec
+ */
+var ParticleFactory = {};
+
+(function(){
+
+	var stage = null;
+	var particles = [];
+
+	/**
+	 * Initializes the factory. 
+	 * @param  {Object} options Represents parameters. 
+	 *                          - stage => The stage reference. 
+	 *                          - particleNum => The number of expected particles. 
+	 *                          - particleSize => The size of each particle.
+	 *                          - particleColor => The color of each particle. 
+	 *                          - particleStrokeColor => The stroke color of each particle. 
+	 *                          - particleStrokeWidth => The stroke width of each particle. 
+	 */
+	ParticleFactory.initialize = function(options){ 
+		options = $.extend({
+			stage: null,
+			particleNum: 7,
+			particleSize: Math.random()*5,
+			particleColor: Constants.COLOR_ONE,
+			particleStrokeColor: Constants.COLOR_TWO,
+			particleStrokeWidth: 1
+		}, options);
+
+		stage = options.stage;
+
+		for(var i = 0; i < options.particleSize; i++)
+		{
+			var newParticle = new createjs.Shape();
+			newParticle.graphics
+				.setStrokeStyle(options.particleStrokeWidth)
+				.beginStroke(options.particleStrokeColor)
+				.beginFill(options.particleColor)
+				.drawCircle(0, 0, options.particleSize);
+			particles[] = newParticle;
+		}
+	}
+
+	/**
+	 * Displays the particles on the canvas. 
+	 * @param  {createjs.Point} point Represents the point from which all of the particles will spawn and then separate. 
+	 */
+	ParticleFactory.spawnParticles = function(point){
+		particles.forEach(function(particle){
+			createjs.Tweens.removeTweens(particle);
+			if(stage.contains(particle))
+				stage.removeChild(particle);
+
+			particle.x = point.x;
+			particle.y = point.y;
+			particle.alpha = 1;
+
+			if(!stage.contains(particle))
+				stage.addChild(particle);
+
+			var randomAngle = Math.random()*(Math.PI*2);
+			var cos = Math.cos(randomAngle) * Constants.PARTICLE_DISTANCE;
+			var sin = Math.sin(randomAngle) * Constants.PARTICLE_DISTANCE;
+
+			createjs.Tweens.get(particle).to({x: particle.x + cos, y: particle.y + sin}).wait(100).to({alpha: 0}).call(function(){
+				if(this.parent !== null)
+					this.parent.removeChild(this);
+			});
+		});
+	}
+
+}());

@@ -44,5 +44,8 @@ var Constants = {
 	CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION: 3000,
 	
 	//max users per room
-	MAX_USERS_PER_ROOM: 2
+	MAX_USERS_PER_ROOM: 2,
+
+	//particles
+	PARTICLE_DISTANCE: 30
 };
