@@ -117,6 +117,8 @@
 		turnTimer.x = stage.canvas.width - turnTimer.getRadius();
 		turnTimer.y = stage.canvas.height - turnTimer.getRadius();
 
+		ParticleFactory.initialize({stage: stage});
+
 		gameInitialized = true;
 		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board, turnTimer);
 		displayAllRoomsAJAXCall();
@@ -995,7 +997,7 @@
 	 * pawn and if we want to move it to a particular place on the board. 
 	 * @event click
 	 */
-	function boardBlockClickHandler(){
+	function boardBlockClickHandler(evt){
 		if(currentlySelectedPawn === null || !this.selectable)
 			return;
 
@@ -1003,6 +1005,7 @@
 			return;
 
 		turnTimer.endTimer();
+		ParticleFactory.spawnParticles(new createjs.Point(evt.stageX, evt.stageY));
 
 		evaluatePlayerMoveAJAXCall(
 			currentlySelectedPawn.point.x,
