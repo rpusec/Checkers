@@ -26,7 +26,7 @@ var Constants = {
 	POLIGON_POINT_TYPE: [4, 6, 8, 10],
 	
 	//amount of pawns
-	PAWN_AMOUNT: 12,
+	PAWN_AMOUNT: 1,
 	GAME_ROOMS_PER_ROW: 3,
 
 	//dalays
@@ -47,5 +47,8 @@ var Constants = {
 	MAX_USERS_PER_ROOM: 2,
 
 	//particles
-	PARTICLE_DISTANCE: 30
+	PARTICLE_DISTANCE: 30,
+
+	//board
+	BOARD_ROW_SEPARATOR: '|'
 };

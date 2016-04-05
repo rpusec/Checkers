@@ -162,9 +162,6 @@ class RoomController extends BaseController
 	 * @return String Stringified board. 
 	 */
 	private static function constructStringifiedBoard(){
-		define('BOARD_BG', 0);
-		define('PLAYER_TWO_ROW_POSITION', 6);
-
 		$resultStr = "";
 		$pawnCurrId = 1;
 

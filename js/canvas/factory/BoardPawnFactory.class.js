@@ -41,6 +41,8 @@ var BoardPawnFactory = {};
 	 * @type {Integer}
 	 */
 	var sides = null;
+	var playerOneSides = null;
+	var playerTwoSides = null;
 
 	/**
 	 * Creates the pawn list for the first player. 
@@ -49,7 +51,7 @@ var BoardPawnFactory = {};
 	 * @return {Array}        	List of pawns specified for the player.  
 	 */
 	BoardPawnFactory.createPlayerOnePawns = function(board, amount){
-		return createPawns(amount, getPlayerOnePawnOptions(), board, true);
+		return createPawns(amount, getPlayerOnePawnOptions(), board, true, playerOneSides);
 	}
 
 	/**
@@ -59,7 +61,7 @@ var BoardPawnFactory = {};
 	 * @return {Array}        	List of pawns specified for the player's opponent.  
 	 */
 	BoardPawnFactory.createPlayerTwoPawns = function(board, amount){
-		return createPawns(amount, getPlayerTwoPawnOptions(), board, false);
+		return createPawns(amount, getPlayerTwoPawnOptions(), board, false, playerTwoSides);
 	}
 
 	/**
@@ -69,6 +71,8 @@ var BoardPawnFactory = {};
 	 */
 	BoardPawnFactory.resetSides = function(){
 		sides = null;
+		playerOneSides = null;
+		playerTwoSides = null;
 	}
 
 	/**
@@ -86,37 +90,47 @@ var BoardPawnFactory = {};
 	 * @param  {Boolean} isPlayerOne   Specifies whether the pawns belong to the player or to the opponent. 
 	 * @return {Array}             	   An array of pawns. 
 	 */
-	function createPawns(amount, pawnOptions, board, isPlayerOne){
+	function createPawns(amount, pawnOptions, board, isPlayerOne, playerSides){
 		if(typeof amount !== 'number')
 			amount = Constants.PAWN_AMOUNT;
 
-		if(sides === null)
-			sides = Constants.POLIGON_POINT_TYPE[calcPolyPointTypeIndex()];
-		else
+		if(typeof playerSides !== 'number')
 		{
-			var sidesIndex = calcPolyPointTypeIndex();
-
-			//to ensure that player's and opponent's pawns are always different 
-			//when it comes to the number of sides from both of them 
-			if(sidesIndex === Constants.POLIGON_POINT_TYPE.indexOf(sides))
+			if(sides === null)
+				sides = Constants.POLIGON_POINT_TYPE[calcPolyPointTypeIndex()];
+			else
 			{
-				if(sidesIndex + 1 > Constants.POLIGON_POINT_TYPE.length-1)
-					sidesIndex--;
-				else if(sidesIndex - 1 < 0)
-					sidesIndex++;
-				else
-				{
-					if(Math.random() < 0.5)
-						sidesIndex--;
-					else
-						sidesIndex++;
-				}
-			}
+				var sidesIndex = calcPolyPointTypeIndex();
 
-			sides = Constants.POLIGON_POINT_TYPE[sidesIndex];
+				//to ensure that player's and opponent's pawns are always different 
+				//when it comes to the number of sides from both of them 
+				if(sidesIndex === Constants.POLIGON_POINT_TYPE.indexOf(sides))
+				{
+					if(sidesIndex + 1 > Constants.POLIGON_POINT_TYPE.length-1)
+						sidesIndex--;
+					else if(sidesIndex - 1 < 0)
+						sidesIndex++;
+					else
+					{
+						if(Math.random() < 0.5)
+							sidesIndex--;
+						else
+							sidesIndex++;
+					}
+				}
+
+				sides = Constants.POLIGON_POINT_TYPE[sidesIndex];
+			}
+			
+			pawnOptions.sides = sides;
+
+			if(isPlayerOne)
+				playerOneSides = sides;
+			else
+				playerTwoSides = sides;	
 		}
-		
-		pawnOptions.sides = sides;
+		else
+			pawnOptions.sides = playerSides;
 
 		var pawnList = [];
 
@@ -159,7 +173,7 @@ var BoardPawnFactory = {};
 		if(typeof isPlayerOne !== 'boolean')
 			isPlayerOne = true;
 
-		var playerTwoPosPawnsY = arrPawn.length/(board.getColAmount()/2);
+		var playerTwoPosPawnsY = Math.ceil(arrPawn.length/(board.getColAmount()/2));
 
 		var posX = isPlayerOne ? 0 : 1;
 		var posY = 0;

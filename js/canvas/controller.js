@@ -262,7 +262,7 @@
 	}
 
 	/**
-	 * Checks whether the opponent left the game
+	 * Checks whether the opponent left the game. 
 	 */
 	function checkIfAPlayerLeftAJAXCall(){
 		runAjax({
@@ -536,19 +536,16 @@
 			//displaying the board to the center of the canvas 
 			createjs.Tween.get(board).to({y: stage.canvas.height/2 - board.getBounds().height/2, alpha: 1}, 1000, createjs.Ease.backOut).call(function(){
 				BoardPawnFactory.resetSides();
-				var pOnePawns = BoardPawnFactory.createPlayerOnePawns(board);
-				var pTwoPawns = BoardPawnFactory.createPlayerTwoPawns(board);
-
+				var pawnInfo = createAndSetupPawns();
 				btnLeaveGame.appear(null, function(){
-
 					var playerOneProps = {
 						side: UserGameProfile.RIGHT_SIDE, 
-						avatar: pOnePawns.avatar
+						avatar: pawnInfo.pOnePawns.avatar
 					};
 
 					var playerTwoProps = {
 						side: UserGameProfile.LEFT_SIDE, 
-						avatar: pTwoPawns.avatar
+						avatar: pawnInfo.pTwoPawns.avatar
 					};
 
 					//true if the user was the first one to enter a game room
@@ -574,8 +571,7 @@
 					else if(data.playerNumber === Constants.SECOND_PLAYER)
 					{
 						//if the first user on the list is the one who's logged in from
-						//this computer, then they should be represented as the second
-						//player
+						//this computer, then they should be represented as the second player
 						if(data.users[0].userID == data.loggedUserID)
 						{
 							playerOneProps.firstname = data.users[1].firstname;
@@ -631,23 +627,7 @@
 						whoseTurnAJAXCall(data.roomID);
 					}
 				});
-				
-				//spawns the player and opponent pawns 
-				//and positiones them accordingly
-				playerOnePawns = pOnePawns.list;
-				playerTwoPawns = pTwoPawns.list;
-
-				BlockSelectabilityBusiness.setPlayerOnePawns(playerOnePawns);
-				BlockSelectabilityBusiness.setPlayerTwoPawns(playerTwoPawns);
-
-				(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
-					pawn.scaleX = 0;
-					pawn.scaleY = 0;
-					createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
-					stage.addChild(pawn);
-				});
 			});
-
 		});
 	}
 
@@ -690,6 +670,7 @@
 		clearInterval(checkIfAPlayerLeftInterval);
 
 		createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
+			BoardPawnFactory.resetSides();
 			gameNameText.show();
 			selARoomText.show();
 			board.alpha = 0;	
@@ -712,22 +693,20 @@
 
 		if(!data.success)
 		{
-			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
-			{
-				checkLoginStatusAJAXCall();
+			BootstrapDialog.show({
+				type: BootstrapDialog.TYPE_DANGER,
+				title: "Error",
+				message: data.error
+			});
 
-				BootstrapDialog.show({
-					type: BootstrapDialog.TYPE_DANGER,
-					title: "Error",
-					message: data.error
-				});
-			}
+			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
+				checkLoginStatusAJAXCall();
 
 			return;
 		}
 
 		var targetPawn = null;
-		var pcSplit = data.prevCoordinate.split('|');
+		var pcSplit = data.prevCoordinate.split(Constants.BOARD_ROW_SEPARATOR);
 		var prevCoordinate = new createjs.Point(parseInt(pcSplit[0]), parseInt(pcSplit[1]));
 
 		(parseInt(data.playerNumber) === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).forEach(function(pawn){
@@ -740,7 +719,7 @@
 
 		if(targetPawn !== null)
 		{
-			var ncSplit = data.newCoordinate.split('|');
+			var ncSplit = data.newCoordinate.split(Constants.BOARD_ROW_SEPARATOR);
 			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
 
 			movePawn(targetPawn, newCoordinate, function(){
@@ -912,6 +891,28 @@
 			targetPawnArray.splice(targetPawnArray.indexOf(pawn), 1);
 			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY);
 		});
+	}
+
+	function createAndSetupPawns(){
+		var pOnePawns = BoardPawnFactory.createPlayerOnePawns(board);
+		var pTwoPawns = BoardPawnFactory.createPlayerTwoPawns(board);
+
+		//spawns the player and opponent pawns 
+		//and positiones them accordingly
+		playerOnePawns = pOnePawns.list;
+		playerTwoPawns = pTwoPawns.list;
+
+		BlockSelectabilityBusiness.setPlayerOnePawns(playerOnePawns);
+		BlockSelectabilityBusiness.setPlayerTwoPawns(playerTwoPawns);
+
+		(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
+			pawn.scaleX = 0;
+			pawn.scaleY = 0;
+			createjs.Tween.get(pawn).to({scaleX: 1, scaleY: 1}, 1500, createjs.Ease.quartInOut);
+			stage.addChild(pawn);
+		});
+
+		return {pOnePawns: pOnePawns, pTwoPawns: pTwoPawns};
 	}
 
 	//---------------------------------------------------------------------------------//
