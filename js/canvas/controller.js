@@ -748,7 +748,12 @@
 			checkIfOpponentIsDoneInterval = setInterval(function(){
 				checkIfOpponentIsDoneAJAXCall();
 			}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
-		}
+                
+                        if(data.winner !== null)
+                        {
+                            console.log(data.winner);
+                        }
+                }
 	}
 
 	/**
@@ -790,6 +795,11 @@
 		currentPawnList.forEach(function(pawn){
 			makePawnSelectable(pawn);
 		});
+                
+                if(data.winner !== null)
+                {
+                    console.log(data.winner);
+                }
 
 		clearInterval(checkIfOpponentIsDoneInterval);
 		turnTimer.startTimer();
