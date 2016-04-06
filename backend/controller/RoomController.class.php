@@ -161,7 +161,7 @@ class RoomController extends BaseController
 	 * from 1 to 24) all in place the way they are at the start of a game of checkers. 
 	 * @return String Stringified board. 
 	 */
-	private static function constructStringifiedBoard(){
+	public static function constructStringifiedBoard(){
 		$resultStr = "";
 		$pawnCurrId = 1;
 

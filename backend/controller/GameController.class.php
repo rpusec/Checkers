@@ -1,6 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
+require_once('RoomController.class.php');
 require_once('../helper/ValidationHelper.class.php');
 require_once('UsersController.class.php');
 
@@ -164,24 +165,24 @@ class GameController extends BaseController
 
 		//setting the destinated position equivalent to the previous position
 		$boardRows[$newY][$newX] = $prevPosition;
-                
-                $playerOnePawns = 0;
-                $playerTwoPawns = 0;
-                
+				
+				$playerOnePawns = 0;
+				$playerTwoPawns = 0;
+				
 		//reconstructing stringified board
 		$newStringifiedBoard = "";
 		foreach($boardRows as $boardRowKey => $boardRowVal)
 		{
 			$newStringifiedBoard .= implode(BOARD_COL_SEPARATOR, $boardRowVal);
-                        
-                        foreach($boardRowVal as $boardCol)
-                        {
-                            if($boardCol > PLAYER_PAWNS_AMOUNT)
-                                $playerTwoPawns++;
-                            else if($boardCol <= $PLAYER_PAWNS_AMOUNT && $boardCol > 0)
-                                $playerOnePawns++;
-                        }
-                        
+						
+			foreach($boardRowVal as $boardCol)
+			{
+				if($boardCol > PLAYER_PAWNS_AMOUNT)
+					$playerTwoPawns++;
+				else if($boardCol <= PLAYER_PAWNS_AMOUNT && $boardCol > 0)
+					$playerOnePawns++;
+			}
+						
 			if($boardRowKey !== count($boardRows)-1)
 				$newStringifiedBoard .= BOARD_ROW_SEPARATOR;
 		}
@@ -203,13 +204,13 @@ class GameController extends BaseController
 			parent::destroySession();
 			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . (parent::getTimeInSec() - self::getBeginningTurnTime()), 'errorType' => 'turnDurationError');
 		}
-                
-                if($playerOnePawns === 0 && $playerTwoPawns !== 0)
-                    $winner = SECOND_PLAYER;
-                else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
-                    $winner = FIRST_PLAYER;
-                else
-                    $winner = null;
+				
+		if($playerOnePawns === 0 && $playerTwoPawns !== 0)
+			$winner = SECOND_PLAYER;
+		else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
+			$winner = FIRST_PLAYER;
+		else
+			$winner = null;
 
 		DB::update('room', array(
 			'whose_turn' => $newWhoseTurn,
@@ -235,38 +236,48 @@ class GameController extends BaseController
 		$users = DB::query("SELECT roomID, whose_turn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%s", parent::getLoggedUserID());
 		if(!empty($users))
 		{
-                    $targetUser = $users[0];
+			$targetUser = $users[0];
 
-                    if($targetUser['whose_turn'] == parent::getLoggedUserID())
-                    {
-                        $stringifiedBoard = DB::query("SELECT stringifiedBoard FROM room WHERE roomID=%i", $targetUser['roomID']);
-                        $boardRowStrArr = explode(BOARD_ROW_SEPARATOR, $stringifiedBoard['stringifiedBoard']);
+			if($targetUser['whose_turn'] == parent::getLoggedUserID())
+			{
+				$stringifiedBoard = DB::query("SELECT stringifiedBoard FROM room WHERE roomID=%i", $targetUser['roomID']);
+				$boardRowStrArr = explode(BOARD_ROW_SEPARATOR, $stringifiedBoard[0]['stringifiedBoard']);
 
-                        foreach($boardRowStrArr as $boardRowStr)
-                        {
-                            $boardColArr = explode(BOARD_COL_SEPARATOR, $boardRowStr);
+				$playerTwoPawns = 0;
+				$playerOnePawns = 0;
 
-                            foreach($boardColArr as $boardCol)
-                            {
-                                if($boardCol > PLAYER_PAWNS_AMOUNT)
-                                    $playerTwoPawns++;
-                                else if($boardCol <= $PLAYER_PAWNS_AMOUNT && $boardCol > 0)
-                                    $playerOnePawns++;
-                            }
-                        }
+				foreach($boardRowStrArr as $boardRowStr)
+				{
+					$boardColArr = explode(BOARD_COL_SEPARATOR, $boardRowStr);
 
-                        if($playerOnePawns === 0 && $playerTwoPawns !== 0)
-                            $winner = SECOND_PLAYER;
-                        else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
-                            $winner = FIRST_PLAYER;
-                        else
-                            $winner = null;
-                        
-                        self::setBeginningTurnTime();
-                        return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove'], 'removedPawns' => $targetUser['removedPawns'], 'winner' => $winner);
-                    }
+					foreach($boardColArr as $boardCol)
+					{
+						if($boardCol > PLAYER_PAWNS_AMOUNT)
+							$playerTwoPawns++;
+						else if($boardCol <= PLAYER_PAWNS_AMOUNT && $boardCol > 0)
+							$playerOnePawns++;
+					}
+				}
 
-                    return array('success' => true, 'isDone' => false);
+				if($playerOnePawns === 0 && $playerTwoPawns !== 0)
+					$winner = SECOND_PLAYER;
+				else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
+					$winner = FIRST_PLAYER;
+				else
+					$winner = null;
+
+				if($winner !== null)
+				{
+					DB::update('room', array(
+						'stringifiedBoard' => RoomController::constructStringifiedBoard()
+					), 'roomID=%i', $targetUser['roomID']);
+				}
+				
+				self::setBeginningTurnTime();
+				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove'], 'removedPawns' => $targetUser['removedPawns'], 'winner' => $winner);
+			}
+
+			return array('success' => true, 'isDone' => false);
 		}
 	}
 
@@ -469,12 +480,12 @@ class GameController extends BaseController
 		else if($userTwo['userID'] == parent::getLoggedUserID())
 			return $userOne['userID'];
 	}
-        
-        private static function checkWinningStatus()
-        {
-            if(!parent::isUserLogged())
-                return array('success' => false);
-            
-            
-        }
+		
+		private static function checkWinningStatus()
+		{
+			if(!parent::isUserLogged())
+				return array('success' => false);
+			
+			
+		}
 }

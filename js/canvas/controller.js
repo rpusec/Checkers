@@ -21,9 +21,10 @@
 	,	btnLeaveGame
 
 	//pawns
-	,	playerOnePawns
-	,	playerTwoPawns
+	,	playerOnePawns = null
+	,	playerTwoPawns = null
 	,	currentlySelectedPawn = null
+	,	currentPawnList
 
 	//player profiles
 	,	playerOneProfile
@@ -708,8 +709,9 @@
 		var targetPawn = null;
 		var pcSplit = data.prevCoordinate.split(Constants.BOARD_ROW_SEPARATOR);
 		var prevCoordinate = new createjs.Point(parseInt(pcSplit[0]), parseInt(pcSplit[1]));
+		data.playerNumber = parseInt(data.playerNumber);
 
-		(parseInt(data.playerNumber) === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).forEach(function(pawn){
+		(data.playerNumber === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns).forEach(function(pawn){
 			if(pawn.point.x === prevCoordinate.x && pawn.point.y === prevCoordinate.y)
 			{
 				targetPawn = pawn;
@@ -737,6 +739,12 @@
 				var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(data.removedPawns);
 				if(removedPawns !== null)
 					removePawnsFromBoard(removedPawns);
+
+				if(data.winner !== null)
+				{
+					console.log(data.winner);
+					createAndSetupPawns(data.playerNumber);
+				}
 			});
 
 			BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
@@ -748,12 +756,7 @@
 			checkIfOpponentIsDoneInterval = setInterval(function(){
 				checkIfOpponentIsDoneAJAXCall();
 			}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
-                
-                        if(data.winner !== null)
-                        {
-                            console.log(data.winner);
-                        }
-                }
+		}
 	}
 
 	/**
@@ -787,19 +790,21 @@
 			movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
 				var removedPawnsIds = JSON.parse(data.removedPawns);
 				var removedPawns = BlockSelectabilityBusiness.findBoardPawnsByIds(removedPawnsIds);
+				
 				if(removedPawns !== null)
 					removePawnsFromBoard(removedPawns);
+
+				if(data.winner !== null)
+				{
+					console.log(data.winner);
+					createAndSetupPawns(data.playerNumber);
+				}
 			});
 		}
 
 		currentPawnList.forEach(function(pawn){
 			makePawnSelectable(pawn);
 		});
-                
-                if(data.winner !== null)
-                {
-                    console.log(data.winner);
-                }
 
 		clearInterval(checkIfOpponentIsDoneInterval);
 		turnTimer.startTimer();
@@ -903,7 +908,14 @@
 		});
 	}
 
-	function createAndSetupPawns(){
+	function createAndSetupPawns(playerNumber){
+		if(playerOnePawns !== null && playerTwoPawns !== null)
+		{
+			(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn){
+				pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY);
+			});
+		}
+
 		var pOnePawns = BoardPawnFactory.createPlayerOnePawns(board);
 		var pTwoPawns = BoardPawnFactory.createPlayerTwoPawns(board);
 
@@ -911,6 +923,9 @@
 		//and positiones them accordingly
 		playerOnePawns = pOnePawns.list;
 		playerTwoPawns = pTwoPawns.list;
+
+		if(typeof playerNumber === 'number')
+			currentPawnList = playerNumber === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns;
 
 		BlockSelectabilityBusiness.setPlayerOnePawns(playerOnePawns);
 		BlockSelectabilityBusiness.setPlayerTwoPawns(playerTwoPawns);
