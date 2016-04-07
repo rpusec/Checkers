@@ -30,6 +30,7 @@
 			options = {};
 
 		options = $.extend({
+			id: -1,
 			firstname: 'Not specified',
 			lastname: 'Not specified',
 			username: 'Not specified',
@@ -117,6 +118,14 @@
 			return options.frameStrokeStyle;
 		}
 
+		this.setID = function(id){
+			options.id = id;
+		}
+
+		this.getID = function(){
+			return options.id;
+		}
+
 		/**
 		 * Sets the first name and updates the display object. 
 		 * @param {String} firstname 
@@ -124,6 +133,10 @@
 		this.setFirstname = function(firstname){
 			options.firstname = firstname;
 			updateUserInfoText();
+		}
+
+		this.getFirstname = function(){
+			return options.firstname;
 		}
 
 		/**
@@ -135,6 +148,10 @@
 			updateUserInfoText();
 		}
 
+		this.getLastname = function(){
+			return options.lastname;
+		}
+
 		/**
 		 * Sets the username and updates the display object. 
 		 * @param {String} username 
@@ -142,6 +159,10 @@
 		this.setUsername = function(username){
 			options.username = username;
 			updateUserInfoText();
+		}
+
+		this.getUsername = function(){
+			return options.username;
 		}
 
 		/**

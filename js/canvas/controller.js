@@ -388,6 +388,7 @@
 
 		if(data.opponent !== null)
 		{
+			playerTwoProfile.setID(data.opponent.userID);
 			playerTwoProfile.setFirstname(data.opponent.firstname);
 			playerTwoProfile.setLastname(data.opponent.lastname);
 			playerTwoProfile.setUsername(data.opponent.username);
@@ -554,6 +555,7 @@
 					{
 						if(data.users[0].userID == data.loggedUserID)
 						{
+							playerOneProps.id = data.users[0].userID;
 							playerOneProps.firstname = data.users[0].firstname;
 							playerOneProps.lastname = data.users[0].lastname;
 							playerOneProps.username = data.users[0].username;
@@ -575,20 +577,24 @@
 						//this computer, then they should be represented as the second player
 						if(data.users[0].userID == data.loggedUserID)
 						{
+							playerOneProps.id = data.users[1].userID;
 							playerOneProps.firstname = data.users[1].firstname;
 							playerOneProps.lastname = data.users[1].lastname;
 							playerOneProps.username = data.users[1].username;
 
+							playerTwoProps.id = data.users[0].userID;
 							playerTwoProps.firstname = data.users[0].firstname;
 							playerTwoProps.lastname = data.users[0].lastname;
 							playerTwoProps.username = data.users[0].username;
 						}
 						else if(data.users[1].userID == data.loggedUserID)
 						{
+							playerOneProps.id = data.users[0].userID;
 							playerOneProps.firstname = data.users[0].firstname;
 							playerOneProps.lastname = data.users[0].lastname;
 							playerOneProps.username = data.users[0].username;
 
+							playerTwoProps.id = data.users[1].userID;
 							playerTwoProps.firstname = data.users[1].firstname;
 							playerTwoProps.lastname = data.users[1].lastname;
 							playerTwoProps.username = data.users[1].username;
@@ -742,7 +748,7 @@
 
 				if(data.winner !== null)
 				{
-					console.log(data.winner);
+					announceWinner(data.winner);
 					createAndSetupPawns(data.playerNumber);
 				}
 			});
@@ -796,7 +802,7 @@
 
 				if(data.winner !== null)
 				{
-					console.log(data.winner);
+					announceWinner(data.winner);
 					createAndSetupPawns(data.playerNumber);
 
 					currentPawnList.forEach(function(pawn){
@@ -945,6 +951,26 @@
 		});
 
 		return {pOnePawns: pOnePawns, pTwoPawns: pTwoPawns};
+	}
+
+	function announceWinner(winnerID){
+
+		var winnerName = '';
+
+		if(winnerID === Constants.FIRST_PLAYER)
+			winnerName = playerOneProfile.getFirstname() + ' ' + playerOneProfile.getLastname();
+		else if(winnerID === Constants.SECOND_PLAYER)
+			winnerName = playerTwoProfile.getFirstname() + ' ' + playerTwoProfile.getLastname();
+
+		var amWinner = new AppearingMessage({
+			text: 'The winner is ' + winnerName + '! ', 
+			direction: Math.random() < 0.5 ? AppearingMessage.VERTICAL_DIRECTION : AppearingMessage.HORIZONTAL_DIRECTION
+		});
+		
+		amWinner.x = stage.canvas.width/2;
+		amWinner.y = stage.canvas.height/2;
+		stage.addChild(amWinner);
+		amWinner.appear();
 	}
 
 	//---------------------------------------------------------------------------------//
