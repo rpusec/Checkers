@@ -205,12 +205,7 @@ class GameController extends BaseController
 			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . (parent::getTimeInSec() - self::getBeginningTurnTime()), 'errorType' => 'turnDurationError');
 		}
 				
-		if($playerOnePawns === 0 && $playerTwoPawns !== 0)
-			$winner = SECOND_PLAYER;
-		else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
-			$winner = FIRST_PLAYER;
-		else
-			$winner = null;
+		$winner = self::checkForWinner($playerOnePawns, $playerTwoPawns);
 
 		DB::update('room', array(
 			'whose_turn' => $newWhoseTurn,
@@ -259,12 +254,7 @@ class GameController extends BaseController
 					}
 				}
 
-				if($playerOnePawns === 0 && $playerTwoPawns !== 0)
-					$winner = SECOND_PLAYER;
-				else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
-					$winner = FIRST_PLAYER;
-				else
-					$winner = null;
+				$winner = self::checkForWinner($playerOnePawns, $playerTwoPawns);
 
 				if($winner !== null)
 				{
@@ -343,6 +333,16 @@ class GameController extends BaseController
 		), 'roomID=%i', $targetRoom['roomID']);
 
 		return array('success' => true);
+	}
+
+	private static function checkForWinner($playerOnePawns, $playerTwoPawns)
+	{
+		if($playerOnePawns === 0 && $playerTwoPawns !== 0)
+			return SECOND_PLAYER;
+		else if($playerOnePawns !== 0 && $playerTwoPawns === 0)
+			return FIRST_PLAYER;
+		else
+			return null;
 	}
 
 	/**
@@ -480,12 +480,4 @@ class GameController extends BaseController
 		else if($userTwo['userID'] == parent::getLoggedUserID())
 			return $userOne['userID'];
 	}
-		
-		private static function checkWinningStatus()
-		{
-			if(!parent::isUserLogged())
-				return array('success' => false);
-			
-			
-		}
 }
