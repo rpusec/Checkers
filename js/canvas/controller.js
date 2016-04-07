@@ -14,7 +14,7 @@
 	,	gameNameText
 	,	selARoomText
 
-	//board
+	//board reference
 	,	board
 	
 	//btns
@@ -273,6 +273,10 @@
 		});
 	}
 
+	/**
+	 * It is executed when the timer ran out, thus the 
+	 * turn should be switched. 
+	 */
 	function notifyTimeOutAJAXCall(){
 		runAjax({
 			url: 'backend/view/GameView.php',
@@ -842,6 +846,10 @@
 		});
 	}
 
+	/**
+	 * Notifies the user that their timer ran out. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	function notifyTimeOutSuccessHandler(data){
 		if(!data.success)
 			return;
@@ -921,6 +929,12 @@
 		});
 	}
 
+	/**
+	 * Creates and sets up the pawns in the game. 
+	 * @param  {Integer} playerNumber The number of the player. 
+	 * @return {Object}               All of the information provided by the BoardPawnFactory class. 
+	 * @see  BoardPawnFactory.class.js
+	 */
 	function createAndSetupPawns(playerNumber){
 		if(playerOnePawns !== null && playerTwoPawns !== null)
 		{
@@ -943,6 +957,7 @@
 		BlockSelectabilityBusiness.setPlayerOnePawns(playerOnePawns);
 		BlockSelectabilityBusiness.setPlayerTwoPawns(playerTwoPawns);
 
+		//adding pawns to the game
 		(playerOnePawns.concat(playerTwoPawns)).forEach(function(pawn, pawnIndex){
 			pawn.scaleX = 0;
 			pawn.scaleY = 0;
@@ -953,20 +968,24 @@
 		return {pOnePawns: pOnePawns, pTwoPawns: pTwoPawns};
 	}
 
-	function announceWinner(winnerID){
-
+	/**
+	 * Displays a message saying who won a round. 
+	 * @param  {Integer} winnerPlayerNumber The player number of the winner. 
+	 * @see  AppearingMessage.class.js
+	 */
+	function announceWinner(winnerPlayerNumber){
 		var winnerName = '';
 
-		if(winnerID === Constants.FIRST_PLAYER)
+		if(winnerPlayerNumber === Constants.FIRST_PLAYER)
 			winnerName = playerOneProfile.getFirstname() + ' ' + playerOneProfile.getLastname();
-		else if(winnerID === Constants.SECOND_PLAYER)
+		else if(winnerPlayerNumber === Constants.SECOND_PLAYER)
 			winnerName = playerTwoProfile.getFirstname() + ' ' + playerTwoProfile.getLastname();
 
 		var amWinner = new AppearingMessage({
 			text: 'The winner is ' + winnerName + '! ', 
 			direction: Math.random() < 0.5 ? AppearingMessage.VERTICAL_DIRECTION : AppearingMessage.HORIZONTAL_DIRECTION
 		});
-		
+
 		amWinner.x = stage.canvas.width/2;
 		amWinner.y = stage.canvas.height/2;
 		stage.addChild(amWinner);

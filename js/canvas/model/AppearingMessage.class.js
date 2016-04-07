@@ -1,5 +1,16 @@
 (function(){
 
+	/**
+	 * Displays a message and then after a specified amount of milliseconds removes it. 
+	 * @param {Object} options Represents parameters. 
+	 *                         - {Number} appearDelay => Specifies how long should it take to appear, measured in milliseconds. 
+	 *                         - {Number} delay => The delay between tweens, measured in milliseconds. 
+	 *                         - {Number} bound => The initial offset when appearing. 
+	 *                         - {Integer} direction => Which direction (vertical or horizontal) should the animation appear (use AppearingMessage.VERTICAL_DIRECTION or AppearingMessage.HORIZONTAL_DIRECTION).
+	 * @author Roman Pusec
+	 * @augments {WaitingMessage}
+	 * @see  WaitingMessage documentation for more param options. 
+	 */
 	function AppearingMessage(options){
 		this.WaitingMessage_constructor($.extend({
 			radius: 40,
@@ -18,6 +29,9 @@
 
 		this.alpha = 0;
 
+		/**
+		 * Displays the message to the screen. 
+		 */
 		this.appear = function(){
 
 			var appearOption;

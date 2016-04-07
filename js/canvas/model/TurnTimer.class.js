@@ -11,6 +11,8 @@
 	 *                         - {Number}   delay => The delay of each count decrement in milliseconds. 
 	 *                         - {Number}  popDistance => The appear distance. 
 	 * @author Roman Pusec
+	 * @augments {WaitingMessage}
+	 * @see  WaitingMessage documentation for more param options. 
 	 */
 	function TurnTimer(options){
 		this.WaitingMessage_constructor($.extend({
