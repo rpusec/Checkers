@@ -798,13 +798,20 @@
 				{
 					console.log(data.winner);
 					createAndSetupPawns(data.playerNumber);
+
+					currentPawnList.forEach(function(pawn){
+						makePawnSelectable(pawn);
+					});
 				}
 			});
 		}
 
-		currentPawnList.forEach(function(pawn){
-			makePawnSelectable(pawn);
-		});
+		if(data.winner === null)
+		{
+			currentPawnList.forEach(function(pawn){
+				makePawnSelectable(pawn);
+			});
+		}
 
 		clearInterval(checkIfOpponentIsDoneInterval);
 		turnTimer.startTimer();
