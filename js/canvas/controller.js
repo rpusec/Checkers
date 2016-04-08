@@ -42,7 +42,8 @@
 	//miscellaneous
 	,	contGameRoom = new createjs.Container()
 	,	turnTimer
-	,	gameInitialized = false;
+	,	gameInitialized = false
+	,	gameStat = null;
 
 	/**
 	 * Initializes the core 
@@ -400,6 +401,17 @@
 			hideSecondPlayerWaitingMessage();
 			clearInterval(checkForOpponentInterval);
 			whoseTurnAJAXCall(data.opponent.roomID);
+
+			gameStat = new GameStat({
+				playerOneName: playerOneProfile.getFirstName(), 
+				playerTwoName: playerTwoProfile.getFirstName()
+			});
+
+			gameStat.x = stage.canvas.width/2 - gameStat.getBounds().width/2;
+			gameStat.y = board.y;
+
+			stage.addChild(gameStat);
+			createjs.Tween.get(gameStat).to({y: gameStat.y - gameStat.getBounds().height*2}, 250, createjs.Ease.backIn);
 		}
 	}
 
@@ -692,6 +704,13 @@
 
 		hideSecondPlayerWaitingMessage();
 		turnTimer.endTimer();
+
+		createjs.Tween.get(gameStat).to({rotation: (Math.random() < 0.5 ? 1 : -1) * (Math.random()*360), alpha: 0}, 250).call(function(){
+			if(this.parent !== null)
+				this.parent.removeChild(this);
+
+			gameStat = null;
+		});
 	}
 
 	/**
