@@ -112,12 +112,15 @@
 		gameNameText.show();
 		selARoomText.show();
 
-		turnTimer = new TurnTimer({onEndHandler: function(){
-			notifyTimeOutAJAXCall();
-		}});
+		turnTimer = new TurnTimer({
+			onEndHandler: function(){
+				notifyTimeOutAJAXCall();
+			},
+			x: stage.canvas.width,
+			y: stage.canvas.height
+		});
 
-		turnTimer.x = stage.canvas.width - turnTimer.getRadius();
-		turnTimer.y = stage.canvas.height - turnTimer.getRadius();
+		window.turnTimer = turnTimer;
 
 		ParticleFactory.initialize({stage: stage});
 

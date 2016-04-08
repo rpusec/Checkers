@@ -10,6 +10,9 @@
 	 *                         - {String}   onEndText => Text to be displayed when the timer is stopped. 
 	 *                         - {Number}   delay => The delay of each count decrement in milliseconds. 
 	 *                         - {Number}  popDistance => The appear distance. 
+	 *                         - {Number}  x => The X axis.
+	 *                         - {Number}  y => The Y axis.
+	 *                         - {Boolean}  centerRelativeToCoordinate => Indicates whether the timer should be centered relative to the specified coordinates. 
 	 * @author Roman Pusec
 	 * @augments {WaitingMessage}
 	 * @see  WaitingMessage documentation for more param options. 
@@ -17,7 +20,8 @@
 	function TurnTimer(options){
 		this.WaitingMessage_constructor($.extend({
 			radius: 40,
-			lineWidth: 5
+			lineWidth: 5,
+			font: '23px Arial'
 		}, options));
 
 		if(typeof options !== 'object')
@@ -30,22 +34,27 @@
 			onRunOutText: 'Over',
 			onEndText: 'Stopped',
 			delay: 1000,
-			popDistance: 50
+			popDistance: 50,
+			x: 0,
+			y: 0,
+			centerRelativeToCoordinate: true
 		}, options);
 
 		this.alpha = 0;
 
+		this.x = options.x - (options.centerRelativeToCoordinate ? this.getRadius() : 0);
+		this.y = options.y - (options.centerRelativeToCoordinate ? this.getRadius() : 0);
+
 		var initialStartTime = options.startTime;
-		this.initialY;
+		this.initialY = this.y;
 
 		options.startTime = Math.abs(options.startTime);
-		this.setText(options.startTime);
+		this.setText("" + options.startTime);
 
 		/**
 		 * Starts the timer. 
 		 */
 		this.startTimer = function(){
-			this.initialY = this.y;
 			this.alpha = 0;
 			this.y += options.popDistance;
 			createjs.Tween.get(this).to({y: this.y - options.popDistance, alpha: 1}, 250).call(function(){
@@ -54,7 +63,7 @@
 					if(options.startTime > 0)
 					{
 						options.startTime--;
-						this.setText(options.startTime);
+						this.setText("" + options.startTime);
 					}
 					else
 					{
