@@ -1,66 +1,76 @@
 (function(){
 
 	function GameStat(options){
-		this.Container_constructor();
+		this.Text_constructor();
 
 		if(typeof options !== 'object')
 			options = {};
 
 		options = $.extend({
 			textColor: Constants.COLOR_ONE,
-			textFont: '10px Arial',
+			textFont: '11px Arial',
 			separationAmount: 40,
 			initialRound: 1,
 			plOnePawnAmount: Constants.PAWN_AMOUNT,
 			plTwoPawnAmount: Constants.PAWN_AMOUNT,
-			playerOneName: 'Not specified. ',
-			playerTwoName: 'Not specified. '
+			playerOneName: '[not specified]',
+			playerTwoName: '[not specified]',
+			textAlign: 'center'
 		}, options);
 
 		var round = options.initialRound;
 		var plOnePawnAmount = options.plOnePawnAmount;
 		var plTwoPawnAmount = options.plTwoPawnAmount;
 
-		var text = new createjs.Text('', options.textFont, options.textColor);
-		this.addChild(text);
+		this.text = '';
+		this.font = options.textFont;
+		this.color = options.textColor;
+		this.textAlign = options.textAlign;
+		updateText(this);
 
 		this.decrPlayerOnePawns = function(){
 			plOnePawnAmount--;
-			updateText();
+			updateText(this);
 		}
 
 		this.decrPlayerTwoPawns = function(){
 			plTwoPawnAmount--;
-			updateText();
+			updateText(this);
 		}
 
 		this.resetPlayerOnePawns = function(){
 			plOnePawnAmount = options.plOnePawnAmount;
-			updateText();
+			updateText(this);
 		}
 
 		this.resetPlayerTwoPawns = function(){
 			plTwoPawnAmount = options.plTwoPawnAmount;
-			updateText();
+			updateText(this);
 		}
 
 		this.decrRound = function(){
 			round--;
-			updateText();
+			updateText(this);
 		}
 
 		this.resetRound = function(){
 			round = options.initialRound;
-			updateText();
+			updateText(this);
 		}
 
-		function updateText(){
-			text.text = 'Round ' + round + ' | ' + options.playerOneName + ' pawns: ' + plOnePawnAmount + ' | ' + options.playerTwoName + ' pawns: ' + plTwoPawnAmount;
+		this.resetAll = function(){
+			this.resetPlayerOnePawns();
+			this.resetPlayerTwoPawns();
+			this.resetRound();
+		}
+
+		function updateText(thisVal){
+			thisVal.text = 'Round ' + round + ' | ' + options.playerOneName + ' pawns: ' + plOnePawnAmount + ' | ' + options.playerTwoName + ' pawns: ' + plTwoPawnAmount;
 		}
 	}
 
-	var p = createjs.extend(GameStat, createjs.Container);
+	var p = createjs.extend(GameStat, createjs.Text);
 
-	window.GameStat = createjs.promote(GameStat, 'Container');
+	window.GameStat = createjs.promote(GameStat, 'Text');
 
 }());

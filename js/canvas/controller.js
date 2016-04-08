@@ -401,17 +401,7 @@
 			hideSecondPlayerWaitingMessage();
 			clearInterval(checkForOpponentInterval);
 			whoseTurnAJAXCall(data.opponent.roomID);
-
-			gameStat = new GameStat({
-				playerOneName: playerOneProfile.getFirstName(), 
-				playerTwoName: playerTwoProfile.getFirstName()
-			});
-
-			gameStat.x = stage.canvas.width/2 - gameStat.getBounds().width/2;
-			gameStat.y = board.y;
-
-			stage.addChild(gameStat);
-			createjs.Tween.get(gameStat).to({y: gameStat.y - gameStat.getBounds().height*2}, 250, createjs.Ease.backIn);
+			setupAndDisplayGameStat();
 		}
 	}
 
@@ -442,7 +432,6 @@
 						makePawnSelectable(targetPawn);
 					});
 					turnTimer.startTimer();
-
 				}
 				else
 				{
@@ -647,6 +636,7 @@
 					}
 					else if(data.playerNumber === Constants.SECOND_PLAYER)
 					{
+						setupAndDisplayGameStat();
 						whoseTurnAJAXCall(data.roomID);
 					}
 				});
@@ -705,12 +695,20 @@
 		hideSecondPlayerWaitingMessage();
 		turnTimer.endTimer();
 
-		createjs.Tween.get(gameStat).to({rotation: (Math.random() < 0.5 ? 1 : -1) * (Math.random()*360), alpha: 0}, 250).call(function(){
-			if(this.parent !== null)
-				this.parent.removeChild(this);
+		if(gameStat !== null)
+		{
+			createjs.Tween.get(gameStat).to({
+				rotation: (Math.random() < 0.5 ? 1 : -1) * (Math.random()*Constants.GAME_STAT_MAX_ROTATION), 
+				alpha: 0,
+				scaleX: 0,
+				scaleY: 0
+			}, 1000, createjs.Ease.backIn).call(function(){
+				if(this.parent !== null)
+					this.parent.removeChild(this);
 
-			gameStat = null;
-		});
+				gameStat = null;
+			});
+		}
 	}
 
 	/**
@@ -945,6 +943,11 @@
 			var targetPawnArray = pawn.getWhichPlayer() === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns;
 			targetPawnArray.splice(targetPawnArray.indexOf(pawn), 1);
 			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY);
+
+			if(pawn.getWhichPlayer() === Constants.FIRST_PLAYER)
+				gameStat.decrPlayerOnePawns();
+			else if(pawn.getWhichPlayer() === Constants.SECOND_PLAYER)
+				gameStat.decrPlayerTwoPawns();
 		});
 	}
 
@@ -1009,6 +1012,21 @@
 		amWinner.y = stage.canvas.height/2;
 		stage.addChild(amWinner);
 		amWinner.appear();
+
+		gameStat.resetAll();
+	}
+
+	function setupAndDisplayGameStat(){
+		gameStat = new GameStat({
+			playerOneName: playerOneProfile.getFirstname(), 
+			playerTwoName: playerTwoProfile.getFirstname()
+		});
+
+		gameStat.x = stage.canvas.width/2;
+		gameStat.y = board.y;
+
+		stage.addChildAt(gameStat, stage.getChildIndex(board));
+		createjs.Tween.get(gameStat).to({y: gameStat.y - gameStat.getBounds().height*2}, 1000, createjs.Ease.circOut);
 	}
 
 	//---------------------------------------------------------------------------------//
