@@ -15,6 +15,7 @@
 	 *                         - {Boolean}  centerRelativeToCoordinate => Indicates whether the timer should be centered relative to the specified coordinates. 
 	 * @author Roman Pusec
 	 * @augments {WaitingMessage}
+	 * @class 
 	 * @see  WaitingMessage documentation for more param options. 
 	 */
 	function TurnTimer(options){

@@ -16,6 +16,7 @@
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
 	 * @requires RotatingLine.class.js
+	 * @class 
 	 */
 	function WaitingMessage(options){
 		this.Container_constructor();

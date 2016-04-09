@@ -18,6 +18,7 @@
 	 *                         - {Integer} id => The unique identifier for the target pawn. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
+	 * @class 
 	 * @see Easeljs createjs.Shape API documentation. 
 	 */
 	function BoardPawn(options){

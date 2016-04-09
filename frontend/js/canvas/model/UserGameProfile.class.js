@@ -21,6 +21,7 @@
 	 *                         - {Integer} lineRadius => The thickness of a rotating line. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
+	 * @class 
 	 * @requires BoardPawn.class.js
 	 */
 	function UserGameProfile(options){

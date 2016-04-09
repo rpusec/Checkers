@@ -17,6 +17,7 @@
 	 *                         - {String} [color] => Color of the font.
 	 * @author Roman Pusec
 	 * @augments {createjs.Text}
+	 * @class 
 	 */
 	function AppearingText(options){
 		this.Text_constructor();

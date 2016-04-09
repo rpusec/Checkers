@@ -10,6 +10,7 @@
 	 * @author Roman Pusec
 	 * @augments {WaitingMessage}
 	 * @see  WaitingMessage documentation for more param options. 
+	 * @class 
 	 */
 	function AppearingMessage(options){
 		this.WaitingMessage_constructor($.extend({

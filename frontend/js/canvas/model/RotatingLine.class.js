@@ -13,6 +13,7 @@
 	 *                         - {Number} rotationVal           The initial rotation value.
 	 * @author Roman Pusec
 	 * @augments {createjs.Shape}
+	 * @class 
 	 */
 	function RotatingLine(options){
 		this.Shape_constructor();

@@ -12,6 +12,7 @@
 	 *                         - {String} [selectableBlockColor] => The color of a selectable block. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
+	 * @class 
 	 */
 	function Board(options){
 		this.Container_constructor();

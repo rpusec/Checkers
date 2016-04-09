@@ -20,6 +20,7 @@
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
+	 * @class 
 	 */
 	function GameRoom(options){
 		this.Container_constructor();

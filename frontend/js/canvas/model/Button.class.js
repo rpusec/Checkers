@@ -17,6 +17,7 @@
 	 * @param {Function} onClickFunct Function which is executed when the button is clicked. 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
+	 * @class 
 	 */
 	function Button(options, onClickFunct){
 		this.Container_constructor();
