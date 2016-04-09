@@ -48,8 +48,8 @@
 			updateText(this);
 		}
 
-		this.decrRound = function(){
-			round--;
+		this.incrRound = function(){
+			round++;
 			updateText(this);
 		}
 

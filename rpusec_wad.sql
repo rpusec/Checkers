@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2016 at 11:55 PM
+-- Generation Time: Apr 09, 2016 at 11:26 PM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `room` (
 
 INSERT INTO `room` (`roomID`, `whose_turn`, `stringifiedBoard`, `lastMove`, `removedPawns`) VALUES
 (1, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', NULL, NULL),
-(2, 1, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', NULL, NULL),
+(2, 1, '1,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,2,0,0,0,0,0,0', '{"id":2,"prevX":1,"prevY":3,"newX":3,"newY":5}', '[2]'),
 (3, 2, '1,0,2,0,3,0,4,0|0,5,0,6,0,7,0,8|9,0,10,0,11,0,12,0|0,0,0,0,0,0,0,0|0,0,0,0,0,0,0,0|0,13,0,14,0,15,0,16|17,0,18,0,19,0,20,0|0,21,0,22,0,23,0,24', NULL, NULL),
 (4, 1, '', '', ''),
 (5, 2, '', '', ''),
@@ -82,6 +82,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `chatColorG` varchar(3) NOT NULL,
   `chatColorB` varchar(3) NOT NULL,
   `ROOM_roomID` int(11) DEFAULT NULL,
+  `won` int(11) NOT NULL DEFAULT '0',
+  `lost` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
@@ -89,10 +91,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`UserID`, `FName`, `LName`, `Username`, `Password`, `connected`, `connexparation`, `chatColorR`, `chatColorG`, `chatColorB`, `ROOM_roomID`) VALUES
-(1, 'testtest', 'asdfsad', 'test123', 'test', 1, 1459461334, '237', '255', '222', 0),
-(2, 'roman', 'pusec', 'lawl', 'lawl', 0, 1459461291, '255', '228', '222', 0),
-(3, 'tino', 'herljevic', 'therljevic', '11111111', 0, 1458820706, '255', '230', '222', 0);
+INSERT INTO `user` (`UserID`, `FName`, `LName`, `Username`, `Password`, `connected`, `connexparation`, `chatColorR`, `chatColorG`, `chatColorB`, `ROOM_roomID`, `won`, `lost`) VALUES
+(1, 'Mana', 'Magdalena', 'marelica', 'test', 1, 1460237202, '222', '255', '255', 0, 2, 3),
+(2, 'roman', 'pusec', 'lawl', 'lawl', 1, 1460237201, '255', '251', '222', 0, 5, 0),
+(3, 'tino', 'herljevic', 'therljevic', '11111111', 0, 1458820706, '255', '230', '222', 0, 1, 0);
 
 --
 -- Constraints for dumped tables

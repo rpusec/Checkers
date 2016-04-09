@@ -214,7 +214,9 @@ class UsersController extends BaseController
 			'username, ' .
 			'chatColorR, ' .
 			'chatColorG, ' .
-			'chatColorB ' .
+			'chatColorB, ' .
+			'won, ' . 
+			'lost ' . 
 			'FROM user WHERE connected = 1');
 
 		return array(
@@ -226,6 +228,10 @@ class UsersController extends BaseController
 
 	/**
 	 * Checks whether the user is logged. This function is executed on startup. 
+	 * The method first updates the authenticated user's connection status (based upon whether
+	 * the user's connection has expired). It then checks if the user's connection indeed has expired
+	 * (that would happen if the user has not been playing the game in a long time), in that case, 
+	 * the user's session is destroyed. 
 	 * @return Array Array which contains a flag, indicating whether the user is logged or not. 
 	 */
 	public static function isUserLogged(){

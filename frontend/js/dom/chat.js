@@ -8,10 +8,12 @@ $(document).on('ready', function(){
 	 * @param {String} lastname  The last name of the user. 
 	 * @param {String} username  The username of the user. 
 	 */
-	function OnlineUserInfo(firstname, lastname, username){
+	function OnlineUserInfo(firstname, lastname, username, won, lost){
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.username = username;
+		this.won = parseInt(won);
+		this.lost = parseInt(lost);
 	}
 
 	//executes an anonymous function when the chat input is focused
@@ -162,7 +164,7 @@ $(document).on('ready', function(){
 					connUser.chatColorB = 255;
 				}
 
-				arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID] = new OnlineUserInfo(connUser.firstname, connUser.lastname, connUser.username);
+				arrOnlineUserInfo[CONN_USER_PREFIX + connUser.userID] = new OnlineUserInfo(connUser.firstname, connUser.lastname, connUser.username, connUser.won, connUser.lost);
 
 				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
@@ -176,9 +178,10 @@ $(document).on('ready', function(){
 					function(){
 						var targetUserInfo = arrOnlineUserInfo[this.id];
 						$('#single-user-info').html(
-							'<b>First name: </b>' + targetUserInfo.firstname + 
-							'<br /><b>Last name: </b>' + targetUserInfo.lastname + 
-							'<br /><b>Username: </b>' + targetUserInfo.username);
+							'<span style="font-size: 30px;">' + targetUserInfo.firstname + ' ' + targetUserInfo.lastname + '</span>' + 
+							'<br />' + targetUserInfo.username + 
+							'<br />Won ' + targetUserInfo.won + ' time' + (targetUserInfo.won === 1 ? '' : 's') + ', ' +
+							'lost ' + targetUserInfo.lost + ' time' + (targetUserInfo.lost === 1 ? '' : 's') + '. ');
 
 						$('#single-user-info').css('visibility', 'visible');
 						$('#single-user-info').css({
@@ -200,6 +203,8 @@ $(document).on('ready', function(){
 				targetUserInfo.firstname = connUser.firstname;
 				targetUserInfo.lastname = connUser.lastname;
 				targetUserInfo.username = connUser.username;
+				targetUserInfo.won = parseInt(connUser.won);
+				targetUserInfo.lost = parseInt(connUser.lost);
 			}
 		}
 

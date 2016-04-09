@@ -261,6 +261,17 @@ class GameController extends BaseController
 					DB::update('room', array(
 						'stringifiedBoard' => RoomController::constructStringifiedBoard()
 					), 'roomID=%i', $targetUser['roomID']);
+
+					if($winner === parent::getPlayerNumber())
+					{
+						DB::query('UPDATE user SET won = won + 1 WHERE userID=%i AND ROOM_roomID=%i', parent::getLoggedUserID(), $targetUser['roomID']);
+						DB::query('UPDATE user SET lost = lost + 1 WHERE userID<>%i AND ROOM_roomID=%i', parent::getLoggedUserID(), $targetUser['roomID']);
+					}
+					else
+					{
+						DB::query('UPDATE user SET lost = lost + 1 WHERE userID=%i AND ROOM_roomID=%i', parent::getLoggedUserID(), $targetUser['roomID']);
+						DB::query('UPDATE user SET won = won + 1 WHERE userID<>%i AND ROOM_roomID=%i', parent::getLoggedUserID(), $targetUser['roomID']);
+					}
 				}
 				
 				self::setBeginningTurnTime();

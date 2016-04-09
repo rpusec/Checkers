@@ -1016,7 +1016,9 @@
 		stage.addChild(amWinner);
 		amWinner.appear();
 
-		gameStat.resetAll();
+		gameStat.resetPlayerOnePawns();
+		gameStat.resetPlayerTwoPawns();
+		gameStat.incrRound();
 	}
 
 	function setupAndDisplayGameStat(){
