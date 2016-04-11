@@ -12,7 +12,7 @@ require_once('validation.php');
  * 
  * @author Roman Pusec
  */
-class ValidationHelper
+abstract class BaseValidator
 {
 	//list of all errors 
 	private static $errors = array();

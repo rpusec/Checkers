@@ -1,7 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
-require_once('../helper/ValidationHelper.class.php');
+require_once('../helper/UserValidator.class.php');
 
 /**
  * Controller class for chat functionality. 
@@ -21,12 +21,12 @@ class ChatController extends BaseController
 
 		parent::startConnection();
 
-		ValidationHelper::checkAppropriateInputLength($message, MIN_MESSAGE_SIZE, MAX_MESSAGE_SIZE, 'message');
+		UserValidator::checkAppropriateInputLength($message, MIN_MESSAGE_SIZE, MAX_MESSAGE_SIZE, 'message');
 	
-		if(ValidationHelper::hasErrors())
+		if(UserValidator::hasErrors())
 			return array(
 				'success' => false,
-				'errors' => ValidationHelper::getErrors()
+				'errors' => UserValidator::getErrors()
 		);
 	
 		DB::insert('message', array(

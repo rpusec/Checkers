@@ -1,7 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
-require_once('../helper/ValidationHelper.class.php');
+require_once('../helper/UserValidator.class.php');
 
 /**
  * Handles functionality for users. 
@@ -53,8 +53,8 @@ class UsersController extends BaseController
 		
 		if(self::checkIfLoggedAndInputNotEmpty($username))
 		{
-			ValidationHelper::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
-			ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ', true);
+			UserValidator::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
+			UserValidator::validateSSXParanoidInput($username, ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ');
 			DB::query("SELECT userID FROM user WHERE username=%s", $username);
 			if(DB::count() > 0)
 				ValidationHelper::addError(USERNAME_NOT_UNIQUE_ERROR_MSG);
@@ -62,23 +62,23 @@ class UsersController extends BaseController
 
 		if(self::checkIfLoggedAndInputNotEmpty($password))
 		{
-			ValidationHelper::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
-			ValidationHelper::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
-			ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ', true);
+			UserValidator::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
+			UserValidator::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
+			UserValidator::validateSSXParanoidInput($password, ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ');
 		}
 
 		if(self::checkIfLoggedAndInputNotEmpty($firstname))
 		{
-			ValidationHelper::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
-			ValidationHelper::validateInput($firstname, 'alphabeticSpace', 'First name' . ALPHABETIC_ERROR_MSG_PART);
-			ValidationHelper::validateInput($firstname, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'first name. ', true);
+			UserValidator::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
+			UserValidator::validateAlphabeticSpaceInput($firstname, 'First name' . ALPHABETIC_ERROR_MSG_PART);
+			UserValidator::validateSSXParanoidInput($firstname, ILLEGAL_INPUT_ERROR_MSG_PART . 'first name. ');
 		}
 
 		if(self::checkIfLoggedAndInputNotEmpty($lastname))
 		{
-			ValidationHelper::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
-			ValidationHelper::validateInput($lastname, 'alphabeticSpace', 'Last name' . ALPHABETIC_ERROR_MSG_PART);	
-			ValidationHelper::validateInput($lastname, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'last name. ', true);
+			UserValidator::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
+			UserValidator::validateAlphabeticSpaceInput($lastname, 'Last name' . ALPHABETIC_ERROR_MSG_PART);	
+			UserValidator::validateSSXParanoidInput($lastname, ILLEGAL_INPUT_ERROR_MSG_PART . 'last name. ');
 		}					
 
 		if(ValidationHelper::hasErrors())
@@ -155,8 +155,8 @@ class UsersController extends BaseController
 	 */
 	public static function loginUser($username, $password)
 	{
-		ValidationHelper::validateInput($username, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ', true);
-		ValidationHelper::validateInput($password, 'crossSiteScriptingParanoid', ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ', true);
+                UserValidator::validateSSXParanoidInput($username, ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ');
+		UserValidator::validateSSXParanoidInput($password, ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ');
 
 		if(ValidationHelper::hasErrors())
 			return array('success' => false, 'errors' => ValidationHelper::getErrors());

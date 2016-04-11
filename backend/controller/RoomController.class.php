@@ -1,7 +1,6 @@
 <?php
 
 require_once('BaseController.class.php');
-require_once('../helper/ValidationHelper.class.php');
 
 /**
  * Controller class which handles all of the 

@@ -2,7 +2,6 @@
 
 require_once('BaseController.class.php');
 require_once('RoomController.class.php');
-require_once('../helper/ValidationHelper.class.php');
 require_once('UsersController.class.php');
 
 /**
