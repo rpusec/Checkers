@@ -21,13 +21,10 @@ class ChatController extends BaseController
 
 		parent::startConnection();
 
-		UserValidator::checkAppropriateInputLength($message, MIN_MESSAGE_SIZE, MAX_MESSAGE_SIZE, 'message');
-	
-		if(UserValidator::hasErrors())
-			return array(
-				'success' => false,
-				'errors' => UserValidator::getErrors()
-		);
+		$output = ChatLogic::checkAppropriateInputLength($message);
+                
+                if(is_array($output))
+                    return $output;
 	
 		DB::insert('message', array(
 			'USER_userID' => parent::getLoggedUserID(), 
