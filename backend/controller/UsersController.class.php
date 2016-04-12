@@ -51,7 +51,7 @@ class UsersController extends BaseController
 	{
 		parent::startConnection();
 
-		$inputValidationErrors = UserLogic::checkForUserInputErrors();
+		$inputValidationErrors = UserLogic::checkForUserInputErrors(parent::isUserLogged(), $firstname, $lastname, $username, $password, $passwordConfirm);
 		if(is_array($inputValidationErrors))
 			return $inputValidationErrors;
 

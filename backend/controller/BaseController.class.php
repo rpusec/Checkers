@@ -61,7 +61,7 @@ class BaseController
 	 * @return Integer The ID of the logged user. 
 	 */
 	public static function getLoggedUserID(){
-		return $_SESSION['userID'];
+		return self::isUserLogged() ? $_SESSION['userID'] : null;
 	}
 
 	/**

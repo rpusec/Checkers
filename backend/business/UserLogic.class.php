@@ -5,29 +5,29 @@ require_once('../config/constants.php');
 
 class UserLogic
 {
-	public static function checkForUserInputErrors(){
-		if(self::checkIfLoggedAndInputNotEmpty($username))
+	public static function checkForUserInputErrors($isUserLogged, $firstname, $lastname, $username, $password, $passwordConfirm){
+		if(self::checkIfLoggedAndInputNotEmpty($username, $isUserLogged))
 		{
 			UserValidator::checkAppropriateInputLength($username, MIN_USERNAME_INPUT_SIZE, MAX_USERNAME_INPUT_SIZE, 'Username');
 			UserValidator::validateSSXParanoidInput($username, ILLEGAL_INPUT_ERROR_MSG_PART . 'username. ');
 			UserValidator::checkIfUsernameExists($username);
 		}
 
-		if(self::checkIfLoggedAndInputNotEmpty($password))
+		if(self::checkIfLoggedAndInputNotEmpty($password, $isUserLogged))
 		{
 			UserValidator::checkAppropriateInputLength($password, MIN_PASSWORD_INPUT_SIZE, MAX_PASSWORD_INPUT_SIZE, 'Password');
 			UserValidator::checkIfEqual($password, $passwordConfirm, 'password', 'password confirm');
 			UserValidator::validateSSXParanoidInput($password, ILLEGAL_INPUT_ERROR_MSG_PART . 'password. ');
 		}
 
-		if(self::checkIfLoggedAndInputNotEmpty($firstname))
+		if(self::checkIfLoggedAndInputNotEmpty($firstname, $isUserLogged))
 		{
 			UserValidator::checkAppropriateInputLength($firstname, MIN_FNAME_INPUT_SIZE, MAX_FNAME_INPUT_SIZE, 'First name');
 			UserValidator::validateAlphabeticSpaceInput($firstname, 'First name' . ALPHABETIC_ERROR_MSG_PART);
 			UserValidator::validateSSXParanoidInput($firstname, ILLEGAL_INPUT_ERROR_MSG_PART . 'first name. ');
 		}
 
-		if(self::checkIfLoggedAndInputNotEmpty($lastname))
+		if(self::checkIfLoggedAndInputNotEmpty($lastname, $isUserLogged))
 		{
 			UserValidator::checkAppropriateInputLength($lastname, MIN_LNAME_INPUT_SIZE, MAX_LNAME_INPUT_SIZE, 'Last name');
 			UserValidator::validateAlphabeticSpaceInput($lastname, 'Last name' . ALPHABETIC_ERROR_MSG_PART);	
@@ -155,8 +155,8 @@ class UserLogic
 	 * 
 	 * @param Boolean $input True if the user is logged in and input isn't an empty string, false otherwise. 
 	 */
-	private static function checkIfLoggedAndInputNotEmpty($input){
-		if(parent::isUserLogged())
+	private static function checkIfLoggedAndInputNotEmpty($input, $isUserLogged){
+		if($isUserLogged)
 		{
 			if($input != '')
 				return true;
