@@ -1,7 +1,7 @@
 <?php
 
 require_once('UsersController.class.php');
-require_once('RoomControllerController.class.php');
+require_once('../business/RoomLogic.class.php');
 
 class GameLogic
 {
@@ -163,7 +163,7 @@ class GameLogic
 
     public static function updateWonLoseState($targetUser, $loggedUserID, $playerNumber){
     	DB::update('room', array(
-			'stringifiedBoard' => RoomController::constructStringifiedBoard()
+			'stringifiedBoard' => RoomLogic::constructStringifiedBoard()
 		), 'roomID=%i', $targetUser['roomID']);
 
 		if($winner === $playerNumber)

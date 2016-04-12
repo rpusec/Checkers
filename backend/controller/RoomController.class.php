@@ -47,41 +47,19 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array('RoomID was not specified. '));
 
 		parent::startConnection();
-		$rooms = DB::query("SELECT room.roomID as targetRoomID, (" . self::getUserCountQuery() . ") as userCount FROM room WHERE room.roomID = %i", $roomID);
 
-		if(!empty($rooms))
-		{
-			$targetRoom = $rooms[0];
-
-			if($targetRoom['userCount'] == ROOM_MAX_AMOUNT_OF_USERS)
-				return array('success' => false, 'errors' => array('The room is unavailable. Maximum amount of users has already been reached. '));
-		}
+		$targetRoom = DB::queryFirstRow("SELECT room.roomID as targetRoomID, (" . self::getUserCountQuery() . ") as userCount FROM room WHERE room.roomID = %i", $roomID);
+		if($targetRoom !== null && $targetRoom['userCount'] == ROOM_MAX_AMOUNT_OF_USERS)
+			return array('success' => false, 'errors' => array('The room is unavailable. Maximum amount of users has already been reached. '));
 
 		//adding the authenticated user to the game room
 		DB::update('user', array(
 			'ROOM_roomID' => $roomID
 		), 'userID=%i', parent::getLoggedUserID());
 
-		//fetching all of the users from the game room and checking if the authenticated user was the first one to enter
-		DB::query('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID=%i', $roomID);
-		$userCount = DB::count();
-
 		//marking the user as either the first or the second player
-		parent::setPlayerNumber($userCount == 1 ? FIRST_PLAYER : SECOND_PLAYER);
-
-		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
-
-		//randomly setting who's turn it is in the database when the second player joins the game 
-		if(parent::getPlayerNumber() === SECOND_PLAYER)
-		{
-			$randUserInt = mt_rand(0,1);
-			DB::update('room', array(
-				'whose_turn' => $users[$randUserInt]['userID'],
-				'stringifiedBoard' => self::constructStringifiedBoard(),
-				'lastMove' => null,
-				'removedPawns' => null,
-			), 'roomID=%i', $roomID);
-		}
+		parent::setPlayerNumber(RoomLogic::setUserAsFirstOrSecond());
+		RoomLogic::setupInitialPlayerTurn(parent::getPlayerNumber(), $roomID);
 
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID(), 'roomID' => $roomID);
 	}
@@ -153,55 +131,5 @@ class RoomController extends BaseController
 	 */
 	private static function getUserCountQuery(){
 		return "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
-	}
-
-	/**
-	 * Constructs an initial 'stringified' board, with all pawns (denoted with integers 
-	 * from 1 to 24) all in place the way they are at the start of a game of checkers. 
-	 * @return String Stringified board. 
-	 */
-	public static function constructStringifiedBoard(){
-		$resultStr = "";
-		$pawnCurrId = 1;
-
-		for($row = 1; $row <= BOARD_MAX_ROW_AMOUNT; $row++)
-		{
-			for($col = 1; $col <= BOARD_MAX_COL_AMOUNT; $col++)
-			{
-				$colModByTwo = $col % 2;
-				if(($row % 2) !== 0 ? $colModByTwo === 0 : $colModByTwo !== 0)
-				{
-					$resultStr .= BOARD_BG;
-				}
-				else
-				{
-					if($pawnCurrId <= PLAYER_PAWNS_AMOUNT)
-					{
-						$resultStr .= $pawnCurrId;
-						$pawnCurrId++;
-					}
-					else if($row >= PLAYER_TWO_ROW_POSITION)
-					{
-						if($pawnCurrId <= PLAYER_PAWNS_AMOUNT*2)
-						{
-							$resultStr .= $pawnCurrId;
-							$pawnCurrId++;
-						}
-						else
-							$resultStr .= BOARD_BG;
-					}
-					else
-						$resultStr .= BOARD_BG;
-				}
-
-				if($col !== BOARD_MAX_COL_AMOUNT)
-					$resultStr .= BOARD_COL_SEPARATOR;
-			}
-
-			if($row !== BOARD_MAX_ROW_AMOUNT)
-				$resultStr .= BOARD_ROW_SEPARATOR;
-		}
-
-		return $resultStr;
 	}
 }

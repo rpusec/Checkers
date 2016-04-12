@@ -74,12 +74,10 @@ class GameController extends BaseController
 			return $nextCoor;
 
 		parent::startConnection();
-		$rooms = DB::query("SELECT roomID, stringifiedBoard, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
+		$targetRoom = DB::queryFirstRow("SELECT roomID, stringifiedBoard, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
 
-		if(empty($rooms))
+		if($targetRoom === null)
 			return array('success' => false);
-
-		$targetRoom = $rooms[0];
 
 		$checkIfPlayerTurn = GameLogic::checkIfPlayerTurn($targetRoom);
 		
