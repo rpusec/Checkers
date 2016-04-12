@@ -119,7 +119,7 @@
 			stage.update();
 
 		gameInitialized = false;
-		AJAXCalls.clearAllAJAXCallIntervals();
+		AJAXCallIntervalHandlers.clearAllAJAXCallIntervals();
 	}
 
 }());

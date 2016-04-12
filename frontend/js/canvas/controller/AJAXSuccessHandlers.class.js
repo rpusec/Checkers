@@ -2,10 +2,7 @@ var AJAXSuccessHandlers = {};
 
 (function(){
 
-	var
-
-	//display objects
-		stage
+	var	stage
 	,	gameNameText
 	,	selARoomText
 	,	board
@@ -14,16 +11,8 @@ var AJAXSuccessHandlers = {};
 	,	contGameRoom
 	,	turnTimer
 	,	gameStat
-
-	//pawns
 	,	playerOnePawns
 	,	playerTwoPawns
-	
-	//intervals
-	,	checkForOpponentInterval
-	,	checkRoomAvailabilityInterval
-	,	checkIfOpponentIsDoneInterval
-	,	checkIfAPlayerLeftInterval;
 
 	AJAXSuccessHandlers.initializeAllProperties = function(props){
 		stage = props.stage;
@@ -47,13 +36,6 @@ var AJAXSuccessHandlers = {};
 			contGameRoom: contGameRoom,
 			turnTimer: turnTimer
 		}
-	}
-
-	AJAXSuccessHandlers.clearAllAJAXCallIntervals = function(){
-		clearInterval(checkForOpponentInterval);
-		clearInterval(checkRoomAvailabilityInterval);
-		clearInterval(checkIfOpponentIsDoneInterval);
-		clearInterval(checkIfAPlayerLeftInterval);
 	}
 
 	/**
@@ -111,12 +93,8 @@ var AJAXSuccessHandlers = {};
 
 		contGameRoom.x = stage.canvas.width/2 - contGameRoom.getBounds().width/2;
 		contGameRoom.y = stage.canvas.height/2 - contGameRoom.getBounds().height/2 - GAME_ROOM_TO_BOTTOM;
-		
 		stage.addChild(contGameRoom);
-
-		checkRoomAvailabilityInterval = setInterval(function(){
-			AJAXCalls.checkGameRoomAvailabilityAJAXCall();
-		}, Constants.CHECK_ROOM_AVAILABILITY_INTERVAL_DURATION);
+		AJAXCallIntervalHandlers.setCheckRoomAvailabilityInterval();
 	}
 
 	/**
@@ -138,7 +116,7 @@ var AJAXSuccessHandlers = {};
 			playerTwoProfile.setUsername(data.opponent.username);
 			createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 			hideSecondPlayerWaitingMessage();
-			clearInterval(checkForOpponentInterval);
+			AJAXCallIntervalHandlers.clearCheckForOpponentInterval();
 			AJAXCalls.whoseTurnAJAXCall(data.opponent.roomID);
 			setupAndDisplayGameStat();
 		}
@@ -174,9 +152,7 @@ var AJAXSuccessHandlers = {};
 				{
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
-					checkIfOpponentIsDoneInterval = setInterval(function(){
-						AJAXCalls.checkIfOpponentIsDoneAJAXCall();
-					}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
+					AJAXCallIntervalHandlers.setCheckIfOpponentIsDoneInterval();
 				}
 
 				BoardBusiness.setCurrentPawnList(playerOnePawns);
@@ -194,18 +170,14 @@ var AJAXSuccessHandlers = {};
 				{
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
-					checkIfOpponentIsDoneInterval = setInterval(function(){
-						AJAXCalls.checkIfOpponentIsDoneAJAXCall();
-					}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
+					AJAXCallIntervalHandlers.setCheckIfOpponentIsDoneInterval();
 				}
 
 				BoardBusiness.setCurrentPawnList(playerTwoPawns);
 			}
 		}
 
-		checkIfAPlayerLeftInterval = setInterval(function(){
-			AJAXCalls.checkIfAPlayerLeftAJAXCall();
-		}, Constants.CHECK_IF_A_PLAYER_LEFT_INTERVAL_DURATION);
+		AJAXCallIntervalHandlers.setCheckIfAPlayerLeftInterval()
 	}
 
 	/**
@@ -257,7 +229,7 @@ var AJAXSuccessHandlers = {};
 			return;
 		}
 
-		clearInterval(checkRoomAvailabilityInterval);
+		AJAXCallIntervalHandlers.clearCheckRoomAvailabilityInterval();
 
 		//hiding the texts 
 		gameNameText.hide();
@@ -364,11 +336,7 @@ var AJAXSuccessHandlers = {};
 					stage.addChild(playerOneProfile, playerTwoProfile);
 
 					if(data.playerNumber === Constants.FIRST_PLAYER)
-					{
-						checkForOpponentInterval = setInterval(function(){
-							AJAXCalls.checkForOpponentAJAXCall();
-						}, Constants.CHECK_OPPONENT_INTERVAL_DURATION);
-					}
+						AJAXCallIntervalHandlers.setCheckForOpponentInterval();
 					else if(data.playerNumber === Constants.SECOND_PLAYER)
 					{
 						setupAndDisplayGameStat();
@@ -413,9 +381,9 @@ var AJAXSuccessHandlers = {};
 			stage.removeChild(this);
 		});
 
-		clearInterval(checkForOpponentInterval);
-		clearInterval(checkIfOpponentIsDoneInterval);
-		clearInterval(checkIfAPlayerLeftInterval);
+		AJAXCallIntervalHandlers.clearCheckForOpponentInterval();
+		AJAXCallIntervalHandlers.clearCheckIfOpponentIsDoneInterval();
+		AJAXCallIntervalHandlers.clearCheckIfAPlayerLeftInterval();
 
 		createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
 			BoardPawnFactory.resetSides();
@@ -511,10 +479,7 @@ var AJAXSuccessHandlers = {};
 
 			BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
 			BoardBusiness.makePawnsUnselectable();
-
-			checkIfOpponentIsDoneInterval = setInterval(function(){
-				AJAXCalls.checkIfOpponentIsDoneAJAXCall();
-			}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
+			AJAXCallIntervalHandlers.setCheckIfOpponentIsDoneInterval();
 		}
 	}
 
@@ -565,7 +530,7 @@ var AJAXSuccessHandlers = {};
 		if(data.winner === null)
 			BoardBusiness.makePawnsSelectable();
 
-		clearInterval(checkIfOpponentIsDoneInterval);
+		AJAXCallIntervalHandlers.clearCheckIfOpponentIsDoneInterval
 		turnTimer.startTimer();
 	}
 
@@ -608,9 +573,7 @@ var AJAXSuccessHandlers = {};
 		}
 
 		turnTimer.endTimer();
-		checkIfOpponentIsDoneInterval = setInterval(function(){
-			AJAXCalls.checkIfOpponentIsDoneAJAXCall();
-		}, Constants.CHECK_IF_OPPONENT_IS_DONE_INTERVAL_DURATION);
+		AJAXCallIntervalHandlers.setCheckIfOpponentIsDoneInterval();
 
 		BoardBusiness.makePawnsUnselectable();
 	}

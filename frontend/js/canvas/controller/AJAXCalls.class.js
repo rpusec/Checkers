@@ -9,7 +9,7 @@ var AJAXCalls = {};
 	AJAXCalls.toGameRoomAJAXCall = function(targetRoomID){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
-			data:'path=add-to-game-room&gameRoomID=' + targetRoomID,
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=add-to-game-room&gameRoomID=' + targetRoomID,
 			success: AJAXSuccessHandlers.toGameRoomSuccessHandler
 		});
 	}
@@ -21,7 +21,7 @@ var AJAXCalls = {};
 	AJAXCalls.offGameRoomAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
-			data: 'path=remove-from-game-room',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=remove-from-game-room',
 			success: AJAXSuccessHandlers.offGameSuccessHandler
 		});
 	}
@@ -34,7 +34,7 @@ var AJAXCalls = {};
 	AJAXCalls.checkGameRoomAvailabilityAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
-			data: 'path=check-room-availability',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-room-availability',
 			success: AJAXSuccessHandlers.checkGameRoomAvailabilitySuccessHandler
 		});
 	}
@@ -46,7 +46,7 @@ var AJAXCalls = {};
 	AJAXCalls.displayAllRoomsAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
-			data: 'path=get-all-rooms',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=get-all-rooms',
 			success: AJAXSuccessHandlers.displayAllRoomsSuccessHandler
 		});
 	}
@@ -58,7 +58,7 @@ var AJAXCalls = {};
 	AJAXCalls.checkForOpponentAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
-			data: 'path=check-for-opponent',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-for-opponent',
 			success: AJAXSuccessHandlers.checkForOpponentSuccessHandler
 		});
 	}
@@ -70,7 +70,7 @@ var AJAXCalls = {};
 	AJAXCalls.whoseTurnAJAXCall = function(targetRoomID){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
-			data: 'path=check-whose-turn&gameRoomID=' + targetRoomID,
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-whose-turn&gameRoomID=' + targetRoomID,
 			success: AJAXSuccessHandlers.checkWhoseTurnSuccessHandler
 		});
 	}
@@ -86,7 +86,7 @@ var AJAXCalls = {};
 	AJAXCalls.evaluatePlayerMoveAJAXCall = function(prevX, prevY, newX, newY){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
-			data: 'path=evaluate-player-move&prevX=' + prevX + '&prevY=' + prevY + '&newX=' + newX + '&newY=' + newY,
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=evaluate-player-move&prevX=' + prevX + '&prevY=' + prevY + '&newX=' + newX + '&newY=' + newY,
 			success: AJAXSuccessHandlers.evaluatePlayerMoveSuccessHandler
 		});
 	}
@@ -98,7 +98,7 @@ var AJAXCalls = {};
 	AJAXCalls.checkIfOpponentIsDoneAJAXCall = function(){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
-			data: 'path=check-if-opponent-is-done',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-if-opponent-is-done',
 			success: AJAXSuccessHandlers.checkIfOpponentIsDoneSuccessHandler
 		});
 	}
@@ -109,7 +109,7 @@ var AJAXCalls = {};
 	AJAXCalls.checkIfAPlayerLeftAJAXCall = function(){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
-			data: 'path=check-if-a-player-left',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-if-a-player-left',
 			success: AJAXSuccessHandlers.checkIfAPlayerLeftSuccessHandler
 		});
 	}
@@ -121,7 +121,7 @@ var AJAXCalls = {};
 	AJAXCalls.notifyTimeOutAJAXCall = function(){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
-			data: 'path=notify-turn-time-out',
+			data: Constants.BACKEND_FUNC_CALL_PARAM + '=notify-turn-time-out',
 			success: AJAXSuccessHandlers.notifyTimeOutSuccessHandler
 		});
 	}
