@@ -1,5 +1,7 @@
 <?php
 
+require_once('../config/constants.php');
+
 class RoomLogic
 {
     /**
@@ -52,7 +54,7 @@ class RoomLogic
 		return $resultStr;
 	}
 
-	public static function setUserAsFirstOrSecond(){
+	public static function setUserAsFirstOrSecond($roomID){
 		//fetching all of the users from the game room 
 		DB::query('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID=%i', $roomID);
 		$userCount = DB::count();
@@ -65,9 +67,7 @@ class RoomLogic
 	 * Randomly setting who's turn it is in the database 
 	 * when the second player joins the game. 
 	 */
-	public static function setupInitialPlayerTurn($playerTurn, $roomID){
-		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
-
+	public static function setupInitialPlayerTurn($playerTurn, $roomID, $users){
 		//randomly setting who's turn it is in the database when the second player joins the game 
 		if($playerTurn === SECOND_PLAYER)
 		{

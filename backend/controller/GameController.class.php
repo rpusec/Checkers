@@ -23,7 +23,7 @@ class GameController extends BaseController
 
 		parent::startConnection();
 		$turn = GameLogic::getPlayerTurn($roomID);
-		GameLogic::setBeginningTurnTime();
+		GameLogic::setBeginningTurnTime(parent::getTimeInSec());
 
 		return array(
 			'success' => true, 
@@ -79,7 +79,7 @@ class GameController extends BaseController
 		if($targetRoom === null)
 			return array('success' => false);
 
-		$checkIfPlayerTurn = GameLogic::checkIfPlayerTurn($targetRoom);
+		$checkIfPlayerTurn = GameLogic::checkIfPlayerTurn($targetRoom, parent::getLoggedUserID());
 		
 		if(is_array($checkIfPlayerTurn))
 			return $checkIfPlayerTurn;
@@ -112,19 +112,10 @@ class GameController extends BaseController
 		//checks if opponent's pawns should be removed and also whether the player 
 		//chose an illegal position when searching for opponent's pawns
 		$removedPawnIds = array();
-		$diagonallyDissOppErrorMsg = "";
-		GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
-		
-		if(empty($removedPawnIds))
-			GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
-		
-		if(empty($removedPawnIds))
-			GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
-		
-		if(empty($removedPawnIds))
-			GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR, $removedPawnIds, $diagonallyDissOppErrorMsg);
-		
+
 		//if there had been an error in the process, forward the error
+		$diagonallyDissOppErrorMsg = "";
+		GameLogic::diagonallyDismissOpponentsAllSides($prevX, $prevY, $newX, $newY, parent::getPlayerNumber(), $boardRows, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		if($diagonallyDissOppErrorMsg !== "")
 			return array('success' => false, 'error' => $diagonallyDissOppErrorMsg);
 
@@ -142,7 +133,10 @@ class GameController extends BaseController
 
 		$checkTurnDuration = GameLogic::checkTurnDuration(parent::getTimeInSec());
 		if(is_array($checkTurnDuration))
+		{
+			parent::destroySession();
 			return $checkTurnDuration;
+		}
 
 		$winner = GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns);
 
@@ -167,7 +161,7 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$targetUser = DB::queryFirstRow("SELECT roomID, whose_turn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%s", parent::getLoggedUserID());
+		$targetUser = DB::queryFirstRow("SELECT roomID, whose_turn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", parent::getLoggedUserID());
 		if($targetUser !== null)
 		{
 			if($targetUser['whose_turn'] == parent::getLoggedUserID())
@@ -179,10 +173,12 @@ class GameController extends BaseController
 				$playerOnePawns = 0;
 				GameLogic::countPlayerOneTwoPawns($boardRowStrArr, $playerOnePawns, $playerTwoPawns);
 
-				if(GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns) !== null)
-					GameLogic::updateWonLoseState($targetUser, parent::getLoggedUserID(), parent::getPlayerNumber());
+				$winner = GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns);
 
-				GameLogic::setBeginningTurnTime();
+				if($winner !== null)
+					GameLogic::updateWonLoseState($targetUser, parent::getLoggedUserID(), parent::getPlayerNumber(), $winner);
+
+				GameLogic::setBeginningTurnTime(parent::getTimeInSec());
 				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove'], 'removedPawns' => $targetUser['removedPawns'], 'winner' => $winner);
 			}
 

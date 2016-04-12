@@ -30,10 +30,10 @@ class UsersController extends BaseController
 	public static function getUserByID($userID)
 	{
 		parent::startConnection();
-		$results = DB::query('SELECT fname as firstname, lname as lastname, username FROM user WHERE userID = %i', $userID);
+		$targetUser = DB::queryFirstRow('SELECT fname as firstname, lname as lastname, username FROM user WHERE userID = %i', $userID);
 
-		if(!empty($results))
-			return array('success' => true, 'user' => $results[0]);
+		if($targetUser !== null)
+			return array('success' => true, 'user' => $targetUser);
 
 		return array('success' => false);
 	}
@@ -82,10 +82,11 @@ class UsersController extends BaseController
 		self::updateAllUserConnStat($username, self::SEARCH_BY_USERNAME);
 		$targetUser = DB::queryFirstRow("SELECT userID, username, password, connected FROM user WHERE username = %s AND password = %s", $username, $password);
 		$flag = false;
+		$arrRandColor = null;
 
 		if($targetUser !== null)
 		{
-			$handleLoginRes = UserLogic::handleLogin($targetUser, $username, $password, $flag);
+			$handleLoginRes = UserLogic::handleLogin($targetUser, $username, $password, $flag, $arrRandColor);
 			if(is_array($handleLoginRes))
 				return $handleLoginRes;
 
@@ -99,7 +100,7 @@ class UsersController extends BaseController
 		$arrReturn = array();
 		$arrReturn['success'] = $flag;
 
-		if(isset($arrRandColor))
+		if($arrRandColor !== null)
 			$arrReturn['arrUserColor'] = $arrRandColor;
 
 		return $arrReturn;
@@ -157,11 +158,11 @@ class UsersController extends BaseController
 		$arrReturn = array();
 		$arrReturn['isLogged'] = parent::isUserLogged();
 
-		if(isset($results) && count($results) === 1 && parent::isUserLogged())
+		if(isset($targetUser) && $targetUser !== null && parent::isUserLogged())
 			$arrReturn['arrUserColor'] = array(
-				'red' => $results[0]['chatColorR'],
-				'green' => $results[0]['chatColorG'],
-				'blue' => $results[0]['chatColorB']);
+				'red' => $targetUser['chatColorR'],
+				'green' => $targetUser['chatColorG'],
+				'blue' => $targetUser['chatColorB']);
 
 		return $arrReturn;
 	}

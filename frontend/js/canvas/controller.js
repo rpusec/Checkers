@@ -797,7 +797,10 @@
 	 */
 	function checkIfOpponentIsDoneSuccessHandler(data){
 		if(!data.success || !data.isDone)
+		{
+			console.log(data);
 			return;
+		}
 
 		data.playerNumber = parseInt(data.playerNumber);
 

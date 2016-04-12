@@ -1,7 +1,8 @@
 <?php
 
-require_once('UsersController.class.php');
+require_once('../controller/UsersController.class.php');
 require_once('../business/RoomLogic.class.php');
+require_once('../config/constants.php');
 
 class GameLogic
 {
@@ -19,8 +20,8 @@ class GameLogic
 	 * the time it took for player to finish their move was legal. The value
 	 * that's set is the current time in seconds. 
 	 */
-	public static function setBeginningTurnTime(){
-		$_SESSION['beginningTurnTime'] = parent::getTimeInSec();
+	public static function setBeginningTurnTime($beginningTurnTime){
+		$_SESSION['beginningTurnTime'] = $beginningTurnTime;
 	}
 
 	/**
@@ -103,9 +104,9 @@ class GameLogic
 		return null;
     }
 
-    public static function checkIfPlayerTurn($targetRoom){
+    public static function checkIfPlayerTurn($targetRoom, $loggedUserID){
     	$whoseTurn = $targetRoom['whose_turn'];
-		if($whoseTurn !== parent::getLoggedUserID())
+		if($whoseTurn !== $loggedUserID)
 			return array('success' => false, 'error' => 'It\'s not your turn. ');
 		return null;
     }
@@ -141,7 +142,7 @@ class GameLogic
     	$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
     	if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
 			if($targetRoom['whose_turn'] == $loggedUserID)
-				$newWhoseTurn = GameLogic::switchUserTurn($users[0], $users[1]);
+				return GameLogic::switchUserTurn($users[0], $users[1], $loggedUserID);
 		else
 			return array('success' => false);
     }
@@ -161,7 +162,7 @@ class GameLogic
 		}
     }
 
-    public static function updateWonLoseState($targetUser, $loggedUserID, $playerNumber){
+    public static function updateWonLoseState($targetUser, $loggedUserID, $playerNumber, $winner){
     	DB::update('room', array(
 			'stringifiedBoard' => RoomLogic::constructStringifiedBoard()
 		), 'roomID=%i', $targetUser['roomID']);
@@ -187,7 +188,6 @@ class GameLogic
     	if(($timeInSeconds - GameLogic::getBeginningTurnTime()) > TURN_DURATION)
 		{
 			UsersController::logoutUser(false);
-			parent::destroySession();
 			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . ($timeInSeconds - GameLogic::getBeginningTurnTime()), 'errorType' => 'turnDurationError');
 		}
 
@@ -198,6 +198,20 @@ class GameLogic
     	if(count($users) < ROOM_MAX_AMOUNT_OF_USERS)
     		return true;
     	return false; 
+    }
+
+    public static function diagonallyDismissOpponentsAllSides($prevX, $prevY, $newX, $newY, $playerNumber, &$boardRows, &$removedPawnIds, &$errorMsg)
+    {
+    	GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $playerNumber, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR, $removedPawnIds, $errorMsg);
+		
+		if(empty($removedPawnIds))
+			GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $playerNumber, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_UP_DIR, $removedPawnIds, $errorMsg);
+		
+		if(empty($removedPawnIds))
+			GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $playerNumber, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_DOWN_DIR, $removedPawnIds, $errorMsg);
+		
+		if(empty($removedPawnIds))
+			GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $playerNumber, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_RIGHT_DOWN_DIR, $removedPawnIds, $errorMsg);
     }
 
     /**
@@ -212,7 +226,7 @@ class GameLogic
 	 * @param  [Array<Integer>] &$removedPawnIds An array which will save and forward all of the ids of the pawns that had been killed off.  
 	 * @param  [String] &$errorMsg               The error message that will be forwarded later outside of the class. 
 	 */
-	public static function diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, &$boardRows, $direction, &$removedPawnIds, &$errorMsg)
+	public static function diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $playerNumber, &$boardRows, $direction, &$removedPawnIds, &$errorMsg)
 	{
 		switch($direction)
 		{
@@ -258,7 +272,7 @@ class GameLogic
 					if($prevX === $newX && $prevY === $newY)
 						return;
 
-					$posEvaluation = parent::getPlayerNumber() === FIRST_PLAYER ? 
+					$posEvaluation = $playerNumber === FIRST_PLAYER ? 
 						($boardRows[$prevY+$diffY][$prevX+$diffX] > PLAYER_PAWNS_AMOUNT) : 
 						($boardRows[$prevY+$diffY][$prevX+$diffX] > 0 && $boardRows[$prevY+$diffY][$prevX+$diffX] <= PLAYER_PAWNS_AMOUNT);
 
@@ -321,10 +335,10 @@ class GameLogic
 	 * @param  [Array]   $userTwo       The second user. 
 	 * @return [Integer]                The ID of the user who's turn it is. 
 	 */
-	public static function switchUserTurn($userOne, $userTwo){
-		if($userOne['userID'] == parent::getLoggedUserID())
+	public static function switchUserTurn($userOne, $userTwo, $loggedUserID){
+		if($userOne['userID'] == $loggedUserID)
 			return $userTwo['userID'];
-		else if($userTwo['userID'] == parent::getLoggedUserID())
+		else if($userTwo['userID'] == $loggedUserID)
 			return $userOne['userID'];
 	}
 }

@@ -59,8 +59,9 @@ class RoomController extends BaseController
 		), 'userID=%i', parent::getLoggedUserID());
 
 		//marking the user as either the first or the second player
-		parent::setPlayerNumber(RoomLogic::setUserAsFirstOrSecond());
-		RoomLogic::setupInitialPlayerTurn(parent::getPlayerNumber(), $roomID);
+		parent::setPlayerNumber(RoomLogic::setUserAsFirstOrSecond($roomID));
+		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
+		RoomLogic::setupInitialPlayerTurn(parent::getPlayerNumber(), $roomID, $users);
 
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID(), 'roomID' => $roomID);
 	}

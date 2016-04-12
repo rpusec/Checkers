@@ -1,5 +1,8 @@
 <?php
 
+require_once('../helper/UserValidator.class.php');
+require_once('../config/constants.php');
+
 class UserLogic
 {
 	public static function checkForUserInputErrors(){
@@ -68,7 +71,7 @@ class UserLogic
 		}
 	}
 
-	public static function handleLogin($targetUser, $username, $password, &$flag){
+	public static function handleLogin($targetUser, $username, $password, &$flag, &$arrRandColor){
 		if(intval($targetUser['connected']) === 1)
 			return array('success' => false, 'errors' => array(ALREADY_CONNECTED_ERROR_MSG));
 
@@ -84,8 +87,6 @@ class UserLogic
 				'connected' => 1
 			), 'userID=%i', $targetUser['userID']);
 			
-			self::updateConnTime($targetUser['userID']);
-			parent::setLoggedUser($targetUser['userID']);
 			$flag = true;
 		}
 	}

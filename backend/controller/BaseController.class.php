@@ -2,7 +2,7 @@
 
 require_once('../../dbinfo.php');
 require_once('../libs/meekrodb.2.3.class.php');
-require_once('../common/constants.php');
+require_once('../config/constants.php');
 
 /**
  * Class which offers functions shared by all controller subtypes. 
