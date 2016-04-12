@@ -1,6 +1,7 @@
 <?php
 
 require_once('UsersController.class.php');
+require_once('RoomControllerController.class.php');
 
 class GameLogic
 {
@@ -22,6 +23,10 @@ class GameLogic
 		$_SESSION['beginningTurnTime'] = parent::getTimeInSec();
 	}
 
+	/**
+	 * Returns the beginning turn time. 
+	 * @return Number The beginning turn time. 
+	 */
 	public static function getBeginningTurnTime(){
 		return $_SESSION['beginningTurnTime'];
 	}
@@ -135,10 +140,42 @@ class GameLogic
     public static function setOpponentTurn($targetRoom, $loggedUserID){
     	$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
     	if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
-			if($targetRoom['whose_turn'] == parent::getLoggedUserID())
+			if($targetRoom['whose_turn'] == $loggedUserID)
 				$newWhoseTurn = GameLogic::switchUserTurn($users[0], $users[1]);
 		else
 			return array('success' => false);
+    }
+
+    public static function countPlayerOneTwoPawns($boardRowStrArr, &$playerOnePawns, &$playerTwoPawns){
+    	foreach($boardRowStrArr as $boardRowStr)
+		{
+			$boardColArr = explode(BOARD_COL_SEPARATOR, $boardRowStr);
+
+			foreach($boardColArr as $boardCol)
+			{
+				if($boardCol > PLAYER_PAWNS_AMOUNT)
+					$playerTwoPawns++;
+				else if($boardCol <= PLAYER_PAWNS_AMOUNT && $boardCol > 0)
+					$playerOnePawns++;
+			}
+		}
+    }
+
+    public static function updateWonLoseState($targetUser, $loggedUserID, $playerNumber){
+    	DB::update('room', array(
+			'stringifiedBoard' => RoomController::constructStringifiedBoard()
+		), 'roomID=%i', $targetUser['roomID']);
+
+		if($winner === $playerNumber)
+		{
+			DB::query('UPDATE user SET won = won + 1 WHERE userID=%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
+			DB::query('UPDATE user SET lost = lost + 1 WHERE userID<>%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
+		}
+		else
+		{
+			DB::query('UPDATE user SET lost = lost + 1 WHERE userID=%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
+			DB::query('UPDATE user SET won = won + 1 WHERE userID<>%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
+		}
     }
 
     /**
@@ -153,8 +190,14 @@ class GameLogic
 			parent::destroySession();
 			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . ($timeInSeconds - GameLogic::getBeginningTurnTime()), 'errorType' => 'turnDurationError');
 		}
-		
+
 		return null;
+    }
+
+    public static function checkIfTheRoomIsNotFull($users){
+    	if(count($users) < ROOM_MAX_AMOUNT_OF_USERS)
+    		return true;
+    	return false; 
     }
 
     /**
