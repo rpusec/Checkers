@@ -1,3 +1,9 @@
+/**
+ * This class contains all of the AJAX call success handler 
+ * functions used in the game portion of the application.  
+ * @class
+ * @author Roman Pusec
+ */
 var AJAXSuccessHandlers = {};
 
 (function(){
@@ -13,7 +19,20 @@ var AJAXSuccessHandlers = {};
 	,	gameStat
 	,	playerOnePawns
 	,	playerTwoPawns
+	,	playerOneProfile
+	,	playerTwoProfile
 
+	/**
+	 * Initializes all of the properties used by all of the success handlers. 
+	 * @param  {Object} props Represents parameters. 
+	 *                        - {createjs.Stage} stage => The stage reference.
+	 *                        - {AppearingText}  gameNameText => The game name text referece.
+	 *                        - {AppearingText}  selARoomText => The select a room text reference. 
+	 *                        - {Board}          board => The board reference. 
+	 *                        - {Button}         btnLeaveGame => The leave game button reference. 
+	 *                        - {WaitingMessage} wmSecondPlayer => The second player waiting message reference. 
+	 *                        - {TurnTimer} turnTimer => The turnTimer reference.  
+	 */
 	AJAXSuccessHandlers.initializeAllProperties = function(props){
 		stage = props.stage;
 		gameNameText = props.gameNameText;
@@ -493,6 +512,8 @@ var AJAXSuccessHandlers = {};
 		if(!data.success || !data.isDone)
 			return;
 
+		console.log(data);
+
 		data.playerNumber = parseInt(data.playerNumber);
 
 		if(playerOneProfile.isHighlighted())
@@ -530,7 +551,7 @@ var AJAXSuccessHandlers = {};
 		if(data.winner === null)
 			BoardBusiness.makePawnsSelectable();
 
-		AJAXCallIntervalHandlers.clearCheckIfOpponentIsDoneInterval
+		AJAXCallIntervalHandlers.clearCheckIfOpponentIsDoneInterval();
 		turnTimer.startTimer();
 	}
 
