@@ -51,5 +51,9 @@ var Constants = {
 	PARTICLE_DISTANCE: 30,
 
 	//board
-	BOARD_ROW_SEPARATOR: '|'
+	BOARD_ROW_SEPARATOR: '|',
+
+	//URIs
+	ROOM_VIEW_URI: 'backend/view/RoomView.php',
+	GAME_VIEW_URI: 'backend/view/GameView.php'
 };
