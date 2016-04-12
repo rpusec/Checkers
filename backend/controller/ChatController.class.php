@@ -1,7 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
-require_once('../helper/UserValidator.class.php');
+require_once('../business/ChatLogic.class.php');
 
 /**
  * Controller class for chat functionality. 

@@ -1,6 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
+require_once('../business/RoomLogic.class.php');
 
 /**
  * Controller class which handles all of the 

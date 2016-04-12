@@ -15,7 +15,7 @@ require_once('validation.php');
 abstract class BaseValidator
 {
 	//list of all errors 
-	private static $errors = array();
+	protected static $errors = array();
 	
 	/**
 	 * Checks if any errors have been made. 

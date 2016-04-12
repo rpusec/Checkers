@@ -1,7 +1,7 @@
 <?php
 
 require_once('BaseController.class.php');
-require_once('GameLogic.class.php');
+require_once('../business/GameLogic.class.php');
 
 /**
  * Controller class which provides all functionality
