@@ -1,6 +1,6 @@
 /**
- * Handles all of the necessary functionalities relating 
- * to the canvas section of the application. 
+ * Controller base class. 
+ * @class 
  * @author Roman Pusec
  */
 (function(){

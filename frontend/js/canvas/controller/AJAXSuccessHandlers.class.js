@@ -31,7 +31,7 @@ var AJAXSuccessHandlers = {};
 	 *                        - {Board}          board => The board reference. 
 	 *                        - {Button}         btnLeaveGame => The leave game button reference. 
 	 *                        - {WaitingMessage} wmSecondPlayer => The second player waiting message reference. 
-	 *                        - {TurnTimer} turnTimer => The turnTimer reference.  
+	 *                        - {TurnTimer}      turnTimer => The turnTimer reference.  
 	 */
 	AJAXSuccessHandlers.initializeAllProperties = function(props){
 		stage = props.stage;
@@ -44,6 +44,10 @@ var AJAXSuccessHandlers = {};
 		turnTimer = props.turnTimer;
 	}
 
+	/**
+	 * Returns all properties from this class wrapped up in a plain object. 
+	 * @return {Object} All of the properties. 
+	 */
 	AJAXSuccessHandlers.getAllProperties = function(){
 		return {
 			stage: stage,
@@ -714,6 +718,10 @@ var AJAXSuccessHandlers = {};
 		gameStat.incrRound();
 	}
 
+	/**
+	 * Creates and sets up the game state object (the display object which displays 
+	 * the current state of the game (round, pawn amount, etc.).
+	 */
 	function setupAndDisplayGameStat(){
 		gameStat = new GameStat({
 			playerOneName: playerOneProfile.getFirstname(), 

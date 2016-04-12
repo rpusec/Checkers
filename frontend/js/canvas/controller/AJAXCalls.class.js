@@ -1,3 +1,9 @@
+/**
+ * Contains all of the AJAX call functions used 
+ * in the game portion of the application. 
+ * @class
+ * @author Roman Pusec
+ */
 var AJAXCalls = {};
 
 (function(){
