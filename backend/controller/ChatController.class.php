@@ -22,14 +22,14 @@ class ChatController extends BaseController
 		parent::startConnection();
 
 		$output = ChatLogic::checkAppropriateInputLength($message);
-                
-                if(is_array($output))
-                    return $output;
+		
+		if(is_array($output))
+			return $output;
 	
 		DB::insert('message', array(
 			'USER_userID' => parent::getLoggedUserID(), 
 			'message' => htmlspecialchars($message),
-			'exparation' => ''.(parent::getTimeInSec() + MESSAGE_EXPARATION_TIME)
+			'exparation' => '' . (parent::getTimeInSec() + MESSAGE_EXPARATION_TIME)
 		));
 
 		return array(
