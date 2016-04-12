@@ -1,7 +1,6 @@
 <?php
 
 require_once('BaseController.class.php');
-require_once('../helper/UserValidator.class.php');
 require_once('../business/UserLogic.class.php');
 
 /**

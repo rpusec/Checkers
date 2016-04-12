@@ -1,6 +1,6 @@
 <?php
 
-require_once('../helper/UserValidator.class.php');
+require_once('validation/UserValidator.class.php');
 require_once('../config/constants.php');
 
 class ChatLogic
