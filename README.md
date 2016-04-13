@@ -4,6 +4,4 @@ DONE
  - [DONE] controller preimenovati u ajax  
  - [DONE] u canvas dodati init folder u kojega cu dodati Base.js folder  
  - [DONE] preimenovati model folder u component  
- - create a database call handler
- - exclude json_encode on views 
- - 
+ - create a database call handler  
