@@ -26,32 +26,34 @@
 <!-- constants reference -->
 <script src="frontend/js/canvas/config/Constants.js"></script>
 
-<!-- controller classes -->
-<script src="frontend/js/canvas/controller/Base.js"></script>
-<script src="frontend/js/canvas/controller/AJAXSuccessHandlers.class.js"></script>
-<script src="frontend/js/canvas/controller/AJAXCallIntervalHandlers.class.js"></script>
-<script src="frontend/js/canvas/controller/AJAXCalls.class.js"></script>
+<!-- initialization files -->
+<script src="frontend/js/canvas/initialization/initialization.js"></script>
 
-<!-- factory classes -->
+<!-- ajax files -->
+<script src="frontend/js/canvas/ajax/AJAXSuccessHandler.class.js"></script>
+<script src="frontend/js/canvas/ajax/AJAXCallIntervalHandler.class.js"></script>
+<script src="frontend/js/canvas/ajax/AJAXCallHandler.class.js"></script>
+
+<!-- factory files -->
 <script src="frontend/js/canvas/factory/BoardPawnFactory.class.js"></script>
 <script src="frontend/js/canvas/factory/ParticleFactory.class.js"></script>
 
-<!-- business classes -->
-<script src="frontend/js/canvas/business/BlockSelectabilityBusiness.class.js"></script>
-<script src="frontend/js/canvas/business/BoardBusiness.class.js"></script>
+<!-- business files -->
+<script src="frontend/js/canvas/business/BlockSelectabilityLogic.class.js"></script>
+<script src="frontend/js/canvas/business/BoardLogic.class.js"></script>
 
-<!-- model classes -->
-<script src="frontend/js/canvas/model/AppearingText.class.js"></script>
-<script src="frontend/js/canvas/model/GameRoom.class.js"></script>
-<script src="frontend/js/canvas/model/RotatingLine.class.js"></script>
-<script src="frontend/js/canvas/model/Board.class.js"></script>
-<script src="frontend/js/canvas/model/BoardPawn.class.js"></script>
-<script src="frontend/js/canvas/model/Button.class.js"></script>
-<script src="frontend/js/canvas/model/UserGameProfile.class.js"></script>
-<script src="frontend/js/canvas/model/WaitingMessage.class.js"></script>
-<script src="frontend/js/canvas/model/TurnTimer.class.js"></script>
-<script src="frontend/js/canvas/model/AppearingMessage.class.js"></script>
-<script src="frontend/js/canvas/model/GameStat.class.js"></script>
+<!-- component files -->
+<script src="frontend/js/canvas/component/AppearingText.class.js"></script>
+<script src="frontend/js/canvas/component/GameRoom.class.js"></script>
+<script src="frontend/js/canvas/component/RotatingLine.class.js"></script>
+<script src="frontend/js/canvas/component/Board.class.js"></script>
+<script src="frontend/js/canvas/component/BoardPawn.class.js"></script>
+<script src="frontend/js/canvas/component/Button.class.js"></script>
+<script src="frontend/js/canvas/component/UserGameProfile.class.js"></script>
+<script src="frontend/js/canvas/component/WaitingMessage.class.js"></script>
+<script src="frontend/js/canvas/component/TurnTimer.class.js"></script>
+<script src="frontend/js/canvas/component/AppearingMessage.class.js"></script>
+<script src="frontend/js/canvas/component/GameStat.class.js"></script>
 
 <body onload="init();">
 	<div id="single-user-info"></div>

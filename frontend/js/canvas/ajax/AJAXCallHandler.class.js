@@ -4,7 +4,7 @@
  * @class
  * @author Roman Pusec
  */
-var AJAXCalls = {};
+var AJAXCallHandler = {};
 
 (function(){
 
@@ -12,11 +12,11 @@ var AJAXCalls = {};
 	 * AJAX call which, when successfully executed, will escort the player to
 	 * a game room of player's choice. 
 	 */
-	AJAXCalls.toGameRoomAJAXCall = function(targetRoomID){
+	AJAXCallHandler.toGameRoomAJAXCall = function(targetRoomID){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=add-to-game-room&gameRoomID=' + targetRoomID,
-			success: AJAXSuccessHandlers.toGameRoomSuccessHandler
+			success: AJAXSuccessHandler.toGameRoomSuccessHandler
 		});
 	}
 
@@ -24,11 +24,11 @@ var AJAXCalls = {};
 	 * AJAX call which, when successfully executed, will return the player
 	 * back to the list of game rooms. 
 	 */
-	AJAXCalls.offGameRoomAJAXCall = function(){
+	AJAXCallHandler.offGameRoomAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=remove-from-game-room',
-			success: AJAXSuccessHandlers.offGameSuccessHandler
+			success: AJAXSuccessHandler.offGameSuccessHandler
 		});
 	}
 
@@ -37,11 +37,11 @@ var AJAXCalls = {};
 	 * (that is, if the maximum amount of players has not
 	 * been reached). 
 	 */
-	AJAXCalls.checkGameRoomAvailabilityAJAXCall = function(){
+	AJAXCallHandler.checkGameRoomAvailabilityAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-room-availability',
-			success: AJAXSuccessHandlers.checkGameRoomAvailabilitySuccessHandler
+			success: AJAXSuccessHandler.checkGameRoomAvailabilitySuccessHandler
 		});
 	}
 
@@ -49,11 +49,11 @@ var AJAXCalls = {};
 	 * AJAX call which displays all game 
 	 * rooms from the database.  
 	 */
-	AJAXCalls.displayAllRoomsAJAXCall = function(){
+	AJAXCallHandler.displayAllRoomsAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=get-all-rooms',
-			success: AJAXSuccessHandlers.displayAllRoomsSuccessHandler
+			success: AJAXSuccessHandler.displayAllRoomsSuccessHandler
 		});
 	}
 
@@ -61,11 +61,11 @@ var AJAXCalls = {};
 	 * AJAX call which checks if a player's 
 	 * opponent entered the game.  
 	 */
-	AJAXCalls.checkForOpponentAJAXCall = function(){
+	AJAXCallHandler.checkForOpponentAJAXCall = function(){
 		runAjax({
 			url: Constants.ROOM_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-for-opponent',
-			success: AJAXSuccessHandlers.checkForOpponentSuccessHandler
+			success: AJAXSuccessHandler.checkForOpponentSuccessHandler
 		});
 	}
 
@@ -73,11 +73,11 @@ var AJAXCalls = {};
 	 * AJAX Call which checks who's turn it is in the game. 
 	 * @param  {Integer} targetRoomID The room in which the two players are. 
 	 */
-	AJAXCalls.whoseTurnAJAXCall = function(targetRoomID){
+	AJAXCallHandler.whoseTurnAJAXCall = function(targetRoomID){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-whose-turn&gameRoomID=' + targetRoomID,
-			success: AJAXSuccessHandlers.checkWhoseTurnSuccessHandler
+			success: AJAXSuccessHandler.checkWhoseTurnSuccessHandler
 		});
 	}
 
@@ -89,11 +89,11 @@ var AJAXCalls = {};
 	 * @param  {Number} newX              The new X coordinate of the selected pawn. 
 	 * @param  {Number} newY              The new X coordinate of the selected pawn.  
 	 */
-	AJAXCalls.evaluatePlayerMoveAJAXCall = function(prevX, prevY, newX, newY){
+	AJAXCallHandler.evaluatePlayerMoveAJAXCall = function(prevX, prevY, newX, newY){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=evaluate-player-move&prevX=' + prevX + '&prevY=' + prevY + '&newX=' + newX + '&newY=' + newY,
-			success: AJAXSuccessHandlers.evaluatePlayerMoveSuccessHandler
+			success: AJAXSuccessHandler.evaluatePlayerMoveSuccessHandler
 		});
 	}
 
@@ -101,22 +101,22 @@ var AJAXCalls = {};
 	 * AJAX Call which checks if the player's 
 	 * opponent made their move. 
 	 */
-	AJAXCalls.checkIfOpponentIsDoneAJAXCall = function(){
+	AJAXCallHandler.checkIfOpponentIsDoneAJAXCall = function(){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-if-opponent-is-done',
-			success: AJAXSuccessHandlers.checkIfOpponentIsDoneSuccessHandler
+			success: AJAXSuccessHandler.checkIfOpponentIsDoneSuccessHandler
 		});
 	}
 
 	/**
 	 * Checks whether the opponent left the game. 
 	 */
-	AJAXCalls.checkIfAPlayerLeftAJAXCall = function(){
+	AJAXCallHandler.checkIfAPlayerLeftAJAXCall = function(){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=check-if-a-player-left',
-			success: AJAXSuccessHandlers.checkIfAPlayerLeftSuccessHandler
+			success: AJAXSuccessHandler.checkIfAPlayerLeftSuccessHandler
 		});
 	}
 
@@ -124,11 +124,11 @@ var AJAXCalls = {};
 	 * It is executed when the timer ran out, thus the 
 	 * turn should be switched. 
 	 */
-	AJAXCalls.notifyTimeOutAJAXCall = function(){
+	AJAXCallHandler.notifyTimeOutAJAXCall = function(){
 		runAjax({
 			url: Constants.GAME_VIEW_URI,
 			data: Constants.BACKEND_FUNC_CALL_PARAM + '=notify-turn-time-out',
-			success: AJAXSuccessHandlers.notifyTimeOutSuccessHandler
+			success: AJAXSuccessHandler.notifyTimeOutSuccessHandler
 		});
 	}
 

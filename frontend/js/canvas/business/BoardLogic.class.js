@@ -1,11 +1,11 @@
-var BoardBusiness = {};
+var BoardLogic = {};
 
 (function(){
 
 	var	board
 	,	currentPawnList;
 
-	BoardBusiness.setBoard = function(_board){
+	BoardLogic.setBoard = function(_board){
 		board = _board;
 
 		board.children.forEach(function(boardBlock){
@@ -13,11 +13,11 @@ var BoardBusiness = {};
 		});
 	}
 
-	BoardBusiness.setCurrentPawnList = function(_currentPawnList){
+	BoardLogic.setCurrentPawnList = function(_currentPawnList){
 		currentPawnList = _currentPawnList;
 	}
 
-	BoardBusiness.makePawnsSelectable = function(arrPawns){
+	BoardLogic.makePawnsSelectable = function(arrPawns){
 		if(!Array.isArray(arrPawns))
 			arrPawns = currentPawnList;
 
@@ -26,7 +26,7 @@ var BoardBusiness = {};
 		});
 	}
 
-	BoardBusiness.makePawnsUnselectable = function(arrPawns){
+	BoardLogic.makePawnsUnselectable = function(arrPawns){
 		if(!Array.isArray(arrPawns))
 			arrPawns = currentPawnList;
 		
@@ -76,7 +76,7 @@ var BoardBusiness = {};
 			}
 		});
 
-		BlockSelectabilityBusiness.makeBoardBlocksSelectable(currentlySelectedPawn);
+		BlockSelectabilityLogic.makeBoardBlocksSelectable(currentlySelectedPawn);
 		this.off('click', activateTargetPawnClickHandler);
 		this.on('click', deactivateTargetPawnClickHandler);
 	}
@@ -95,7 +95,7 @@ var BoardBusiness = {};
 			makePawnSelectable(targetPawn);
 		});
 
-		BlockSelectabilityBusiness.makeBoardBlocksUnselectable();
+		BlockSelectabilityLogic.makeBoardBlocksUnselectable();
 		this.off('click', deactivateTargetPawnClickHandler);
 	}
 
@@ -114,7 +114,7 @@ var BoardBusiness = {};
 		turnTimer.endTimer();
 		ParticleFactory.spawnParticles(new createjs.Point(evt.stageX, evt.stageY));
 
-		AJAXCalls.evaluatePlayerMoveAJAXCall(
+		AJAXCallHandler.evaluatePlayerMoveAJAXCall(
 			currentlySelectedPawn.point.x,
 			currentlySelectedPawn.point.y,
 			this.point.x,

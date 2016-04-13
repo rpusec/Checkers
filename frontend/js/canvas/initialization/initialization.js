@@ -52,7 +52,7 @@
 		});
 
 		var btnLeaveGame = new Button({text: 'Leave game...'}, function(){
-			AJAXCalls.offGameRoomAJAXCall();
+			AJAXCallHandler.offGameRoomAJAXCall();
 		});
 
 		var wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
@@ -66,15 +66,15 @@
 		board.y = stage.canvas.height;
 		board.alpha = 0;
 
-		BlockSelectabilityBusiness.setBoard(board);
-		BoardBusiness.setBoard(board);
+		BlockSelectabilityLogic.setBoard(board);
+		BoardLogic.setBoard(board);
 
 		gameNameText.show();
 		selARoomText.show();
 
 		var turnTimer = new TurnTimer({
 			onEndHandler: function(){
-				AJAXCalls.notifyTimeOutAJAXCall();
+				AJAXCallHandler.notifyTimeOutAJAXCall();
 			},
 			x: stage.canvas.width,
 			y: stage.canvas.height
@@ -84,7 +84,7 @@
 
 		ParticleFactory.initialize({stage: stage});
 
-		AJAXSuccessHandlers.initializeAllProperties({
+		AJAXSuccessHandler.initializeAllProperties({
 			stage: stage,
 			gameNameText: gameNameText,
 			selARoomText: selARoomText,
@@ -96,7 +96,7 @@
 
 		gameInitialized = true;
 		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board, turnTimer);
-		AJAXCalls.displayAllRoomsAJAXCall();
+		AJAXCallHandler.displayAllRoomsAJAXCall();
 	}
 
 	/**
@@ -111,7 +111,7 @@
 		if(typeof stage !== 'undefined')
 			stage.removeAllChildren();
 
-		var contGameRoom = AJAXSuccessHandlers.getAllProperties().contGameRoom;
+		var contGameRoom = AJAXSuccessHandler.getAllProperties().contGameRoom;
 		contGameRoom.removeAllChildren();
 		contGameRoom.alpha = 1;
 
@@ -119,7 +119,7 @@
 			stage.update();
 
 		gameInitialized = false;
-		AJAXCallIntervalHandlers.clearAllAJAXCallIntervals();
+		AJAXCallIntervalHandler.clearAllAJAXCallIntervals();
 	}
 
 }());
