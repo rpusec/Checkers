@@ -38,12 +38,12 @@ class GameLogic
      * @return [Integer]         The database ID of the player. 
      */
     public static function getPlayerTurn($roomID){
-    	$turn = DB::query('SELECT whose_turn FROM room WHERE roomID=%i', $roomID);
+    	$turn = DB::query('SELECT whoseTurn FROM room WHERE roomID=%i', $roomID);
 
 		if(!empty($turn))
 		{
 			$turn = $turn[0];
-			$turn = intval($turn['whose_turn']);
+			$turn = intval($turn['whoseTurn']);
 		}
 		else
 			$turn = null;
@@ -105,7 +105,7 @@ class GameLogic
     }
 
     public static function checkIfPlayerTurn($targetRoom, $loggedUserID){
-    	$whoseTurn = $targetRoom['whose_turn'];
+    	$whoseTurn = $targetRoom['whoseTurn'];
 		if($whoseTurn !== $loggedUserID)
 			return array('success' => false, 'error' => 'It\'s not your turn. ');
 		return null;
@@ -141,7 +141,7 @@ class GameLogic
     public static function setOpponentTurn($targetRoom, $loggedUserID){
     	$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
     	if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
-			if($targetRoom['whose_turn'] == $loggedUserID)
+			if($targetRoom['whoseTurn'] == $loggedUserID)
 				return GameLogic::switchUserTurn($users[0], $users[1], $loggedUserID);
 		else
 			return array('success' => false);

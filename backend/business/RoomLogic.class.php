@@ -73,7 +73,7 @@ class RoomLogic
 		{
 			$randUserInt = mt_rand(0,1);
 			DB::update('room', array(
-				'whose_turn' => $users[$randUserInt]['userID'],
+				'whoseTurn' => $users[$randUserInt]['userID'],
 				'stringifiedBoard' => self::constructStringifiedBoard(),
 				'lastMove' => null,
 				'removedPawns' => null,

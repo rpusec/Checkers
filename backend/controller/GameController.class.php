@@ -74,7 +74,7 @@ class GameController extends BaseController
 			return $nextCoor;
 
 		parent::startConnection();
-		$targetRoom = DB::queryFirstRow("SELECT roomID, stringifiedBoard, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
+		$targetRoom = DB::queryFirstRow("SELECT roomID, stringifiedBoard, whoseTurn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
 
 		if($targetRoom === null)
 			return array('success' => false);
@@ -141,7 +141,7 @@ class GameController extends BaseController
 		$winner = GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns);
 
 		DB::update('room', array(
-			'whose_turn' => $newWhoseTurn,
+			'whoseTurn' => $newWhoseTurn,
 			'stringifiedBoard' => $newStringifiedBoard,
 			'lastMove' => "{\"id\":".parent::getLoggedUserID().",\"prevX\":$prevX,\"prevY\":$prevY,\"newX\":$newX,\"newY\":$newY}",
 			'removedPawns' => json_encode($removedPawnIds)
@@ -161,10 +161,10 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$targetUser = DB::queryFirstRow("SELECT roomID, whose_turn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", parent::getLoggedUserID());
+		$targetUser = DB::queryFirstRow("SELECT roomID, whoseTurn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", parent::getLoggedUserID());
 		if($targetUser !== null)
 		{
-			if($targetUser['whose_turn'] == parent::getLoggedUserID())
+			if($targetUser['whoseTurn'] == parent::getLoggedUserID())
 			{
 				$stringifiedBoard = DB::queryFirstRow("SELECT stringifiedBoard FROM room WHERE roomID=%i", $targetUser['roomID']);
 				$boardRowStrArr = explode(BOARD_ROW_SEPARATOR, $stringifiedBoard['stringifiedBoard']);
@@ -223,7 +223,7 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$rooms = DB::query("SELECT roomID, whose_turn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
+		$rooms = DB::query("SELECT roomID, whoseTurn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
 
 		if(!empty($rooms))
 			$targetRoom = $rooms[0];
@@ -233,7 +233,7 @@ class GameController extends BaseController
 		$newWhoseTurn = GameLogic::setOpponentTurn($targetRoom, parent::getLoggedUserID());
 
 		DB::update('room', array(
-			'whose_turn' => $newWhoseTurn,
+			'whoseTurn' => $newWhoseTurn,
 			'lastMove' => null,
 			'removedPawns' => null
 		), 'roomID=%i', $targetRoom['roomID']);

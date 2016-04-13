@@ -4,11 +4,7 @@ require_once('../controller/RoomController.class.php');
 
 session_start();
 
-if(isset($_POST['path']))
-{
-	//TODO
-}
-else if(isset($_GET['path']))
+if(isset($_GET['path']))
 {
 	switch(strtolower($_GET['path']))
 	{
