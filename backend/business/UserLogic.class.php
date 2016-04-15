@@ -1,8 +1,13 @@
 <?php
 
 require_once('validation/UserValidator.class.php');
+require_once('dbhandler/UserDBHandler.php');
 require_once('../config/constants.php');
 
+/**
+ * Handles all of the logic associated with users. 
+ * @author  Roman Pusec
+ */
 class UserLogic
 {
 	/**
@@ -63,12 +68,7 @@ class UserLogic
 	public static function addOrEditUser($isUserLogged, $loggedUserID, $firstname, $lastname, $username, $password, $passwordConfirm){
 		if(!$isUserLogged)
 		{
-			DB::insert('user', array(
-				'fname' => $firstname,
-				'lname' => $lastname,
-				'username' => $username,
-				'password' => $password
-			));
+			UserDBHandler::insertUser($firstname, $lastname, $username, $password);
 		}
 		else
 		{
@@ -88,7 +88,7 @@ class UserLogic
 
 			//includes only the parameters that aren't an empty string 
 			if(!empty($arrUpdate))
-				DB::update('user', $arrUpdate, "userID=%i", $loggedUserID);
+				UserDBHandler::updateUser($arrUpdate, $loggedUserID);
 		}
 	}
 
@@ -107,15 +107,7 @@ class UserLogic
 		if($targetUser['username'] === $username && $targetUser['password'] === $password)
 		{
 			$arrRandColor = self::getRandomColor(CHAT_COLOR_BRIGHTNESS);
-
-			//changes the user's chat colors upon login
-			DB::update('user', array(
-				'chatColorR' => $arrRandColor['red'],
-				'chatColorG' => $arrRandColor['green'],
-				'chatColorB' => $arrRandColor['blue'],
-				'connected' => 1
-			), 'userID=%i', $targetUser['userID']);
-			
+			UserDBHandler::updateUserColors($arrRandColor['red'], $arrRandColor['green'], $arrRandColor['blue'], $targetUser['userID']);
 			$flag = true;
 		}
 	}
@@ -193,5 +185,21 @@ class UserLogic
 		}
 		
 		return true;
+	}
+
+	public static function updateUserAsNotInARoom($userID){
+		UserDBHandler::updateUserAsNotInARoom($userID);
+	}
+
+	public static function updateUserAsDisconnected($userID){
+		UserDBHandler::updateUserAsDisconnected($userID);
+	}
+
+	public static function updateConnectionTime($timeInSeconds, $userID){
+		UserDBHandler::updateConnectionTime($timeInSeconds, $userID);
+	}
+
+	public static function markAppropriateUsersAsDisconnected($credential = null, $searchBy = UserDBHandler::SEARCH_BY_ID){
+		UserDBHandler::markAppropriateUsersAsDisconnected($$credential, $searchBy);
 	}
 }

@@ -18,9 +18,6 @@ require_once('../business/UserLogic.class.php');
  */
 class UsersController extends BaseController
 {
-	const SEARCH_BY_ID = 1;
-	const SEARCH_BY_USERNAME = 2;
-
 	/**
 	 * Returns a user by their ID. 
 	 * @param  Integer $userID The user ID. 
@@ -78,7 +75,7 @@ class UsersController extends BaseController
 	public static function loginUser($username, $password)
 	{
 		parent::startConnection();
-		self::updateAllUserConnStat($username, self::SEARCH_BY_USERNAME);
+		self::updateAllUserConnStat($username, UserDBHandler::SEARCH_BY_USERNAME);
 		$targetUser = DB::queryFirstRow("SELECT userID, username, password, connected FROM user WHERE username = %s AND password = %s", $username, $password);
 		$flag = false;
 		$arrRandColor = null;
@@ -112,21 +109,9 @@ class UsersController extends BaseController
 	public static function getOnlineUsers()
 	{
 		parent::startConnection();
-		$connectedUsers = DB::query(
-			'SELECT userID, ' . 
-			'fname as firstname, ' .
-			'lname as lastname, ' .
-			'username, ' .
-			'chatColorR, ' .
-			'chatColorG, ' .
-			'chatColorB, ' .
-			'won, ' . 
-			'lost ' . 
-			'FROM user WHERE connected = 1');
-
 		return array(
 			'success' => true, 
-			'connectedUsers' => $connectedUsers, 
+			'connectedUsers' => UserDBHandler::getAllConnectedUsers(), 
 			'loggedUserID' => parent::isUserLogged() ? parent::getLoggedUserID() : -1
 		);
 	}
@@ -144,8 +129,7 @@ class UsersController extends BaseController
 		{
 			self::updateAllUserConnStat(parent::getLoggedUserID()); 
 			$targetUser = DB::queryFirstRow('SELECT connected, chatColorR, chatColorG, chatColorB FROM user WHERE userID = %i', parent::getLoggedUserID());
-
-			DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', parent::getLoggedUserID());
+			UserDBHandler::updateUserAsNotInARoom(parent::getLoggedUserID());
 
 			if($targetUser !== null)
 			{
@@ -177,11 +161,7 @@ class UsersController extends BaseController
 			return array('success' => false, 'message' => USER_LOGOUT_ERROR_MSG);
 
 		parent::startConnection();
-
-		DB::update('user', array(
-			'connected' => 0,
-			'ROOM_roomID' => 0
-		), 'userID=%i', parent::getLoggedUserID());
+		UserDBHandler::updateUserAsDisconnected(parent::getLoggedUserID());
 
 		if($destroySession)
 			parent::destroySession();
@@ -200,11 +180,7 @@ class UsersController extends BaseController
 				return array('success' => false);
 
 		parent::startConnection();
-
-		DB::update('user', array(
-			'connexparation' => parent::getTimeInSec() + CONN_EXPARATION_TIME
-		), 'userID=%i', ($userID === null ? parent::getLoggedUserID() : $userID));
-
+		UserDBHandler::updateConnectionTime(parent::getTimeInSec(), parent::getLoggedUserID());
 		return array('success' => true);
 	}
 
@@ -212,10 +188,10 @@ class UsersController extends BaseController
 	 * Marks all users as 'disconnected' whose connection has expired. 
 	 * @see the class description. 
 	 */
-	public static function updateAllUserConnStat($credential = null, $searchBy = self::SEARCH_BY_ID)
+	public static function updateAllUserConnStat($credential = null, $searchBy = UserDBHandler::SEARCH_BY_ID)
 	{
 		parent::startConnection();
-		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($credential !== null ? ' AND ' . ($searchBy === self::SEARCH_BY_ID ? 'userID=%i' : 'username=%s') : ''), parent::getTimeInSec(), $credential);
+		UserDBHandler::markAppropriateUsersAsDisconnected($credential, $searchBy);
 		return array('success' => true);
 	}
 }
