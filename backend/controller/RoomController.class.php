@@ -2,6 +2,8 @@
 
 require_once('BaseController.class.php');
 require_once('../business/RoomLogic.class.php');
+require_once('../business/dbhandler/RoomDBHandler.php');
+require_once('../business/dbhandler/UserDBHandler.php');
 
 /**
  * Controller class which handles all of the 
@@ -20,7 +22,7 @@ class RoomController extends BaseController
 			return array('success' => false);
 
 		parent::startConnection();
-		$rooms = DB::query('SELECT roomID FROM room');
+		$rooms = RoomDBHandler::getAllRooms();
 
 		return array('success' => true, 'rooms' => $rooms);
 	}
@@ -49,18 +51,16 @@ class RoomController extends BaseController
 
 		parent::startConnection();
 
-		$targetRoom = DB::queryFirstRow("SELECT room.roomID as targetRoomID, (" . self::getUserCountQuery() . ") as userCount FROM room WHERE room.roomID = %i", $roomID);
+		$targetRoom = RoomDBHandler::getRoomsWithUserCount($roomID);
 		if($targetRoom !== null && $targetRoom['userCount'] == ROOM_MAX_AMOUNT_OF_USERS)
-			return array('success' => false, 'errors' => array('The room is unavailable. Maximum amount of users has already been reached. '));
+			return array('success' => false, 'errors' => array(ROOM_MAX_NUM_OF_USERS_MSG));
 
 		//adding the authenticated user to the game room
-		DB::update('user', array(
-			'ROOM_roomID' => $roomID
-		), 'userID=%i', parent::getLoggedUserID());
+		UserDBHandler::updateUser(array('ROOM_roomID' => $roomID), parent::getLoggedUserID());
 
 		//marking the user as either the first or the second player
 		parent::setPlayerNumber(RoomLogic::setUserAsFirstOrSecond($roomID));
-		$users = DB::query('SELECT userID, fname as firstname, lname as lastname, username FROM user JOIN room ON (user.ROOM_roomID = room.roomID)');
+		$users = RoomDBHandler::getAllUsersFromRoom($roomID);
 		RoomLogic::setupInitialPlayerTurn(parent::getPlayerNumber(), $roomID, $users);
 
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID(), 'roomID' => $roomID);
@@ -77,11 +77,7 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-
-		DB::update('user', array(
-			'ROOM_roomID' => 0
-		), 'userID=%i', parent::getLoggedUserID());
-
+		UserDBHandler::updateUser(array('ROOM_roomID' => 0), parent::getLoggedUserID());
 		parent::removePlayerNumber();
 
 		return array('success' => true);
@@ -101,12 +97,9 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
+		$opponent = RoomDBHandler::checkForOpponent(parent::getLoggedUserID());
 
-		$users = DB::query('SELECT ROOM_roomID as roomID, userID, fname as firstname, lname as lastname, username '
-			.'FROM user JOIN room ON (user.ROOM_roomID = room.roomID) '
-			.'WHERE userID <> %i', parent::getLoggedUserID());
-
-		return array('success' => true, 'opponent' => (DB::count() === 1) ? $users[0] : null);
+		return array('success' => true, 'opponent' => $opponent !== null ? $opponent : null);
 	}
 
 	/**
@@ -119,19 +112,8 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-		$rooms = DB::query("SELECT room.roomID as targetRoomID, (" . self::getUserCountQuery() . ") as userCount FROM room");
+		$rooms = RoomDBHandler::getRoomsWithUserCount();
 
 		return array('success' => true, 'rooms' => $rooms);
-	}
-
-	/**
-	 * This is a subquery which counts the number of users there are in a particular room. 
-	 * This private function is used in checkRoomAvailability() and addUserToGameRoom() functions
-	 * to subquery the number of users to later ultimately determine if a room is available or unavailable
-	 * based on the number of users that there are. 
-	 * @return String The subquery. 
-	 */
-	private static function getUserCountQuery(){
-		return "SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID";
 	}
 }

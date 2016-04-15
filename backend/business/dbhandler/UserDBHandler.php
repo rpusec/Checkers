@@ -30,7 +30,7 @@ class UserDBHandler
 		if($updateConnection === TRUE)
 			$updateArr['connected'] = 1;
 
-		DB::update('user', , 'userID=%i', $userID);
+		DB::update('user', $updateArr, 'userID=%i', $userID);
 	}
 
 	public static function getAllConnectedUsers(){

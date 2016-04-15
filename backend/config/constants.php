@@ -10,6 +10,7 @@ define('USER_LOGOUT_MSG', 'You logged out of the application. ');
 define('USER_LOGOUT_ERROR_MSG', 'You\'re already logged off. ');
 define('ALREADY_CONNECTED_ERROR_MSG', 'You\'re already connected from somewhere else. If you\'re sure you are not, then try again in a few seconds. ');
 define('USERNAME_NOT_UNIQUE_ERROR_MSG', 'The provided username is not unique. ');
+define('ROOM_MAX_NUM_OF_USERS_MSG', 'The room is unavailable. Maximum amount of users has already been reached. ');
 
 define('CHAT_COLOR_BRIGHTNESS', 222);
 

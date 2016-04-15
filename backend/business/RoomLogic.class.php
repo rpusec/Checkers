@@ -81,12 +81,7 @@ class RoomLogic
 		if($playerTurn === SECOND_PLAYER)
 		{
 			$randUserInt = mt_rand(0,1);
-			DB::update('room', array(
-				'whoseTurn' => $users[$randUserInt]['userID'],
-				'stringifiedBoard' => self::constructStringifiedBoard(),
-				'lastMove' => null,
-				'removedPawns' => null,
-			), 'roomID=%i', $roomID);
+			RoomDBHandler::updateRoom($users[$randUserInt]['userID'], self::constructStringifiedBoard(), null, null, $roomID);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 
 require_once('BaseController.class.php');
 require_once('../business/UserLogic.class.php');
+require_once('../business/dbhandler/UserDBHandler.php');
 
 /**
  * Handles functionality for users. 

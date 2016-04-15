@@ -42,7 +42,7 @@ class GameLogic
      * @return [Integer]         The database ID of the player. 
      */
     public static function getPlayerTurn($roomID){
-    	$turn = DB::query('SELECT whoseTurn FROM room WHERE roomID=%i', $roomID);
+    	$turn = RoomDBHandler::getWhoseTurnFromRoom($roomID);
 
 		if(!empty($turn))
 		{
@@ -148,7 +148,7 @@ class GameLogic
      * @param [Integer] $loggedUserID The ID of the authenticated user. 
      */
     public static function setOpponentTurn($targetRoom, $loggedUserID){
-    	$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
+    	$users = RoomDBHandler::getAllUsersFromRoom($targetRoom['roomID']);
     	if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
 			if($targetRoom['whoseTurn'] == $loggedUserID)
 				return GameLogic::switchUserTurn($users[0], $users[1], $loggedUserID);
@@ -187,19 +187,17 @@ class GameLogic
      * @param  [type] $winner          The player number of the winner. 
      */
     public static function updateWonLoseState($targetUser, $loggedUserID, $playerNumber, $winner){
-    	DB::update('room', array(
-			'stringifiedBoard' => RoomLogic::constructStringifiedBoard()
-		), 'roomID=%i', $targetUser['roomID']);
+		RoomDBHandler::setupStringifiedBoard(RoomLogic::constructStringifiedBoard(), $targetUser['roomID']);
 
 		if($winner === $playerNumber)
 		{
-			DB::query('UPDATE user SET won = won + 1 WHERE userID=%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
-			DB::query('UPDATE user SET lost = lost + 1 WHERE userID<>%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
+			RoomDBHandler::addUpPlayerWon($loggedUserID, $targetUser['roomID']);
+			RoomDBHandler::addUpOpponentLose($loggedUserID, $targetUser['roomID']);
 		}
 		else
 		{
-			DB::query('UPDATE user SET lost = lost + 1 WHERE userID=%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
-			DB::query('UPDATE user SET won = won + 1 WHERE userID<>%i AND ROOM_roomID=%i', $loggedUserID, $targetUser['roomID']);
+			RoomDBHandler::addUpPlayerLost($loggedUserID, $targetUser['roomID']);
+			RoomDBHandler::addUpOpponentWon($loggedUserID, $targetUser['roomID']);
 		}
     }
 

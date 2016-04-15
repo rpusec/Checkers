@@ -2,6 +2,7 @@
 
 require_once('BaseController.class.php');
 require_once('../business/ChatLogic.class.php');
+require_once('../business/dbhandler/ChatDBHandler.php');
 
 /**
  * Controller class for chat functionality. 
@@ -25,16 +26,11 @@ class ChatController extends BaseController
 		
 		if(is_array($output))
 			return $output;
-	
-		DB::insert('message', array(
-			'USER_userID' => parent::getLoggedUserID(), 
-			'message' => htmlspecialchars($message),
-			'exparation' => '' . (parent::getTimeInSec() + MESSAGE_EXPARATION_TIME)
-		));
+		
+		ChatDBHandler::insertMessage(parent::getLoggedUserID(), $message, parent::getTimeInSec());
 
 		return array(
-			'success' => true,
-			'affectedRows' => DB::affectedRows()
+			'success' => true
 		);
 	}
 
@@ -49,21 +45,9 @@ class ChatController extends BaseController
 		parent::startConnection();
 		self::deleteOldMessages();
 
-		$results = DB::query(
-			'SELECT messageID, ' .
-			'user.userID as userID, ' .
-			'user.FName as firstName, ' .
-			'user.LName as lastName, ' .
-			'message, ' .
-			'exparation, ' .
-			'user.chatColorR as chatColorR, ' . 
-			'user.chatColorG as chatColorG, ' . 
-			'user.chatColorB as chatColorB ' . 
-			'FROM message JOIN user ON (user.userID = message.USER_UserID)');
-
 		return array(
 			'success' => true, 
-			'messages' => $results,
+			'messages' => ChatDBHandler::getMessagesWithUsers(),
 			'loggedUserID' => parent::getLoggedUserID()
 		);
 	}
@@ -73,6 +57,6 @@ class ChatController extends BaseController
 	 * @see constants.php for the EXPARATION_TIME constant. 
 	 */
 	private static function deleteOldMessages(){
-		DB::delete('message', 'exparation<%i', parent::getTimeInSec());
+		ChatDBHandler::deleteOldMessages();
 	}
 }
