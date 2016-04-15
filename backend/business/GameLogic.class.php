@@ -4,6 +4,10 @@ require_once('../controller/UsersController.class.php');
 require_once('../business/RoomLogic.class.php');
 require_once('../config/constants.php');
 
+/**
+ * Offers all sorts of business rules relating to the game logic. 
+ * @author Roman Pusec
+ */
 class GameLogic
 {
 	const DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR = 0;
@@ -138,6 +142,11 @@ class GameLogic
 		return $newStringifiedBoard;
     }
 
+    /**
+     * Switches the turn to the opponent. 
+     * @param [Array] $targetRoom     The target room directly fetched from the database. 
+     * @param [Integer] $loggedUserID The ID of the authenticated user. 
+     */
     public static function setOpponentTurn($targetRoom, $loggedUserID){
     	$users = DB::query("SELECT userID FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoom['roomID']);
     	if(!empty($users) && count($users) === ROOM_MAX_AMOUNT_OF_USERS)
@@ -147,6 +156,12 @@ class GameLogic
 			return array('success' => false);
     }
 
+    /**
+     * Counts the player one and two pawns. 
+     * @param  [Array] $boardRowStrArr  The array of all board rows from the stringified board. 
+     * @param  [Integer] &$playerOnePawns  The amount of player one pawns. 
+     * @param  [Integer] &$playerTwoPawns  The amount of player two pawns. 
+     */
     public static function countPlayerOneTwoPawns($boardRowStrArr, &$playerOnePawns, &$playerTwoPawns){
     	foreach($boardRowStrArr as $boardRowStr)
 		{
@@ -162,6 +177,15 @@ class GameLogic
 		}
     }
 
+    /**
+     * Updates the player's and opponent's current won and lost state in the database 
+     * (how much rounds they have lost and won). When executed, it increases the player's and
+     * the oppoenent's won and lose variables for one, depending who's the winner. 
+     * @param  [Array] $targetUser     The user directly fetched from the database. 
+     * @param  [Integer] $loggedUserID The ID of the authenticated user. 
+     * @param  [Integer] $playerNumber The player number. 
+     * @param  [type] $winner          The player number of the winner. 
+     */
     public static function updateWonLoseState($targetUser, $loggedUserID, $playerNumber, $winner){
     	DB::update('room', array(
 			'stringifiedBoard' => RoomLogic::constructStringifiedBoard()
@@ -194,12 +218,22 @@ class GameLogic
 		return null;
     }
 
+    /**
+     * Checks if the room is not full. 
+     * @see [config/constants.php] For ROOM_MAX_AMOUNT_OF_USERS constant. 
+     * @param  [Array] $users The gathered array of users. 
+     * @return [Boolean]      True if the room is not full, false otherwise. 
+     */
     public static function checkIfTheRoomIsNotFull($users){
     	if(count($users) < ROOM_MAX_AMOUNT_OF_USERS)
     		return true;
     	return false; 
     }
 
+    /**
+     * Calls the self::diagonallyDismissOpponents on all sides. 
+     * @see Documentation for self::diagonallyDismissOpponents for method parameter explanation.  
+     */
     public static function diagonallyDismissOpponentsAllSides($prevX, $prevY, $newX, $newY, $playerNumber, &$boardRows, &$removedPawnIds, &$errorMsg)
     {
     	GameLogic::diagonallyDismissOpponents($prevX, $prevY, $newX, $newY, $playerNumber, $boardRows, self::DIAGONALLY_DISMISS_OPPONENTS_LEFT_UP_DIR, $removedPawnIds, $errorMsg);

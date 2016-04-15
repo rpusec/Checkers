@@ -2,6 +2,10 @@
 
 require_once('../config/constants.php');
 
+/**
+ * Offers all of the business processes for the game rooms. 
+ * @author Roman Pusec
+ */
 class RoomLogic
 {
     /**
@@ -54,6 +58,12 @@ class RoomLogic
 		return $resultStr;
 	}
 
+	/**
+	 * Determines whether the user should be marked as 
+	 * the first or the second player in the game. 
+	 * @param [Integer] $roomID The ID of the target room. 
+	 * @return [Integer] Either the first or the second player id, depending on the user count. 
+	 */
 	public static function setUserAsFirstOrSecond($roomID){
 		//fetching all of the users from the game room 
 		DB::query('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID=%i', $roomID);
@@ -68,7 +78,6 @@ class RoomLogic
 	 * when the second player joins the game. 
 	 */
 	public static function setupInitialPlayerTurn($playerTurn, $roomID, $users){
-		//randomly setting who's turn it is in the database when the second player joins the game 
 		if($playerTurn === SECOND_PLAYER)
 		{
 			$randUserInt = mt_rand(0,1);

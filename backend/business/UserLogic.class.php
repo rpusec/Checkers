@@ -5,6 +5,16 @@ require_once('../config/constants.php');
 
 class UserLogic
 {
+	/**
+	 * Checks for all of the user input errors associated with the registration or user settings process. 
+	 * @param [Boolean] $isUserLogged    Is the user logged in. 
+	 * @param [Integer] $loggedUserID    The ID of the logged user. 
+	 * @param [String] $firstname        The new value for firstname. 
+	 * @param [String] $lastname         The new value for lastname. 
+	 * @param [String] $username         The new value for username. 
+	 * @param [String] $password         The new value for password. 
+	 * @return [Array]                   If there are any errors, it'll return an array with a success flag as false, and the list of errors, otherwise it'll return null.
+	 */
 	public static function checkForUserInputErrors($isUserLogged, $firstname, $lastname, $username, $password, $passwordConfirm){
 		if(self::checkIfLoggedAndInputNotEmpty($username, $isUserLogged))
 		{
@@ -39,6 +49,17 @@ class UserLogic
 		return null;
 	}
 
+	/**
+	 * Handles the logic for adding (registering) users or editing their information. Information 
+	 * that's equivalent to an empty string is not included in the update query. 
+	 * @param [Boolean] $isUserLogged    Is the user logged in. 
+	 * @param [Integer] $loggedUserID    The ID of the logged user. 
+	 * @param [String] $firstname        The new value for firstname. 
+	 * @param [String] $lastname         The new value for lastname. 
+	 * @param [String] $username         The new value for username. 
+	 * @param [String] $password         The new value for password. 
+	 * @param [String] $passwordConfirm  Retyped password. 
+	 */
 	public static function addOrEditUser($isUserLogged, $loggedUserID, $firstname, $lastname, $username, $password, $passwordConfirm){
 		if(!$isUserLogged)
 		{
@@ -71,6 +92,14 @@ class UserLogic
 		}
 	}
 
+	/**
+	 * Handles the login logic. 
+	 * @param  [type] $targetUser    The target user directly fetched from the database. 
+	 * @param  [type] $username      The inputed username. 
+	 * @param  [type] $password      The inputed password. 
+	 * @param  [type] &$flag         Flag determining whether the login was successful or not. 
+	 * @param  [type] &$arrRandColor Will reference the randomly generated color. 
+	 */
 	public static function handleLogin($targetUser, $username, $password, &$flag, &$arrRandColor){
 		if(intval($targetUser['connected']) === 1)
 			return array('success' => false, 'errors' => array(ALREADY_CONNECTED_ERROR_MSG));
