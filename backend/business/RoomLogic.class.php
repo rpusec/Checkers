@@ -1,6 +1,7 @@
 <?php
 
 require_once('../config/constants.php');
+require_once('dbhandler/RoomDBHandler.php');
 
 /**
  * Offers all of the business processes for the game rooms. 
@@ -66,8 +67,7 @@ class RoomLogic
 	 */
 	public static function setUserAsFirstOrSecond($roomID){
 		//fetching all of the users from the game room 
-		DB::query('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID=%i', $roomID);
-		$userCount = DB::count();
+		$userCount = RoomDBHandler::countUsersFromRoom($roomID);
 
 		//marking the user as either the first or the second player
 		return $userCount == 1 ? FIRST_PLAYER : SECOND_PLAYER;
