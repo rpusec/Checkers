@@ -2,6 +2,7 @@
 
 require_once('BaseController.class.php');
 require_once('../business/GameLogic.class.php');
+require_once('../business/dbhandler/RoomDBHandler.php');
 
 /**
  * Controller class which provides all functionality
@@ -140,12 +141,12 @@ class GameController extends BaseController
 
 		$winner = GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns);
 
-		DB::update('room', array(
-			'whoseTurn' => $newWhoseTurn,
-			'stringifiedBoard' => $newStringifiedBoard,
-			'lastMove' => "{\"id\":".parent::getLoggedUserID().",\"prevX\":$prevX,\"prevY\":$prevY,\"newX\":$newX,\"newY\":$newY}",
+		RoomDBHandler::updateRoom(array(
+			'whoseTurn' => $newWhoseTurn, 
+			'stringifiedBoard' => $newStringifiedBoard, 
+			'lastMove' => "{\"id\":".parent::getLoggedUserID().",\"prevX\":$prevX,\"prevY\":$prevY,\"newX\":$newX,\"newY\":$newY}", 
 			'removedPawns' => json_encode($removedPawnIds)
-		), 'roomID=%i', $targetRoom['roomID']);
+		), $targetRoom['roomID']);
 		
 		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => parent::getPlayerNumber(), 'removedPawns' => $removedPawnIds, 'winner' => $winner);
 	}
@@ -161,12 +162,12 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$targetUser = DB::queryFirstRow("SELECT roomID, whoseTurn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", parent::getLoggedUserID());
-		if($targetUser !== null)
+		$targetRoom = RoomDBHandler::getAllRoomInfoByUserID(parent::getLoggedUserID());
+		if($targetRoom !== null)
 		{
-			if($targetUser['whoseTurn'] == parent::getLoggedUserID())
+			if($targetRoom['whoseTurn'] == parent::getLoggedUserID())
 			{
-				$stringifiedBoard = DB::queryFirstRow("SELECT stringifiedBoard FROM room WHERE roomID=%i", $targetUser['roomID']);
+				$stringifiedBoard = RoomDBHandler::getStringBoard($targetRoom['roomID']);
 				$boardRowStrArr = explode(BOARD_ROW_SEPARATOR, $stringifiedBoard['stringifiedBoard']);
 
 				$playerTwoPawns = 0;
@@ -176,10 +177,10 @@ class GameController extends BaseController
 				$winner = GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns);
 
 				if($winner !== null)
-					GameLogic::updateWonLoseState($targetUser, parent::getLoggedUserID(), parent::getPlayerNumber(), $winner);
+					GameLogic::updateWonLoseState($targetRoom, parent::getLoggedUserID(), parent::getPlayerNumber(), $winner);
 
 				GameLogic::setBeginningTurnTime(parent::getTimeInSec());
-				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetUser['lastMove'], 'removedPawns' => $targetUser['removedPawns'], 'winner' => $winner);
+				return array('success' => true, 'isDone' => true, 'playerNumber' => parent::getPlayerNumber(), 'lastMove' => $targetRoom['lastMove'], 'removedPawns' => $targetRoom['removedPawns'], 'winner' => $winner);
 			}
 
 			return array('success' => true, 'isDone' => false);
@@ -198,14 +199,12 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$rooms = DB::query("SELECT roomID FROM room JOIN user ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", parent::getLoggedUserID());
-
-		if(empty($rooms))
+		$targetRoom = RoomDBHandler::getRoomIDsFromUser(parent::getLoggedUserID());
+		if($targetRoom === null)
 			return array('success' => false);
 
-		$targetRoomID = $rooms[0];
-		$targetRoomID = $targetRoomID['roomID'];
-		$users = DB::query("SELECT userID FROM room JOIN user ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $targetRoomID);
+		$targetRoomID = $targetRoom['roomID'];
+		$users = UserDBHandler::getUserIDsFromRoom($targetRoomID);
 		$checkIfTheRoomIsNotFull = GameLogic::checkIfTheRoomIsNotFull($users);
 
 		return array('success' => true, 'shouldExitRoom' => $checkIfTheRoomIsNotFull);
@@ -217,13 +216,12 @@ class GameController extends BaseController
 	 * @return [Array] Success flag indicating whether everything went as expected. 
 	 */
 	public static function notifyTurnTimeout(){
-
 		if(!parent::isUserLogged())
 			return array('success' => false);
 
 		parent::startConnection();
 
-		$rooms = DB::query("SELECT roomID, whoseTurn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", parent::getLoggedUserID());
+		$rooms = RoomDBHandler::getRoomByIDAndWhoseTurn(parent::getLoggedUserID());
 
 		if(!empty($rooms))
 			$targetRoom = $rooms[0];
@@ -232,11 +230,11 @@ class GameController extends BaseController
 
 		$newWhoseTurn = GameLogic::setOpponentTurn($targetRoom, parent::getLoggedUserID());
 
-		DB::update('room', array(
-			'whoseTurn' => $newWhoseTurn,
-			'lastMove' => null,
+		RoomDBHandler::updateRoom(array(
+			'whoseTurn' => $newWhoseTurn, 
+			'lastMove' => null, 
 			'removedPawns' => null
-		), 'roomID=%i', $targetRoom['roomID']);
+		), $targetRoom['roomID']);
 
 		return array('success' => true);
 	}

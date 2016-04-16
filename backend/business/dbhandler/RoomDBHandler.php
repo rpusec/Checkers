@@ -68,4 +68,20 @@ class RoomDBHandler
 	public static function addUpOpponentLose($userID, $roomID){
 		DB::query('UPDATE user SET lost = lost + 1 WHERE userID<>%i AND ROOM_roomID=%i', $userID, $roomID);
 	}
+
+	public static function getStringBoard($roomID){
+		return DB::queryFirstRow("SELECT stringifiedBoard FROM room WHERE roomID=%i", $roomID);
+	}
+
+	public static function getRoomIDsFromUser($userID){
+		return DB::queryFirstRow('SELECT roomID FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE userID=%i', $userID);
+	}
+
+	public static function getRoomByIDAndWhoseTurn($userID){
+		return DB::query("SELECT roomID, whoseTurn FROM room JOIN user ON(user.ROOM_roomID = room.roomID) WHERE userID=%i", $userID);
+	}
+
+	public static function getAllRoomInfoByUserID($userID){
+		DB::queryFirstRow("SELECT roomID, whoseTurn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", $userID);
+	}
 }

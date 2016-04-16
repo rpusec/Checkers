@@ -7,6 +7,10 @@ class UserDBHandler
 	const SEARCH_BY_ID = 1;
 	const SEARCH_BY_USERNAME = 2;
 	
+	public static function getUserIDsFromRoom($roomID){
+		return DB::query("SELECT userID FROM room JOIN user ON(room.roomID = user.ROOM_roomID) WHERE roomID=%i", $roomID);
+	}
+
 	public static function insertUser($firstname, $lastname, $username, $password){
 		DB::insert('user', array(
 			'fname' => $firstname,
