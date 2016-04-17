@@ -91,22 +91,46 @@ class RoomLogic
 		}
 	}
 
+	/**
+	 * Returns a list of rooms with their user counts. If ID of the room is specified, then it would return only one single room. 
+	 * @param  [Integer] $roomID The ID of the specified room. Default is null. 
+	 * @return [Array]           The list of rooms, or a single room if the ID is specified. 
+	 */
 	public static function getRoomsWithUserCount($roomID = null){
 		return RoomDBHandler::getRoomsWithUserCount($roomID);
 	}
 
+	/**
+	 * Checks for the player's opponent. 
+	 * @param  [Integer] $userID The ID of the player, NOT the opponent. 
+	 * @return [Array]           The opponent. 
+	 */
 	public static function checkForOpponent($userID){
 		return RoomDBHandler::checkForOpponent($userID);
 	}
 
+	/**
+	 * Returns all users from one specific room. 
+	 * @param  [Integer] $roomID The ID of the room. 
+	 * @return [Array]           The list of users from a room. 
+	 */
 	public static function getAllUsersFromRoom($roomID){
 		return RoomDBHandler::getAllUsersFromRoom($roomID);
 	}
 
+	/**
+	 * Returns all rooms from the database. 
+	 * @return [Array] All rooms. 
+	 */
 	public static function getAllRooms(){
 		return RoomDBHandler::getAllRooms();
 	}
 
+	/**
+	 * References a room ID to a user. 
+	 * @param  [Integer] $roomID The ID of the room. 
+	 * @param  [Integer] $userID The ID of the user. 
+	 */
 	public static function setupRoomIDForUser($roomID, $userID){
 		UserDBHandler::updateUser(array('ROOM_roomID' => $roomID), $userID);
 	}

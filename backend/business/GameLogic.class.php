@@ -370,26 +370,56 @@ class GameLogic
 			return $userOne['userID'];
 	}
 
+	/**
+	 * Returns all room information by user ID. 
+	 * @param  [Integer] $userID User ID. 
+	 * @return [Array]           All room information. 
+	 */
 	public static function getAllRoomInfoByUserID($userID){
 		return RoomDBHandler::getAllRoomInfoByUserID($userID);
 	}
 
+	/**
+	 * Updates a room. 
+	 * @param  [Array] $updateArr   The update array, contains all of the records to update. 
+	 * @param  [Integer] $roomID    The ID of the room. 
+	 */
 	public static function updateRoom($updateArr, $roomID){
 		RoomDBHandler::updateRoom($updateArr, $roomID);
 	}
 
+	/**
+	 * Returns the stringified board from a room. 
+	 * @param  [Integer] $roomID The ID of the room. 
+	 * @return [Array]         The room with the stringified board. 
+	 */
 	public static function getStringBoard($roomID){
 		return RoomDBHandler::getStringBoard($roomID);
 	}
 
+	/**
+	 * Returns the ID of a room based on the user ID. 
+	 * @param  [Integer] $userID The ID of the user. 
+	 * @return [Array]         The roomID. 
+	 */
 	public static function getRoomIDFromUser($userID){
 		return RoomDBHandler::getRoomIDFromUser($userID);
 	}
 
+	/**
+	 * Returns all of the userIDs from a particular room. 
+	 * @param  [Integer] $roomID The ID of the room. 
+	 * @return [Array]         The array of userIDs. 
+	 */
 	public static function getUserIDsFromRoom($targetRoomID){
 		return UserDBHandler::getUserIDsFromRoom($targetRoomID);
 	}
 
+	/**
+	 * Returns the room ID and whoseTurn variable by the user ID. 
+	 * @param  [Integer] $userID The user ID. 
+	 * @return [Array]           A room. 
+	 */
 	public static function getRoomIDAndWhoseTurnByUser($userID){
 		return RoomDBHandler::getRoomIDAndWhoseTurnByUser($userID);
 	}

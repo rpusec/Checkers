@@ -37,7 +37,7 @@ class RoomDBHandler
 	}
 
 	/**
-	 * Checks for the player0s opponent. 
+	 * Checks for the player's opponent. 
 	 * @param  [Integer] $userID The ID of the player, NOT the opponent. 
 	 * @return [Array]           The opponent. 
 	 */

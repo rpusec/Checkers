@@ -28,14 +28,28 @@ class ChatLogic
 		return null;
 	}
 
+	/**
+	 * Inserts a new message to the database. 
+	 * @param  [Integer] $userID           The ID of the user. 
+	 * @param  [String] $message          The message itself.
+	 * @param  [Number] $currentTimeInSec The current time in seconds. 
+	 */
 	public static function insertMessage($userID, $message, $currentTimeInSec){
 		ChatDBHandler::insertMessage($userID, $message, $currentTimeInSec);
 	}
 
+	/**
+	 * Returns message information alongside user information. 
+	 * @return [Array] Array of messages and users. 
+	 */
 	public static function getMessagesWithUsers(){
 		return ChatDBHandler::getMessagesWithUsers();
 	}
 
+	/**
+	 * Deletes old messages whose exparation date has passed. 
+	 * @param  [Number] $currTimeInSec The specified current time. 
+	 */
 	public static function deleteOldMessages($currentTimeInSec){
 		ChatDBHandler::deleteOldMessages($currentTimeInSec);
 	}
