@@ -13,13 +13,8 @@ class RoomDBHandler
 		return DB::count();
 	}
 
-	public static function updateRoom($whoseTurn, $stringifiedBoard, $lastMove, $removedPawns, $roomID){
-		DB::update('room', array(
-			'whoseTurn' => $whoseTurn,
-			'stringifiedBoard' => $stringifiedBoard,
-			'lastMove' => $lastMove,
-			'removedPawns' => $removedPawns,
-		), 'roomID=%i', $roomID);
+	public static function updateRoom($updateArr, $roomID){
+		DB::update('room', $updateArr, 'roomID=%i', $roomID);
 	}
 
 	public static function checkForOpponent($userID){
@@ -82,6 +77,6 @@ class RoomDBHandler
 	}
 
 	public static function getAllRoomInfoByUserID($userID){
-		DB::queryFirstRow("SELECT roomID, whoseTurn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", $userID);
+		return DB::queryFirstRow("SELECT roomID, stringifiedBoard, whoseTurn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", $userID);
 	}
 }

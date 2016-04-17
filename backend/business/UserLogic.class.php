@@ -1,8 +1,8 @@
 <?php
 
+require_once('../config/constants.php');
 require_once('validation/UserValidator.class.php');
 require_once('dbhandler/UserDBHandler.php');
-require_once('../config/constants.php');
 
 /**
  * Handles all of the logic associated with users. 
@@ -199,7 +199,19 @@ class UserLogic
 		UserDBHandler::updateConnectionTime($timeInSeconds, $userID);
 	}
 
-	public static function markAppropriateUsersAsDisconnected($credential = null, $searchBy = UserDBHandler::SEARCH_BY_ID){
-		UserDBHandler::markAppropriateUsersAsDisconnected($$credential, $searchBy);
+	public static function markAppropriateUsersAsDisconnected($timeInSeconds, $credential = null, $searchBy = null){
+		UserDBHandler::markAppropriateUsersAsDisconnected($timeInSeconds, $credential, $searchBy === null ? UserDBHandler::SEARCH_BY_ID : $searchBy);
+	}
+
+	public static function getUserByUsernameAndPassword($username, $password){
+		return UserDBHandler::getUserByUsernameAndPassword($username, $password);
+	}
+
+	public static function getAllConnectedUsers(){
+		return UserDBHandler::getAllConnectedUsers();
+	}
+
+	public static function getConnStatAndColorsFromUser($userID){
+		return UserDBHandler::getConnStatAndColorsFromUser($userID);
 	}
 }

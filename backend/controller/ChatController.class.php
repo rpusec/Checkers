@@ -2,7 +2,6 @@
 
 require_once('BaseController.class.php');
 require_once('../business/ChatLogic.class.php');
-require_once('../business/dbhandler/ChatDBHandler.php');
 
 /**
  * Controller class for chat functionality. 
@@ -27,7 +26,7 @@ class ChatController extends BaseController
 		if(is_array($output))
 			return $output;
 		
-		ChatDBHandler::insertMessage(parent::getLoggedUserID(), $message, parent::getTimeInSec());
+		ChatLogic::insertMessage(parent::getLoggedUserID(), $message, parent::getTimeInSec());
 
 		return array(
 			'success' => true
@@ -43,11 +42,11 @@ class ChatController extends BaseController
 			return array('success' => false, 'errorMessage' => CANNOT_RETRIEVE_MESSAGES);
 
 		parent::startConnection();
-		self::deleteOldMessages();
+		ChatLogic::deleteOldMessages(parent::getTimeInSec());
 
 		return array(
 			'success' => true, 
-			'messages' => ChatDBHandler::getMessagesWithUsers(),
+			'messages' => ChatLogic::getMessagesWithUsers(),
 			'loggedUserID' => parent::getLoggedUserID()
 		);
 	}
@@ -57,6 +56,6 @@ class ChatController extends BaseController
 	 * @see constants.php for the EXPARATION_TIME constant. 
 	 */
 	private static function deleteOldMessages(){
-		ChatDBHandler::deleteOldMessages();
+		ChatLogic::deleteOldMessages(parent::getTimeInSec());
 	}
 }

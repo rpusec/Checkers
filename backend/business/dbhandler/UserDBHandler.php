@@ -52,7 +52,7 @@ class UserDBHandler
 	}
 
 	public static function updateUserAsNotInARoom($userID){
-		DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', $userID));
+		DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', $userID);
 	}
 
 	public static function updateUserAsDisconnected($userID){
@@ -65,10 +65,22 @@ class UserDBHandler
 	public static function updateConnectionTime($timeInSeconds, $userID){
 		DB::update('user', array(
 			'connexparation' => $timeInSeconds + CONN_EXPARATION_TIME
-		), 'userID=%i', $userID;
+		), 'userID=%i', $userID);
 	}
 
-	public static function markAppropriateUsersAsDisconnected($credential = null, $searchBy = self::SEARCH_BY_ID){
-		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($credential !== null ? ' AND ' . ($searchBy === self::SEARCH_BY_ID ? 'userID=%i' : 'username=%s') : ''), parent::getTimeInSec(), $credential);
+	public static function markAppropriateUsersAsDisconnected($timeInSeconds, $credential = null, $searchBy = self::SEARCH_BY_ID){
+		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($credential !== null ? ' AND ' . ($searchBy === self::SEARCH_BY_ID ? 'userID=%i' : 'username=%s') : ''), $timeInSeconds, $credential);
+	}
+
+	public static function getUserByUsernameAndPassword($username, $password){
+		return DB::queryFirstRow("SELECT userID, username, password, connected FROM user WHERE username = %s AND password = %s", $username, $password);
+	}
+
+	public static function getUserByID($userID){
+		return DB::queryFirstRow('SELECT fname as firstname, lname as lastname, username FROM user WHERE userID = %i', $userID);
+	}
+
+	public static function getConnStatAndColorsFromUser($userID){
+		return DB::queryFirstRow('SELECT connected, chatColorR, chatColorG, chatColorB FROM user WHERE userID = %i', $userID);
 	}
 }

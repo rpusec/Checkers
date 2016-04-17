@@ -4,8 +4,8 @@ require_once('../libs/meekrodb.2.3.class.php');
 
 class ChatDBHandler
 {
-	public static function deleteOldMessages(){
-		DB::delete('message', 'exparation<%i', parent::getTimeInSec());
+	public static function deleteOldMessages($currTimeInSec){
+		DB::delete('message', 'exparation<%i', $currTimeInSec);
 	}
 
 	public static function getMessagesWithUsers(){

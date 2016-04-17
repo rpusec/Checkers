@@ -2,8 +2,6 @@
 
 require_once('BaseController.class.php');
 require_once('../business/RoomLogic.class.php');
-require_once('../business/dbhandler/RoomDBHandler.php');
-require_once('../business/dbhandler/UserDBHandler.php');
 
 /**
  * Controller class which handles all of the 
@@ -22,7 +20,7 @@ class RoomController extends BaseController
 			return array('success' => false);
 
 		parent::startConnection();
-		$rooms = RoomDBHandler::getAllRooms();
+		$rooms = RoomLogic::getAllRooms();
 
 		return array('success' => true, 'rooms' => $rooms);
 	}
@@ -51,16 +49,16 @@ class RoomController extends BaseController
 
 		parent::startConnection();
 
-		$targetRoom = RoomDBHandler::getRoomsWithUserCount($roomID);
+		$targetRoom = RoomLogic::getRoomsWithUserCount($roomID);
 		if($targetRoom !== null && $targetRoom['userCount'] == ROOM_MAX_AMOUNT_OF_USERS)
 			return array('success' => false, 'errors' => array(ROOM_MAX_NUM_OF_USERS_MSG));
 
 		//adding the authenticated user to the game room
-		UserDBHandler::updateUser(array('ROOM_roomID' => $roomID), parent::getLoggedUserID());
+		RoomLogic::setupRoomIDForUser($roomID, parent::getLoggedUserID());
 
 		//marking the user as either the first or the second player
 		parent::setPlayerNumber(RoomLogic::setUserAsFirstOrSecond($roomID));
-		$users = RoomDBHandler::getAllUsersFromRoom($roomID);
+		$users = RoomLogic::getAllUsersFromRoom($roomID);
 		RoomLogic::setupInitialPlayerTurn(parent::getPlayerNumber(), $roomID, $users);
 
 		return array('success' => true, 'users' => $users, 'playerNumber' => parent::getPlayerNumber(), 'loggedUserID' => parent::getLoggedUserID(), 'roomID' => $roomID);
@@ -77,7 +75,7 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-		UserDBHandler::updateUser(array('ROOM_roomID' => 0), parent::getLoggedUserID());
+		RoomLogic::setupRoomIDForUser(0, parent::getLoggedUserID());
 		parent::removePlayerNumber();
 
 		return array('success' => true);
@@ -97,7 +95,7 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-		$opponent = RoomDBHandler::checkForOpponent(parent::getLoggedUserID());
+		$opponent = RoomLogic::checkForOpponent(parent::getLoggedUserID());
 
 		return array('success' => true, 'opponent' => $opponent !== null ? $opponent : null);
 	}
@@ -112,7 +110,7 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-		$rooms = RoomDBHandler::getRoomsWithUserCount();
+		$rooms = RoomLogic::getRoomsWithUserCount();
 
 		return array('success' => true, 'rooms' => $rooms);
 	}

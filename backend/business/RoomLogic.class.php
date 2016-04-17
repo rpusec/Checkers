@@ -2,6 +2,7 @@
 
 require_once('../config/constants.php');
 require_once('dbhandler/RoomDBHandler.php');
+require_once('dbhandler/UserDBHandler.php');
 
 /**
  * Offers all of the business processes for the game rooms. 
@@ -88,5 +89,25 @@ class RoomLogic
 				'removedPawns' => null
 			), $roomID);
 		}
+	}
+
+	public static function getRoomsWithUserCount($roomID = null){
+		return RoomDBHandler::getRoomsWithUserCount($roomID);
+	}
+
+	public static function checkForOpponent($userID){
+		return RoomDBHandler::checkForOpponent($userID);
+	}
+
+	public static function getAllUsersFromRoom($roomID){
+		return RoomDBHandler::getAllUsersFromRoom($roomID);
+	}
+
+	public static function getAllRooms(){
+		return RoomDBHandler::getAllRooms();
+	}
+
+	public static function setupRoomIDForUser($roomID, $userID){
+		UserDBHandler::updateUser(array('ROOM_roomID' => $roomID), $userID);
 	}
 }

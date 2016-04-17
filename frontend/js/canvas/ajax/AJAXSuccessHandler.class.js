@@ -20,7 +20,7 @@ var AJAXSuccessHandler = {};
 	,	playerOnePawns
 	,	playerTwoPawns
 	,	playerOneProfile
-	,	playerTwoProfile
+	,	playerTwoProfile;
 
 	/**
 	 * Initializes all of the properties used by all of the success handlers. 
@@ -454,7 +454,7 @@ var AJAXSuccessHandler = {};
 			});
 
 			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
-				AJAXCallHandler.checkLoginStatusAJAXCall();
+				window.checkLoginStatusAJAXCall();
 
 			return;
 		}

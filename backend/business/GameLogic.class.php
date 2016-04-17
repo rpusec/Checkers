@@ -1,8 +1,9 @@
 <?php
 
+require_once('../config/constants.php');
 require_once('../controller/UsersController.class.php');
 require_once('../business/RoomLogic.class.php');
-require_once('../config/constants.php');
+require_once('dbhandler/RoomDBHandler.php');
 
 /**
  * Offers all sorts of business rules relating to the game logic. 
@@ -196,7 +197,7 @@ class GameLogic
 		}
 		else
 		{
-			RoomDBHandler::addUpPlayerLost($loggedUserID, $targetUser['roomID']);
+			RoomDBHandler::addUpPlayerLose($loggedUserID, $targetUser['roomID']);
 			RoomDBHandler::addUpOpponentWon($loggedUserID, $targetUser['roomID']);
 		}
     }
@@ -372,5 +373,29 @@ class GameLogic
 			return $userTwo['userID'];
 		else if($userTwo['userID'] == $loggedUserID)
 			return $userOne['userID'];
+	}
+
+	public static function getAllRoomInfoByUserID($userID){
+		return RoomDBHandler::getAllRoomInfoByUserID($userID);
+	}
+
+	public static function updateRoom($updateArr, $roomID){
+		RoomDBHandler::updateRoom($updateArr, $roomID);
+	}
+
+	public static function getStringBoard($roomID){
+		return RoomDBHandler::getStringBoard($roomID);
+	}
+
+	public static function getRoomIDsFromUser($userID){
+		return RoomDBHandler::getRoomIDsFromUser($userID);
+	}
+
+	public static function getUserIDsFromRoom($targetRoomID){
+		return UserDBHandler::getUserIDsFromRoom($targetRoomID);
+	}
+
+	public static function getRoomByIDAndWhoseTurn($userID){
+		return RoomDBHandler::getRoomByIDAndWhoseTurn($userID);
 	}
 }

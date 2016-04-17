@@ -1,7 +1,8 @@
 <?php
 
-require_once('validation/UserValidator.class.php');
 require_once('../config/constants.php');
+require_once('validation/UserValidator.class.php');
+require_once('dbhandler/ChatDBHandler.php');
 
 /**
  * Offers all of the business rules 
@@ -25,5 +26,17 @@ class ChatLogic
 		);
 
 		return null;
+	}
+
+	public static function insertMessage($userID, $message, $currentTimeInSec){
+		ChatDBHandler::insertMessage($userID, $message, $currentTimeInSec);
+	}
+
+	public static function getMessagesWithUsers(){
+		return ChatDBHandler::getMessagesWithUsers();
+	}
+
+	public static function deleteOldMessages($currentTimeInSec){
+		ChatDBHandler::deleteOldMessages($currentTimeInSec);
 	}
 }
