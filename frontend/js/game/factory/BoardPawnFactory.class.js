@@ -5,9 +5,11 @@
  * @author Roman Pusec
  * @requires BoardPawn.class.js
  */
-var BoardPawnFactory = {};
+rpcheckers.game.factory.BoardPawnFactory = {};
 
 (function(){
+
+	var ns = rpcheckers.game.factory.BoardPawnFactory;
 
 	/**
 	 * @see BoardPawn.class.js for clarification. 
@@ -50,7 +52,7 @@ var BoardPawnFactory = {};
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player.  
 	 */
-	BoardPawnFactory.createPlayerOnePawns = function(board, amount){
+	ns.createPlayerOnePawns = function(board, amount){
 		return createPawns(amount, getPlayerOnePawnOptions(), board, true, playerOneSides);
 	}
 
@@ -60,7 +62,7 @@ var BoardPawnFactory = {};
 	 * @param  {Integer} amount The amount of pawns to generate. 
 	 * @return {Array}        	List of pawns specified for the player's opponent.  
 	 */
-	BoardPawnFactory.createPlayerTwoPawns = function(board, amount){
+	ns.createPlayerTwoPawns = function(board, amount){
 		return createPawns(amount, getPlayerTwoPawnOptions(), board, false, playerTwoSides);
 	}
 
@@ -69,7 +71,7 @@ var BoardPawnFactory = {};
 	 * It's executed when the createPlayerOnePawns and createPlayerTwoPawns have already been
 	 * used, since then the previous sides value doesn't have to be kept. 
 	 */
-	BoardPawnFactory.resetSides = function(){
+	ns.resetSides = function(){
 		sides = null;
 		playerOneSides = null;
 		playerTwoSides = null;

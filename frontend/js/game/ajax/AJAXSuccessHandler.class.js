@@ -3,10 +3,17 @@
  * functions used in the game portion of the application.  
  * @class
  * @author Roman Pusec
+ * @namespace rpcheckers.game.ajax
  */
-var AJAXSuccessHandler = {};
+rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 (function(){
+
+	var	ns = rpcheckers.game.ajax.AJAXSuccessHandler
+	,	GameAJAXCallIntervalHandler
+	,	GameAJAXCallHandler
+	,	BoardPawnFactory
+	,	BoardLogic;
 
 	var	stage
 	,	gameNameText
@@ -33,7 +40,7 @@ var AJAXSuccessHandler = {};
 	 *                        - {WaitingMessage} wmSecondPlayer => The second player waiting message reference. 
 	 *                        - {TurnTimer}      turnTimer => The turnTimer reference.  
 	 */
-	AJAXSuccessHandler.initializeAllProperties = function(props){
+	ns.initializeAllProperties = function(props){
 		stage = props.stage;
 		gameNameText = props.gameNameText;
 		selARoomText = props.selARoomText;
@@ -42,13 +49,20 @@ var AJAXSuccessHandler = {};
 		wmSecondPlayer = props.wmSecondPlayer;
 		contGameRoom = new createjs.Container();
 		turnTimer = props.turnTimer;
+
+		var gameNS = rpcheckers.game;
+		GameAJAXCallIntervalHandler = gameNS.ajax.AJAXCallIntervalHandler;
+		GameAJAXCallHandler = gameNS.ajax.AJAXCallHandler;
+		BoardPawnFactory = gameNS.factory.BoardPawnFactory;
+		BoardLogic = gameNS.business.BoardLogic;
+		BlockSelectabilityLogic = gameNS.business.BlockSelectabilityLogic;
 	}
 
 	/**
 	 * Returns all properties from this class wrapped up in a plain object. 
 	 * @return {Object} All of the properties. 
 	 */
-	AJAXSuccessHandler.getAllProperties = function(){
+	ns.getAllProperties = function(){
 		return {
 			stage: stage,
 			gameNameText: gameNameText,
@@ -68,7 +82,7 @@ var AJAXSuccessHandler = {};
 	 * @param {Object} data A plain object which contains data from the backend. It includes a success flag, indicating 
 	 *                      if the user's state is appropriate for this request, and the array of rooms. 
 	 */
-	AJAXSuccessHandler.displayAllRoomsSuccessHandler = function(data){
+	ns.displayAllRoomsSuccessHandler = function(data){
 		if(!data.success)
 			return;
 
@@ -93,7 +107,7 @@ var AJAXSuccessHandler = {};
 
 				//when a GameRoom icon is clicked 
 				newGameRoom.on('click', function(){
-					AJAXCallHandler.toGameRoomAJAXCall(this.getRoomID());
+					GameAJAXCallHandler.toGameRoomAJAXCall(this.getRoomID());
 				});
 
 				//each next GameRoom icon appears [GAME_ROOM_WAIT_TIME] milliseconds before the previous one 
@@ -117,7 +131,7 @@ var AJAXSuccessHandler = {};
 		contGameRoom.x = stage.canvas.width/2 - contGameRoom.getBounds().width/2;
 		contGameRoom.y = stage.canvas.height/2 - contGameRoom.getBounds().height/2 - GAME_ROOM_TO_BOTTOM;
 		stage.addChild(contGameRoom);
-		AJAXCallIntervalHandler.setCheckRoomAvailabilityInterval();
+		GameAJAXCallIntervalHandler.setCheckRoomAvailabilityInterval();
 	}
 
 	/**
@@ -127,7 +141,7 @@ var AJAXSuccessHandler = {};
 	 * have to wait for their opponent. 
 	 * @param  {Object} data Data from the server. 
 	 */
-	AJAXSuccessHandler.checkForOpponentSuccessHandler = function(data){
+	ns.checkForOpponentSuccessHandler = function(data){
 		if(!data.success)
 			return;
 
@@ -139,8 +153,8 @@ var AJAXSuccessHandler = {};
 			playerTwoProfile.setUsername(data.opponent.username);
 			createjs.Tween.get(playerTwoProfile).to({x: playerTwoProfile.x + Constants.USER_PROFILE_MOVE, alpha: 1}, 500, createjs.Ease.backOut);
 			hideSecondPlayerWaitingMessage();
-			AJAXCallIntervalHandler.clearCheckForOpponentInterval();
-			AJAXCallHandler.whoseTurnAJAXCall(data.opponent.roomID);
+			GameAJAXCallIntervalHandler.clearCheckForOpponentInterval();
+			GameAJAXCallHandler.whoseTurnAJAXCall(data.opponent.roomID);
 			setupAndDisplayGameStat();
 		}
 	}
@@ -152,7 +166,7 @@ var AJAXSuccessHandler = {};
 	 * The turn timer is displayed to the authenticated user IF it's their turn. 
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
-	AJAXSuccessHandler.checkWhoseTurnSuccessHandler = function(data){
+	ns.checkWhoseTurnSuccessHandler = function(data){
 		if(!data.success)
 			return;
 
@@ -175,7 +189,7 @@ var AJAXSuccessHandler = {};
 				{
 					playerOneProfile.understate();
 					playerTwoProfile.highlight();
-					AJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
+					GameAJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
 				}
 
 				BoardLogic.setCurrentPawnList(playerOnePawns);
@@ -193,14 +207,14 @@ var AJAXSuccessHandler = {};
 				{
 					playerOneProfile.highlight();
 					playerTwoProfile.understate();
-					AJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
+					GameAJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
 				}
 
 				BoardLogic.setCurrentPawnList(playerTwoPawns);
 			}
 		}
 
-		AJAXCallIntervalHandler.setCheckIfAPlayerLeftInterval()
+		GameAJAXCallIntervalHandler.setCheckIfAPlayerLeftInterval()
 	}
 
 	/**
@@ -209,7 +223,7 @@ var AJAXSuccessHandler = {};
 	 * of users that the rooms contain. 
 	 * @param  {Object} data Data from the server. 
 	 */
-	AJAXSuccessHandler.checkGameRoomAvailabilitySuccessHandler = function(data){
+	ns.checkGameRoomAvailabilitySuccessHandler = function(data){
 		if(!data.success)
 			return;
 		
@@ -240,7 +254,7 @@ var AJAXSuccessHandler = {};
 	 * 
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
-	AJAXSuccessHandler.toGameRoomSuccessHandler = function(data){
+	ns.toGameRoomSuccessHandler = function(data){
 		if(!data.success)
 		{
 			BootstrapDialog.show({
@@ -252,7 +266,7 @@ var AJAXSuccessHandler = {};
 			return;
 		}
 
-		AJAXCallIntervalHandler.clearCheckRoomAvailabilityInterval();
+		GameAJAXCallIntervalHandler.clearCheckRoomAvailabilityInterval();
 
 		//hiding the texts 
 		gameNameText.hide();
@@ -359,11 +373,11 @@ var AJAXSuccessHandler = {};
 					stage.addChild(playerOneProfile, playerTwoProfile);
 
 					if(data.playerNumber === Constants.FIRST_PLAYER)
-						AJAXCallIntervalHandler.setCheckForOpponentInterval();
+						GameAJAXCallIntervalHandler.setCheckForOpponentInterval();
 					else if(data.playerNumber === Constants.SECOND_PLAYER)
 					{
 						setupAndDisplayGameStat();
-						AJAXCallHandler.whoseTurnAJAXCall(data.roomID);
+						GameAJAXCallHandler.whoseTurnAJAXCall(data.roomID);
 					}
 				});
 			});
@@ -376,7 +390,7 @@ var AJAXSuccessHandler = {};
 	 * to the list of available game rooms. 
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
-	AJAXSuccessHandler.offGameSuccessHandler = function(data){
+	ns.offGameSuccessHandler = function(data){
 		if(!data.success)
 			return;
 
@@ -404,9 +418,9 @@ var AJAXSuccessHandler = {};
 			stage.removeChild(this);
 		});
 
-		AJAXCallIntervalHandler.clearCheckForOpponentInterval();
-		AJAXCallIntervalHandler.clearCheckIfOpponentIsDoneInterval();
-		AJAXCallIntervalHandler.clearCheckIfAPlayerLeftInterval();
+		GameAJAXCallIntervalHandler.clearCheckForOpponentInterval();
+		GameAJAXCallIntervalHandler.clearCheckIfOpponentIsDoneInterval();
+		GameAJAXCallIntervalHandler.clearCheckIfAPlayerLeftInterval();
 
 		createjs.Tween.get(board).to({y: stage.canvas.height, alpha: 0.5}, 1000, createjs.Ease.bounceOut).call(function(){
 			BoardPawnFactory.resetSides();
@@ -415,7 +429,7 @@ var AJAXSuccessHandler = {};
 			board.alpha = 0;	
 			contGameRoom.alpha = 1;
 			BlockSelectabilityLogic.makeBoardBlocksUnselectable();
-			AJAXCallHandler.displayAllRoomsAJAXCall();
+			GameAJAXCallHandler.displayAllRoomsAJAXCall();
 		});
 
 		hideSecondPlayerWaitingMessage();
@@ -443,8 +457,7 @@ var AJAXSuccessHandler = {};
 	 * the game moves the pawn to the location that the player desired. 
 	 * @param  {Object} data Data from the server. 
 	 */
-	AJAXSuccessHandler.evaluatePlayerMoveSuccessHandler = function(data){
-
+	ns.evaluatePlayerMoveSuccessHandler = function(data){
 		if(!data.success)
 		{
 			BootstrapDialog.show({
@@ -460,7 +473,7 @@ var AJAXSuccessHandler = {};
 		}
 
 		var targetPawn = null;
-		var pcSplit = data.prevCoordinate.split(Constants.BOARD_ROW_SEPARATOR);
+		var pcSplit = data.prevCoordinate.split(Constants.COORDINATE_DELIMITER);
 		var prevCoordinate = new createjs.Point(parseInt(pcSplit[0]), parseInt(pcSplit[1]));
 		data.playerNumber = parseInt(data.playerNumber);
 
@@ -474,7 +487,7 @@ var AJAXSuccessHandler = {};
 
 		if(targetPawn !== null)
 		{
-			var ncSplit = data.newCoordinate.split(Constants.BOARD_ROW_SEPARATOR);
+			var ncSplit = data.newCoordinate.split(Constants.COORDINATE_DELIMITER);
 			var newCoordinate = new createjs.Point(parseInt(ncSplit[0]), parseInt(ncSplit[1]));
 
 			movePawn(targetPawn, newCoordinate, function(){
@@ -502,7 +515,7 @@ var AJAXSuccessHandler = {};
 
 			BlockSelectabilityLogic.makeBoardBlocksUnselectable();
 			BoardLogic.makePawnsUnselectable();
-			AJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
+			GameAJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
 		}
 	}
 
@@ -512,7 +525,7 @@ var AJAXSuccessHandler = {};
 	 * the player to move the pawns. 
 	 * @param  {Object} data Data from the server. 
 	 */
-	AJAXSuccessHandler.checkIfOpponentIsDoneSuccessHandler = function(data){
+	ns.checkIfOpponentIsDoneSuccessHandler = function(data){
 		if(!data.success || !data.isDone)
 			return;
 
@@ -553,7 +566,7 @@ var AJAXSuccessHandler = {};
 		if(data.winner === null)
 			BoardLogic.makePawnsSelectable();
 
-		AJAXCallIntervalHandler.clearCheckIfOpponentIsDoneInterval();
+		GameAJAXCallIntervalHandler.clearCheckIfOpponentIsDoneInterval();
 		turnTimer.startTimer();
 	}
 
@@ -563,11 +576,11 @@ var AJAXSuccessHandler = {};
 	 * list of game rooms. 
 	 * @param  {Object} data Data from the server. 
 	 */
-	AJAXSuccessHandler.checkIfAPlayerLeftSuccessHandler = function(data){
+	ns.checkIfAPlayerLeftSuccessHandler = function(data){
 		if(!data.success || !data.shouldExitRoom)
 			return;
 
-		AJAXCallHandler.offGameRoomAJAXCall();
+		GameAJAXCallHandler.offGameRoomAJAXCall();
 
 		BootstrapDialog.show({
 			type: BootstrapDialog.TYPE_INFO,
@@ -580,7 +593,7 @@ var AJAXSuccessHandler = {};
 	 * Notifies the user that their timer ran out. 
 	 * @param  {Object} data Data from the server. 
 	 */
-	AJAXSuccessHandler.notifyTimeOutSuccessHandler = function(data){
+	ns.notifyTimeOutSuccessHandler = function(data){
 		if(!data.success)
 			return;
 
@@ -596,7 +609,7 @@ var AJAXSuccessHandler = {};
 		}
 
 		turnTimer.endTimer();
-		AJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
+		GameAJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
 
 		BoardLogic.makePawnsUnselectable();
 	}
@@ -732,5 +745,4 @@ var AJAXSuccessHandler = {};
 		stage.addChildAt(gameStat, stage.getChildIndex(board));
 		createjs.Tween.get(gameStat).to({y: gameStat.y - gameStat.getBounds().height*2}, 1000, createjs.Ease.circOut);
 	}
-
 }());

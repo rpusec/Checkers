@@ -1,11 +1,32 @@
-var BoardLogic = {};
+/**
+ * Offers the logic behind making pawns selectable (e.g. that the player can 
+ * chose a pawn to move), or unselectable and that the pawn can be moved to a 
+ * particular location. 
+ * @class
+ * @author Roman Pusec
+ * @requires {BoardPawn.class.js, Board.class.js}
+ */
+rpcheckers.game.business.BoardLogic = {};
 
 (function(){
+
+	var	ns = rpcheckers.game.business.BoardLogic
+	,	AJAXCallHandler
+	,	ParticleFactory;
 
 	var	board
 	,	currentPawnList;
 
-	BoardLogic.setBoard = function(_board){
+	ns.initialize = function(){
+		AJAXCallHandler = rpcheckers.game.ajax.AJAXCallHandler;
+		ParticleFactory = rpcheckers.game.factory.ParticleFactory;
+	}
+
+	/**
+	 * Sets the board. 
+	 * @param {Board} _board The board. 
+	 */
+	ns.setBoard = function(_board){
 		board = _board;
 
 		board.children.forEach(function(boardBlock){
@@ -13,11 +34,20 @@ var BoardLogic = {};
 		});
 	}
 
-	BoardLogic.setCurrentPawnList = function(_currentPawnList){
+	/**
+	 * Sets the player's pawn list. Note that the player's and the 
+	 * opponent's pawn lists are separated lists of pawns. 
+	 * @param {Array<BoardPawn>} _currentPawnList The player's pawn list. 
+	 */
+	ns.setCurrentPawnList = function(_currentPawnList){
 		currentPawnList = _currentPawnList;
 	}
 
-	BoardLogic.makePawnsSelectable = function(arrPawns){
+	/**
+	 * Makes the pawns selectable. 
+	 * @param  {Array<BoardPawn>} arrPawns The target array of pawns, if not specified, the currentPawnList will be used. 
+	 */
+	ns.makePawnsSelectable = function(arrPawns){
 		if(!Array.isArray(arrPawns))
 			arrPawns = currentPawnList;
 
@@ -26,7 +56,11 @@ var BoardLogic = {};
 		});
 	}
 
-	BoardLogic.makePawnsUnselectable = function(arrPawns){
+	/**
+	 * Makes the pawns unselectable. 
+	 * @param  {Array<BoardPawn>} arrPawns The target array of pawns, if not specified, the currentPawnList will be used. 
+	 */
+	ns.makePawnsUnselectable = function(arrPawns){
 		if(!Array.isArray(arrPawns))
 			arrPawns = currentPawnList;
 		

@@ -52,7 +52,7 @@
 		});
 
 		var btnLeaveGame = new Button({text: 'Leave game...'}, function(){
-			AJAXCallHandler.offGameRoomAJAXCall();
+			rpcheckers.game.ajax.AJAXCallHandler.offGameRoomAJAXCall();
 		});
 
 		var wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
@@ -66,15 +66,15 @@
 		board.y = stage.canvas.height;
 		board.alpha = 0;
 
-		BlockSelectabilityLogic.setBoard(board);
-		BoardLogic.setBoard(board);
+		rpcheckers.game.business.BlockSelectabilityLogic.setBoard(board);
+		rpcheckers.game.business.BoardLogic.setBoard(board);
 
 		gameNameText.show();
 		selARoomText.show();
 
 		var turnTimer = new TurnTimer({
 			onEndHandler: function(){
-				AJAXCallHandler.notifyTimeOutAJAXCall();
+				rpcheckers.game.ajax.AJAXCallHandler.notifyTimeOutAJAXCall();
 			},
 			x: stage.canvas.width,
 			y: stage.canvas.height
@@ -82,9 +82,12 @@
 
 		window.turnTimer = turnTimer;
 
-		ParticleFactory.initialize({stage: stage});
+		rpcheckers.game.factory.ParticleFactory.initialize({stage: stage});
+		rpcheckers.game.business.BoardLogic.initialize();
 
-		AJAXSuccessHandler.initializeAllProperties({
+		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
+		rpcheckers.game.ajax.AJAXCallHandler.initialize();
+		rpcheckers.game.ajax.AJAXSuccessHandler.initializeAllProperties({
 			stage: stage,
 			gameNameText: gameNameText,
 			selARoomText: selARoomText,
@@ -96,7 +99,7 @@
 
 		gameInitialized = true;
 		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board, turnTimer);
-		AJAXCallHandler.displayAllRoomsAJAXCall();
+		rpcheckers.game.ajax.AJAXCallHandler.displayAllRoomsAJAXCall();
 	}
 
 	/**
@@ -111,7 +114,7 @@
 		if(typeof stage !== 'undefined')
 			stage.removeAllChildren();
 
-		var contGameRoom = AJAXSuccessHandler.getAllProperties().contGameRoom;
+		var contGameRoom = rpcheckers.game.ajax.AJAXSuccessHandler.getAllProperties().contGameRoom;
 		contGameRoom.removeAllChildren();
 		contGameRoom.alpha = 1;
 
@@ -119,7 +122,7 @@
 			stage.update();
 
 		gameInitialized = false;
-		AJAXCallIntervalHandler.clearAllAJAXCallIntervals();
+		rpcheckers.game.ajax.AJAXCallIntervalHandler.clearAllAJAXCallIntervals();
 	}
 
 }());

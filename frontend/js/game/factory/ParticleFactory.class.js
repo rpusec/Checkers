@@ -4,12 +4,14 @@
  * @class 
  * @author Roman Pusec
  */
-var ParticleFactory = {};
+rpcheckers.game.factory.ParticleFactory = {};
 
 (function(){
 
-	var stage = null;
-	var particles = [];
+	var ns = rpcheckers.game.factory.ParticleFactory;
+
+	var	stage = null
+	,	particles = [];
 
 	/**
 	 * Initializes the factory. 
@@ -21,7 +23,7 @@ var ParticleFactory = {};
 	 *                          - {String} particleStrokeColor => The stroke color of each particle. 
 	 *                          - {Number} particleStrokeWidth => The stroke width of each particle. 
 	 */
-	ParticleFactory.initialize = function(options){ 
+	ns.initialize = function(options){ 
 		while(particles.length > 0)
 			particles.pop();
 
@@ -52,7 +54,7 @@ var ParticleFactory = {};
 	 * Displays the particles on the canvas. 
 	 * @param  {createjs.Point} point Represents the point from which all of the particles will spawn and then separate. 
 	 */
-	ParticleFactory.spawnParticles = function(point){
+	ns.spawnParticles = function(point){
 		particles.forEach(function(particle){
 			createjs.Tween.removeTweens(particle);
 			if(stage.contains(particle))

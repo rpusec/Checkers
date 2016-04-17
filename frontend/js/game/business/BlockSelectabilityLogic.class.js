@@ -6,9 +6,11 @@
  * @author Roman Pusec
  * @requires {BoardPawn.class.js, Board.class.js}
  */
-var BlockSelectabilityLogic = {};
+rpcheckers.game.business.BlockSelectabilityLogic = {};
 
 (function(){
+
+	var ns = rpcheckers.game.business.BlockSelectabilityLogic;
 
 	var board
 	,	playerOnePawns
@@ -25,7 +27,7 @@ var BlockSelectabilityLogic = {};
 	 * of the pawn the player chose. 
 	 * @param  {BoardPawn} currSelPawn The currently selected pawn. 
 	 */
-	BlockSelectabilityLogic.makeBoardBlocksSelectable = function(currSelPawn){
+	ns.makeBoardBlocksSelectable = function(currSelPawn){
 		makeBoardBlocksSelectableFrom(createPointForLeftUp(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_UP);
 		makeBoardBlocksSelectableFrom(createPointForRightUp(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_RIGHT_UP);
 		makeBoardBlocksSelectableFrom(createPointForLeftDown(currSelPawn.point.x, currSelPawn.point.y, 1), currSelPawn.getWhichPlayer(), MBBSF_LEFT_DOWN);
@@ -36,7 +38,7 @@ var BlockSelectabilityLogic = {};
 	 * Unselects all board blocks that had 
 	 * been marked as selectable. 
 	 */
-	BlockSelectabilityLogic.makeBoardBlocksUnselectable = function(){
+	ns.makeBoardBlocksUnselectable = function(){
 		targetBoardBlocks.forEach(function(boardBlock){
 			board.markBlockAsUnselectable(boardBlock);
 		});
@@ -49,7 +51,7 @@ var BlockSelectabilityLogic = {};
 	 * Setting the board reference. 
 	 * @param {Board} _board The board reference. 
 	 */
-	BlockSelectabilityLogic.setBoard = function(_board){
+	ns.setBoard = function(_board){
 		board = _board;
 	}
 
@@ -57,7 +59,7 @@ var BlockSelectabilityLogic = {};
 	 * Setting player one pawns. 
 	 * @param {Array<BoardPawn>} _playerOnePawns The player one pawns. 
 	 */
-	BlockSelectabilityLogic.setPlayerOnePawns = function(_playerOnePawns){
+	ns.setPlayerOnePawns = function(_playerOnePawns){
 		playerOnePawns = _playerOnePawns;
 	}
 
@@ -65,7 +67,7 @@ var BlockSelectabilityLogic = {};
 	 * Setting player two pawns. 
 	 * @param {Array<BoardPawn>} _playerTwoPawns The player two pawns. 
 	 */
-	BlockSelectabilityLogic.setPlayerTwoPawns = function(_playerTwoPawns){
+	ns.setPlayerTwoPawns = function(_playerTwoPawns){
 		playerTwoPawns = _playerTwoPawns;
 	}
 
@@ -75,7 +77,7 @@ var BlockSelectabilityLogic = {};
 	 * @return {Array|createjs.Shape(board block)|null} Either returns an array of board blocks, or a single board block 
 	 *                                                  if there's only one element in the array, or null if the array is empty. 
 	 */
-	BlockSelectabilityLogic.findBoardBlockByCoordinates = function(){
+	ns.findBoardBlockByCoordinates = function(){
 		var arrResult = [];
 
 		for(var i = 0; i < arguments.length; i++)
@@ -190,7 +192,7 @@ var BlockSelectabilityLogic = {};
 	 * @return {Array|BoardPawn|null} Either returns an array of pawns, or a single pawn if there's 
 	 *                                only one element in the array, or null if the array is empty.
 	 */
-	BlockSelectabilityLogic.findBoardPawnsByIds = function(){
+	ns.findBoardPawnsByIds = function(){
 		if(arguments.length === 0)
 			return null;
 
@@ -222,7 +224,7 @@ var BlockSelectabilityLogic = {};
 	 * @return {Array|BoardPawn|null} Either returns an array of pawns, or a single pawn if there's 
 	 *                                only one element in the array, or null if the array is empty. 
 	 */
-	BlockSelectabilityLogic.findBoardPawnsByCoordinates = function(playerNumber){
+	ns.findBoardPawnsByCoordinates = function(playerNumber){
 
 		var arrResult = [];
 

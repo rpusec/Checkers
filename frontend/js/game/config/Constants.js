@@ -4,7 +4,6 @@
  * @author Roman Pusec
  */
 var Constants = {
-	
 	//base game config
 	FPS: 60,
 	MOUSE_OVER_FREQ: 5,
@@ -47,7 +46,7 @@ var Constants = {
 	
 	//other constants
 	MAX_USERS_PER_ROOM: 2,
-	BOARD_ROW_SEPARATOR: '|',
+	COORDINATE_DELIMITER: '|',
 	BACKEND_FUNC_CALL_PARAM: 'path',
 
 	//URIs
