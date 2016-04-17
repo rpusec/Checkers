@@ -4,4 +4,5 @@ DONE
  - [DONE] controller preimenovati u ajax  
  - [DONE] u canvas dodati init folder u kojega cu dodati Base.js folder  
  - [DONE] preimenovati model folder u component  
- - [DONE] create a database call handler
+ - [DONE] create a database call handler  
+ - Refactor the dom partition  
