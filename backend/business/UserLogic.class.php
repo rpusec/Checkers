@@ -110,6 +110,8 @@ class UserLogic
 			UserDBHandler::updateUserColors($arrRandColor['red'], $arrRandColor['green'], $arrRandColor['blue'], $targetUser['userID']);
 			$flag = true;
 		}
+
+		return null;
 	}
 
     /**
@@ -187,30 +189,64 @@ class UserLogic
 		return true;
 	}
 
+	/**
+	 * Marks the user as not in a present room. 
+	 * @param  [Integer] $userID The target user ID. 
+	 */
 	public static function updateUserAsNotInARoom($userID){
 		UserDBHandler::updateUserAsNotInARoom($userID);
 	}
 
+	/**
+	 * Marks the user as disconnected in the database. 
+	 * @param  [Integer] $userID The target user ID. 
+	 */
 	public static function updateUserAsDisconnected($userID){
 		UserDBHandler::updateUserAsDisconnected($userID);
 	}
 
+	/**
+	 * Updates the connection time of a particular user. 
+	 * @param  [Number] $timeInSeconds The current time in seconds. 
+	 * @param  [Integer] $userID       The target user ID. 
+	 */
 	public static function updateConnectionTime($timeInSeconds, $userID){
 		UserDBHandler::updateConnectionTime($timeInSeconds, $userID);
 	}
 
+	/**
+	 * Marks appropiate users as disconnected based on their connection exparation date. 
+	 * @param  [type] $timeInSeconds Current time in seconds. 
+	 * @param  [type] $credential    The name of the credential to search by. 
+	 * @param  [type] $searchBy      The credential to search by. If value not specified, it won't search by any credential.
+	 */
 	public static function markAppropriateUsersAsDisconnected($timeInSeconds, $credential = null, $searchBy = null){
 		UserDBHandler::markAppropriateUsersAsDisconnected($timeInSeconds, $credential, $searchBy === null ? UserDBHandler::SEARCH_BY_ID : $searchBy);
 	}
 
+	/**
+	 * Fetches a user by their username and password. 
+	 * @param  [String] $username Username value. 
+	 * @param  [String] $password Password value. 
+	 * @return [Array]            The user, directly fetched from the database. 
+	 */
 	public static function getUserByUsernameAndPassword($username, $password){
 		return UserDBHandler::getUserByUsernameAndPassword($username, $password);
 	}
 
+	/**
+	 * Returns all connected users. 
+	 * @return [Array] Array of connected users. 
+	 */
 	public static function getAllConnectedUsers(){
 		return UserDBHandler::getAllConnectedUsers();
 	}
 
+	/**
+	 * Returns the connection state and the RGB colors of a particular user. 
+	 * @param  [Integer] $userID The ID of the user. 
+	 * @return [Array] The user's said information. 
+	 */
 	public static function getConnStatAndColorsFromUser($userID){
 		return UserDBHandler::getConnStatAndColorsFromUser($userID);
 	}

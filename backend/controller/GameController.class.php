@@ -200,7 +200,7 @@ class GameController extends BaseController
 
 		parent::startConnection();
 
-		$targetRoom = GameLogic::getRoomIDsFromUser(parent::getLoggedUserID());
+		$targetRoom = GameLogic::getRoomIDFromUser(parent::getLoggedUserID());
 		if($targetRoom === null)
 			return array('success' => false);
 
@@ -221,12 +221,9 @@ class GameController extends BaseController
 			return array('success' => false);
 
 		parent::startConnection();
-
-		$rooms = GameLogic::getRoomByIDAndWhoseTurn(parent::getLoggedUserID());
-
-		if(!empty($rooms))
-			$targetRoom = $rooms[0];
-		else
+		
+		$targetRoom = GameLogic::getRoomIDAndWhoseTurnByUser(parent::getLoggedUserID());
+		if($targetRoom === null)
 			return array('success' => false);
 
 		$newWhoseTurn = GameLogic::setOpponentTurn($targetRoom, parent::getLoggedUserID());

@@ -88,8 +88,8 @@ class UsersController extends BaseController
 
 			if($flag)
 			{
-				self::updateConnTime($targetUser['userID']);
 				parent::setLoggedUser($targetUser['userID']);
+				self::updateConnTime($targetUser['userID']);
 			}
 		}
 
@@ -180,7 +180,7 @@ class UsersController extends BaseController
 				return array('success' => false);
 
 		parent::startConnection();
-		UserLogic::updateConnectionTime(parent::getTimeInSec(), parent::getLoggedUserID());
+		UserLogic::updateConnectionTime(parent::getTimeInSec(), $userID === null ? parent::getLoggedUserID() : $userID);
 		return array('success' => true);
 	}
 

@@ -45,13 +45,8 @@ class GameLogic
     public static function getPlayerTurn($roomID){
     	$turn = RoomDBHandler::getWhoseTurnFromRoom($roomID);
 
-		if(!empty($turn))
-		{
-			$turn = $turn[0];
+		if($turn !== null)
 			$turn = intval($turn['whoseTurn']);
-		}
-		else
-			$turn = null;
 
 		return $turn;
     }
@@ -387,15 +382,15 @@ class GameLogic
 		return RoomDBHandler::getStringBoard($roomID);
 	}
 
-	public static function getRoomIDsFromUser($userID){
-		return RoomDBHandler::getRoomIDsFromUser($userID);
+	public static function getRoomIDFromUser($userID){
+		return RoomDBHandler::getRoomIDFromUser($userID);
 	}
 
 	public static function getUserIDsFromRoom($targetRoomID){
 		return UserDBHandler::getUserIDsFromRoom($targetRoomID);
 	}
 
-	public static function getRoomByIDAndWhoseTurn($userID){
-		return RoomDBHandler::getRoomByIDAndWhoseTurn($userID);
+	public static function getRoomIDAndWhoseTurnByUser($userID){
+		return RoomDBHandler::getRoomIDAndWhoseTurnByUser($userID);
 	}
 }
