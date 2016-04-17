@@ -84,7 +84,6 @@
 
 		rpcheckers.game.factory.ParticleFactory.initialize({stage: stage});
 		rpcheckers.game.business.BoardLogic.initialize();
-
 		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
 		rpcheckers.game.ajax.AJAXCallHandler.initialize();
 		rpcheckers.game.ajax.AJAXSuccessHandler.initializeAllProperties({
