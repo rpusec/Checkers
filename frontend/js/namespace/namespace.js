@@ -29,6 +29,13 @@ rpcheckers.game.business = {};
 rpcheckers.game.factory = {};
 
 /**
+ * @namespace Will store all of the game's 
+ * configuration operations. 
+ * @type {Object}
+ */
+rpcheckers.game.config = {};
+
+/**
  * @namespace Every other part of the application except the game itself.
  * The acronym stands for Document Object Model, since the canvas is excluded. 
  */

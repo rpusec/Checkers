@@ -128,6 +128,7 @@ $(document).on('ready', function(){
 		$(thisVar).parent().parent().find('input').attr('disabled', 'disabled');
 		$(thisVar).parent().parent().find('input').val('');
 		$(thisVar).text('Change?');
+                
 		return false;
 	}
 
@@ -167,81 +168,11 @@ $(document).on('ready', function(){
 
 		AJAXCallHandler.alterUserSettingsAJAXCall(formData);
 	});
-	
-	/**
-	 * Function which is executed when an AJAX request responsible for 
-	 * changing user profile settings was successfully executed. 
-	 * @param  {Object} data Plain object which embodies the data from the server. 
-	 */
-	/*function accountSettingsAlteredSuccess(data){
-		var message = 'Account settings successfully altered. ';
-
-		if(data.success)
-		{
-			$.each($('#modal-account-settings').find('.form-control'), function(fcKey, fcVal){
-				$(fcVal).val('');
-				$(fcVal).attr('disabled', 'disabled');
-			});
-
-			$.each($('#modal-account-settings').find('.enable-input-change'), function(fcKey, fcVal){
-				$(fcVal).text('Change?');
-			});
-			
-			$('#modal-account-settings').modal('hide');
-		}
-		else
-			message = formatLineByLine(data.errors);
-
-		BootstrapDialog.show({
-			type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
-			title: "Account settings status",
-			message: message
-		});
-	}*/
 
 	//when the logout option was used 
 	$('#logout-option-link').on('click', function(){
 		AJAXCallHandler.logoutUserAJAXCall();
 	});
-
-	//var UPDATE_CONN_EXPAR_PING = 2000;
-	//var UPDATE_CONN_ALL_USERS_PING = 3000;
-
-	//sends request every [UPDATE_CONN_TIME_PING] milliseconds
-	//and updates the user's connection exparation time
-	/*setInterval(function(){
-		$.ajax({
-			type:'get',
-			processData: false,
-			contentType: false,
-			url:'backend/view/UsersView.php',
-			dataType: 'json',
-			data:'path=update-conn-time',
-			error:function(data){
-				console.log(data);
-			}
-		});
-	}, UPDATE_CONN_EXPAR_PING);*/
-
-	//updates all of the users' connection
-	//statuses 
-	//since some users have to be marked as
-	//offline in the database, if they have
-	//closed their browser without 
-	//logging off first
-	/*setInterval(function(){
-		$.ajax({
-			type:'get',
-			processData: false,
-			contentType: false,
-			url:'backend/view/UsersView.php',
-			dataType: 'json',
-			data:'path=update-users-conn-stat',
-			error:function(data){
-				console.log(data);
-			}
-		});
-	}, UPDATE_CONN_ALL_USERS_PING);*/
 
 	AJAXCallIntervalHandler.setUpdateConnTimeInterval();
 	AJAXCallIntervalHandler.setUpdateUsersConnStateInterval();

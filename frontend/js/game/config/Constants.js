@@ -3,7 +3,7 @@
  * constants used in the game. 
  * @author Roman Pusec
  */
-var Constants = {
+rpcheckers.game.config.Constants = {
 	//base game config
 	FPS: 60,
 	MOUSE_OVER_FREQ: 5,

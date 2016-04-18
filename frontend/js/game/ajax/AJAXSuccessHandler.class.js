@@ -13,7 +13,9 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	,	GameAJAXCallIntervalHandler
 	,	GameAJAXCallHandler
 	,	BoardPawnFactory
-	,	BoardLogic;
+	,	BoardLogic
+        ,	BlockSelectabilityLogic
+        ,	Constants;
 
 	var	stage
 	,	gameNameText
@@ -56,6 +58,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		BoardPawnFactory = gameNS.factory.BoardPawnFactory;
 		BoardLogic = gameNS.business.BoardLogic;
 		BlockSelectabilityLogic = gameNS.business.BlockSelectabilityLogic;
+                Constants = gameNS.config.Constants;
 	}
 
 	/**
@@ -467,7 +470,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			});
 
 			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
-				window.checkLoginStatusAJAXCall();
+				rpcheckers.dom.ajax.checkLoginStatusAJAXCall();
 
 			return;
 		}
