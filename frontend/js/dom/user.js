@@ -1,4 +1,7 @@
 $(document).on('ready', function(){
+	var AJAXCallHandler = rpcheckers.dom.ajax.AJAXCallHandler;
+	AJAXCallHandler.initialize();
+
 	$('#modal-login').find('input[name=username]').on('keypress', loginUserKeyHandler);
 	$('#modal-login').find('input[name=password]').on('keypress', loginUserKeyHandler);
 	$('#modal-login').find('button[name="submit-btn"]').on('click', loginUser);
@@ -31,31 +34,7 @@ $(document).on('ready', function(){
 		$('#modal-login').find('form').find('#username').val('');
 		$('#modal-login').find('form').find('#password').val('');
 
-		$.ajax({
-			type:'post',
-			processData: false,
-			contentType: false,
-			url:'backend/view/UsersView.php',
-			dataType: 'json',
-			data:formData,
-			success:function(data){
-				if(data.success){
-					deactivateModalLogin();
-					initializeGame(data.hasOwnProperty('arrUserColor') ? data.arrUserColor : null);
-				}
-				else
-				{
-					BootstrapDialog.show({
-						type: BootstrapDialog.TYPE_DANGER,
-						title: "Error",
-						message: data.hasOwnProperty('errors') ? formatLineByLine(data.errors) : 'Wrong username / password. '
-					});
-				}
-			},
-			error:function(data){
-				console.log(data);
-			}
-		});
+		AJAXCallHandler.loginUserAJAXCall(formData);
 	}
 
 	//fetches the signup modal window's submit button, handles registration process
@@ -76,50 +55,7 @@ $(document).on('ready', function(){
 		formData.append('passwordConfirm', passwordConfirm);
 		formData.append('path', 'register-user');
 
-		$.ajax({
-			type:'post',
-			processData: false,
-			contentType: false,
-			url:'backend/view/UsersView.php',
-			dataType: 'json',
-			data:formData,
-			success:function(data){
-				if(data.success)
-				{
-					form.find('#firstname').val('');
-					form.find('#lastname').val('');
-					form.find('#username').val('');
-					form.find('#password').val('');
-					form.find('#passwordConfirm').val('');
-
-					$('#modal-signup').modal('hide');
-
-					BootstrapDialog.show({
-						type: BootstrapDialog.TYPE_SUCCESS,
-						title: "Registration status",
-						message: 'Account successfully created. '
-					});
-				}
-				else
-				{
-					var errors = data.errors;
-					var errorsStr = '';
-
-					errors.forEach(function(error){
-						errorsStr += error + '<br />';
-					});
-
-					BootstrapDialog.show({
-						type: BootstrapDialog.TYPE_DANGER,
-						title: "Registration status",
-						message: errorsStr
-					});
-				}
-			},
-			error:function(data){
-				console.log(data);
-			}
-		});
+		AJAXCallHandler.registerUserAJAXCall(formData);
 	});
 
 	//account settings modal btns
@@ -205,6 +141,7 @@ $(document).on('ready', function(){
 			$('input[name=passwordConfirm]').attr('disabled', 'disabled');
 			$('input[name=passwordConfirm]').val('');
 		}
+
 		modalASIKeyPressHandler();
 	}
 
@@ -226,18 +163,7 @@ $(document).on('ready', function(){
 		formData.append('passwordConfirm', passwordConfirm);
 		formData.append('path', 'register-user');
 
-		$.ajax({
-			type: 'post',
-			processData: false,
-			contentType: false,
-			url:'backend/view/UsersView.php',
-			dataType: 'json',
-			data:formData,
-			success: accountSettingsAlteredSuccess,
-			error:function(data){
-				console.log(data);
-			}
-		});
+		AJAXCallHandler.alterUserSettingsAJAXCall(formData);
 	});
 	
 	/**
@@ -245,7 +171,7 @@ $(document).on('ready', function(){
 	 * changing user profile settings was successfully executed. 
 	 * @param  {Object} data Plain object which embodies the data from the server. 
 	 */
-	function accountSettingsAlteredSuccess(data){
+	/*function accountSettingsAlteredSuccess(data){
 		var message = 'Account settings successfully altered. ';
 
 		if(data.success)
@@ -269,42 +195,19 @@ $(document).on('ready', function(){
 			title: "Account settings status",
 			message: message
 		});
-	}
+	}*/
 
 	//when the logout option was used 
 	$('#logout-option-link').on('click', function(){
-		$.ajax({
-			type:'get',
-			processData: false,
-			contentType: false,
-			url:'backend/view/UsersView.php',
-			dataType: 'json',
-			data:'path=log-user-out',
-			success:function(data){
-				BootstrapDialog.show({
-					type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
-					title: 'Logout status',
-					message: data.message
-				});
-
-				if(data.success)
-				{
-					activateModalLogin();
-					uninitializeGame();
-				}
-			},
-			error:function(data){
-				console.log(data);
-			}
-		});
+		AJAXCallHandler.logoutUserAJAXCall();
 	});
 
-	var UPDATE_CONN_EXPAR_PING = 2000;
-	var UPDATE_CONN_ALL_USERS_PING = 3000;
+	//var UPDATE_CONN_EXPAR_PING = 2000;
+	//var UPDATE_CONN_ALL_USERS_PING = 3000;
 
 	//sends request every [UPDATE_CONN_TIME_PING] milliseconds
 	//and updates the user's connection exparation time
-	setInterval(function(){
+	/*setInterval(function(){
 		$.ajax({
 			type:'get',
 			processData: false,
@@ -316,7 +219,7 @@ $(document).on('ready', function(){
 				console.log(data);
 			}
 		});
-	}, UPDATE_CONN_EXPAR_PING);
+	}, UPDATE_CONN_EXPAR_PING);*/
 
 	//updates all of the users' connection
 	//statuses 
@@ -324,7 +227,7 @@ $(document).on('ready', function(){
 	//offline in the database, if they have
 	//closed their browser without 
 	//logging off first
-	setInterval(function(){
+	/*setInterval(function(){
 		$.ajax({
 			type:'get',
 			processData: false,
@@ -336,5 +239,8 @@ $(document).on('ready', function(){
 				console.log(data);
 			}
 		});
-	}, UPDATE_CONN_ALL_USERS_PING);
+	}, UPDATE_CONN_ALL_USERS_PING);*/
+
+	AJAXCallIntervalHandler.setUpdateConnTimeInterval();
+	AJAXCallIntervalHandler.setUpdateUsersConnStateInterval();
 });

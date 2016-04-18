@@ -3,7 +3,8 @@ rpcheckers.dom.ajax.AJAXCallIntervalHandler = {};
 (function(){
 
 	var ns = rpcheckers.dom.ajax.AJAXCallIntervalHandler
-		AJAXCallHandler;
+	,	AJAXCallHandler
+	,	Constants;
 
 	var	checkForNewMessagesInterval
 	,	checkWhoIsOnlineInterval
@@ -12,6 +13,7 @@ rpcheckers.dom.ajax.AJAXCallIntervalHandler = {};
 
 	ns.initialize = function(){
 		AJAXCallHandler = rpcheckers.dom.ajax.AJAXCallHandler;
+		Constants = rpcheckers.dom.config.Constants;
 	}
 
 	ns.setCheckForNewMessagesInterval = function(){

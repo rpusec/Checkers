@@ -38,3 +38,8 @@ rpcheckers.dom = {};
  * @namespace Will store all of the AJAX calls relating to dom. 
  */
 rpcheckers.dom.ajax = {};
+
+/**
+ * @namespace Will store all of the configuration relating to dom. 
+ */
+rpcheckers.dom.config = {};

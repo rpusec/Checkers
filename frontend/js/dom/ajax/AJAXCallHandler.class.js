@@ -49,6 +49,49 @@ rpcheckers.dom.ajax.AJAXCallHandler = {};
 		});
 	}
 
+	ns.sendMessageAJAXCall = function(formData){
+		runAjax({
+			url: 'backend/view/ChatView.php',
+			data: formData,
+			success: AJAXSuccessHandler.sendMessageSuccessHandler
+		});
+	}
+
+	ns.loginUserAJAXCall = function(formData){
+		runAjax({
+			type: 'post',
+			url:'backend/view/UsersView.php',
+			data: formData,
+			success: AJAXSuccessHandler.loginUserSuccessHandler
+		});
+	}
+
+	ns.registerUserAJAXCall = function(formData){
+		runAjax({
+			type: 'post',
+			url:'backend/view/UsersView.php',
+			data: formData,
+			success: AJAXSuccessHandler.registerUserSuccessHandler
+		});
+	}
+
+	ns.alterUserSettingsAJAXCall = function(formData){
+		runAjax({
+			type: 'post',
+			url:'backend/view/UsersView.php',
+			data: formData,
+			success: AJAXSuccessHandler.alterUserSettingsSuccessHandler
+		});
+	}
+
+	ns.logoutUserAJAXCall = function(){
+		runAjax({
+			url:'backend/view/UsersView.php',
+			data:'path=log-user-out',
+			success: AJAXSuccessHandler.logoutUserSuccessHandler
+		});
+	}
+
 	/**
 	 * Runs an AJAX call. Includes default properties that are shared among
 	 * all AJAX requests. 
