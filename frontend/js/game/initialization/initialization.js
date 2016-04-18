@@ -21,7 +21,7 @@
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
 		stage.enableMouseOver(Constants.MOUSE_OVER_FREQ);
 
-		checkLoginStatusAJAXCall();
+		rpcheckers.dom.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
 	}
 
 	/**

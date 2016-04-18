@@ -1,6 +1,8 @@
 $(document).on('ready', function(){
 	var AJAXCallHandler = rpcheckers.dom.ajax.AJAXCallHandler;
+	var AJAXCallIntervalHandler = rpcheckers.dom.ajax.AJAXCallIntervalHandler;
 	AJAXCallHandler.initialize();
+	AJAXCallIntervalHandler.initialize();
 
 	$('#modal-login').find('input[name=username]').on('keypress', loginUserKeyHandler);
 	$('#modal-login').find('input[name=password]').on('keypress', loginUserKeyHandler);

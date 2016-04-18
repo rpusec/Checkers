@@ -27,7 +27,7 @@ rpcheckers.dom.ajax.AJAXCallHandler = {};
 
 	ns.checkWhoIsOnlineAJAXCall = function(){
 		runAjax({
-			url:'backend/view/ChatView.php',
+			url:'backend/view/UsersView.php',
 			data:'path=who-is-online',
 			success: AJAXSuccessHandler.checkWhoIsOnlineSuccessHandler
 		});

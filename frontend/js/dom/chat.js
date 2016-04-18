@@ -1,5 +1,4 @@
 $(document).on('ready', function(){
-
 	var AJAXCallHandler = rpcheckers.dom.ajax.AJAXCallHandler;
 	var AJAXCallIntervalHandler = rpcheckers.dom.ajax.AJAXCallIntervalHandler;
 	AJAXCallHandler.initialize();

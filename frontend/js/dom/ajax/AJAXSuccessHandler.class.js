@@ -12,6 +12,19 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		Constants = rpcheckers.dom.config.Constants;
 	}
 
+	ns.checkUserLoggedHandlerSuccess = function(data){
+		if(data.isLogged)
+		{
+			deactivateModalLogin();
+			initializeGame(data.hasOwnProperty('arrUserColor') ? data.arrUserColor : null);
+		}
+		else
+		{
+			activateModalLogin();
+			uninitializeGame();
+		}
+	}
+
 	ns.checkForNewMessagesSuccessHandler = function(data){
 		if(!data.success)
 			return;
