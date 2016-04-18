@@ -1,10 +1,6 @@
 (function(){
-
-	var LEFT_DIR = 1;
-	var RIGHT_DIR = 2;
-	var UP_DIR = 3;
-	var DOWN_DIR = 4;
-	var LINE_NUM = 3;
+    
+	var Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * Represents a single game room icon on the start of the game. 
@@ -16,7 +12,8 @@
 	 *                         - {String} colorO => Color of the boxes that are positioned odd. 
 	 *                         - {String} colorE => Color of the boxes that are positioned even. 
 	 *                         - {String} colorOUnavailable => The same purpose as colorO, but it's only applied when the GameRoom is set as unavailable. 
-	 *                         - {Boolean} available => Boolean which indicates whether this GameRoom should be considered as unavailable. 
+	 *                         - {Integer} lineNum => The number of rotating lines. 
+         *                         - {Boolean} available => Boolean which indicates whether this GameRoom should be considered as unavailable. 
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
@@ -38,6 +35,7 @@
 			colorO: Constants.COLOR_ONE,
 			colorE: Constants.COLOR_TWO,
 			unavailableAlpha: 0.25,
+                        lineNum: 3,
 			unavailable: false
 		}, options);
 
@@ -58,7 +56,7 @@
 			}
 		}
 
-		for(var i = 0; i < LINE_NUM; i++)
+		for(var i = 0; i < this._options.lineNum; i++)
 		{
 			var line = new RotatingLine({
 				x: this.getBounds().width/2,

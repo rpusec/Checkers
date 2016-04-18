@@ -1,4 +1,6 @@
 (function(){
+    
+	var Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * Represents the turn timer, the timer that measures how long a single player turn lasts. 

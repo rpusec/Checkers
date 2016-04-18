@@ -10,7 +10,8 @@ rpcheckers.game.business.BlockSelectabilityLogic = {};
 
 (function(){
 
-	var ns = rpcheckers.game.business.BlockSelectabilityLogic;
+	var	ns = rpcheckers.game.business.BlockSelectabilityLogic
+		Constants = rpcheckers.game.config.Constants;
 
 	var board
 	,	playerOnePawns

@@ -1,5 +1,7 @@
 (function(){
-
+    
+	var Constants = rpcheckers.game.config.Constants;
+        
 	/**
 	 * This object represents the board on which two players will be playing. 
 	 * @param {Object} options Plain object which represents the properties of the instance. 

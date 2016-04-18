@@ -9,7 +9,8 @@ rpcheckers.game.factory.BoardPawnFactory = {};
 
 (function(){
 
-	var ns = rpcheckers.game.factory.BoardPawnFactory;
+	var	ns = rpcheckers.game.factory.BoardPawnFactory
+	,	Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * @see BoardPawn.class.js for clarification. 

@@ -1,5 +1,7 @@
 (function(){
-
+    
+	var Constants = rpcheckers.game.config.Constants;
+        
 	/**
 	 * Represents a polygon-shaped pawn used by both players. 
 	 * @param {Object} options Represents parameters. 

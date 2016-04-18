@@ -1,4 +1,6 @@
 (function(){
+    
+	var Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * Represents a particular message with a 'waiting' or 'loading' characteristic to it. 

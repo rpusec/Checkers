@@ -1,4 +1,7 @@
 (function(){
+    
+	var Constants = rpcheckers.game.config.Constants;
+
 	/**
 	 * An arc-ish line which rotates in circles. 
 	 * @param {Object} options A plain object which represents parameters for the class. Includes:

@@ -8,7 +8,8 @@ rpcheckers.game.factory.ParticleFactory = {};
 
 (function(){
 
-	var ns = rpcheckers.game.factory.ParticleFactory;
+	var ns = rpcheckers.game.factory.ParticleFactory
+	,	Constants = rpcheckers.game.config.Constants;
 
 	var	stage = null
 	,	particles = [];

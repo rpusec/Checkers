@@ -1,5 +1,5 @@
 (function(){
-
+        
 	/**
 	 * Displays a message and then after a specified amount of milliseconds removes it. 
 	 * @param {Object} options Represents parameters. 

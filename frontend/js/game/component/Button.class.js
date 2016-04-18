@@ -1,5 +1,7 @@
 (function(){
-
+    
+	var Constants = rpcheckers.game.config.Constants;
+        
 	/**
 	 * Represents a single clickable button. 
 	 * @param {Object} options        Plain object which represents the parameters of the display object.

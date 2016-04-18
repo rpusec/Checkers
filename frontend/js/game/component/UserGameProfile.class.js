@@ -1,4 +1,6 @@
 (function(){
+    
+	var Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * Represents a user profile when playing the game. 

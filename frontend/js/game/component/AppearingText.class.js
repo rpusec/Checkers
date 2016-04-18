@@ -4,6 +4,8 @@
 	var RIGHT_DIR = 2;
 	var UP_DIR = 3;
 	var DOWN_DIR = 4;
+        
+        var Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * Augmented createjs.Text object which fades in or out. 

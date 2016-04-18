@@ -1,4 +1,6 @@
 (function(){
+    
+	var Constants = rpcheckers.game.config.Constants;
 
 	/**
 	 * Represents the current game state which displays the current round, 
