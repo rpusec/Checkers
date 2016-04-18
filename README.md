@@ -5,4 +5,5 @@ DONE
  - [DONE] u canvas dodati init folder u kojega cu dodati Base.js folder  
  - [DONE] preimenovati model folder u component  
  - [DONE] create a database call handler  
- - [DONE] Refactor the dom partition
+ - [DONE] Refactor the dom partition  
+ - [DONE] Added namespaces  
