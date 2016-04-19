@@ -1,6 +1,5 @@
 /**
- * Controller base class. 
- * @class 
+ * Main inizialization of the game. 
  * @author Roman Pusec
  */
 (function(){

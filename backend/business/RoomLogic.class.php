@@ -134,4 +134,8 @@ class RoomLogic
 	public static function setupRoomIDForUser($roomID, $userID){
 		UserDBHandler::updateUser(array('ROOM_roomID' => $roomID), $userID);
 	}
+
+	public static function getLastMove($roomID){
+		return RoomDBHandler::getLastMove($roomID);
+	}
 }

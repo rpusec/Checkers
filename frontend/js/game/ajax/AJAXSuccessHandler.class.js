@@ -14,8 +14,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	,	GameAJAXCallHandler
 	,	BoardPawnFactory
 	,	BoardLogic
-        ,	BlockSelectabilityLogic
-        ,	Constants;
+	,	BlockSelectabilityLogic
+	,	Constants;
 
 	var	stage
 	,	gameNameText
@@ -58,7 +58,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		BoardPawnFactory = gameNS.factory.BoardPawnFactory;
 		BoardLogic = gameNS.business.BoardLogic;
 		BlockSelectabilityLogic = gameNS.business.BlockSelectabilityLogic;
-                Constants = gameNS.config.Constants;
+		Constants = gameNS.config.Constants;
 	}
 
 	/**
@@ -159,6 +159,15 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			GameAJAXCallIntervalHandler.clearCheckForOpponentInterval();
 			GameAJAXCallHandler.whoseTurnAJAXCall(data.opponent.roomID);
 			setupAndDisplayGameStat();
+		}
+
+		if(data.lastMove !== null)
+		{
+			var lastMove = JSON.parse(data.lastMove);
+			var targetPawn = BlockSelectabilityLogic.findBoardPawnsByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
+			
+			if(targetPawn !== null)
+				movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY));
 		}
 	}
 
@@ -635,11 +644,15 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Function} onCompleteFunct       Function which is executed once the pawn has been moved. 
 	 */
 	function movePawn(targetPawn, newCoordinate, onCompleteFunct){
-		createjs.Tween.get(targetPawn).to({
+		var moveTween = createjs.Tween.get(targetPawn).to({
 			x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 
 			y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
-		}, 500, createjs.Ease.circOut).call(onCompleteFunct);
-		targetPawn.point = new createjs.Point(newCoordinate.x, newCoordinate.y);
+		}, 500, createjs.Ease.circOut);
+
+		if(typeof onCompleteFunct === 'function')
+			moveTween.call(onCompleteFunct);
+
+		targetPawn.point = newCoordinate;
 	}
 
 	/**
