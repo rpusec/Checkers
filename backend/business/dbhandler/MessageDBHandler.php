@@ -7,7 +7,7 @@ require_once('../libs/meekrodb.2.3.class.php');
  * @see [http://meekro.com/] Documentation on meekrodb library. 
  * @author Roman Pusec
  */
-class ChatDBHandler
+class MessageDBHandler
 {
 	/**
 	 * Deletes old messages whose exparation date has passed. 

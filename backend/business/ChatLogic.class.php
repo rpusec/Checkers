@@ -2,7 +2,7 @@
 
 require_once('../config/constants.php');
 require_once('validation/UserValidator.class.php');
-require_once('dbhandler/ChatDBHandler.php');
+require_once('dbhandler/MessageDBHandler.php');
 
 /**
  * Offers all of the business rules 
@@ -35,7 +35,7 @@ class ChatLogic
 	 * @param  [Number] $currentTimeInSec The current time in seconds. 
 	 */
 	public static function insertMessage($userID, $message, $currentTimeInSec){
-		ChatDBHandler::insertMessage($userID, $message, $currentTimeInSec);
+		MessageDBHandler::insertMessage($userID, $message, $currentTimeInSec);
 	}
 
 	/**
@@ -43,7 +43,7 @@ class ChatLogic
 	 * @return [Array] Array of messages and users. 
 	 */
 	public static function getMessagesWithUsers(){
-		return ChatDBHandler::getMessagesWithUsers();
+		return MessageDBHandler::getMessagesWithUsers();
 	}
 
 	/**
@@ -51,6 +51,6 @@ class ChatLogic
 	 * @param  [Number] $currTimeInSec The specified current time. 
 	 */
 	public static function deleteOldMessages($currentTimeInSec){
-		ChatDBHandler::deleteOldMessages($currentTimeInSec);
+		MessageDBHandler::deleteOldMessages($currentTimeInSec);
 	}
 }
