@@ -21,6 +21,14 @@
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
 		stage.enableMouseOver(Constants.MOUSE_OVER_FREQ);
 
+		rpcheckers.game.business.BoardLogic.initialize();
+		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
+		rpcheckers.game.ajax.AJAXCallHandler.initialize();
+
+		rpcheckers.dom.ajax.AJAXCallIntervalHandler.initialize();
+		rpcheckers.dom.ajax.AJAXCallHandler.initialize();
+		rpcheckers.dom.ajax.AJAXSuccessHandler.initialize();
+
 		rpcheckers.dom.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
 	}
 
@@ -83,9 +91,6 @@
 		window.turnTimer = turnTimer;
 
 		rpcheckers.game.factory.ParticleFactory.initialize({stage: stage});
-		rpcheckers.game.business.BoardLogic.initialize();
-		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
-		rpcheckers.game.ajax.AJAXCallHandler.initialize();
 		rpcheckers.game.ajax.AJAXSuccessHandler.initializeAllProperties({
 			stage: stage,
 			gameNameText: gameNameText,

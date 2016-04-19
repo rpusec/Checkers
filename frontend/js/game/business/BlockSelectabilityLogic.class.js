@@ -143,7 +143,7 @@ rpcheckers.game.business.BlockSelectabilityLogic = {};
 	 */
 	function makeBoardBlocksSelectableFromCase(targetCoordinate, playerNumber, whichSide, createPointForFunction){
 		//the initial opponent pawn
-		var initialOpponentPawn = BlockSelectabilityLogic.findBoardPawnsByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, targetCoordinate); 
+		var initialOpponentPawn = ns.findBoardPawnsByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, targetCoordinate); 
 		
 		//if an opponent exists, look for another opponent
 		if(initialOpponentPawn !== null)
@@ -152,14 +152,14 @@ rpcheckers.game.business.BlockSelectabilityLogic = {};
 			var ipCoorLeftUp = createPointForFunction(initialOpponentPawn.point.x, initialOpponentPawn.point.y, 1); //interference pawn
 
 			//another opponent, and pawn between the initial opponent and target opponent (interference)
-			var targetOpponentPawn = BlockSelectabilityLogic.findBoardPawnsByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, opCoorLeftUp);
-			var interferencePawn = BlockSelectabilityLogic.findBoardPawnsByCoordinates(-1, ipCoorLeftUp);
+			var targetOpponentPawn = ns.findBoardPawnsByCoordinates(playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, opCoorLeftUp);
+			var interferencePawn = ns.findBoardPawnsByCoordinates(-1, ipCoorLeftUp);
 
 			if(interferencePawn === null)
 			{
 				if(ipCoorLeftUp !== null)
 				{
-					var targetBlock = BlockSelectabilityLogic.findBoardBlockByCoordinates(ipCoorLeftUp);
+					var targetBlock = ns.findBoardBlockByCoordinates(ipCoorLeftUp);
 					if(targetBlock !== null)
 					{
 						board.markBlockAsSelectable(targetBlock);
@@ -175,9 +175,9 @@ rpcheckers.game.business.BlockSelectabilityLogic = {};
 		else
 		{
 			//checking if there's a pawn that belongs to the player, if there isn't, that means that we can mark that spot as selectable 
-			if(BlockSelectabilityLogic.findBoardPawnsByCoordinates(playerNumber, targetCoordinate) === null)
+			if(ns.findBoardPawnsByCoordinates(playerNumber, targetCoordinate) === null)
 			{
-				var targetBlock = BlockSelectabilityLogic.findBoardBlockByCoordinates(targetCoordinate);
+				var targetBlock = ns.findBoardBlockByCoordinates(targetCoordinate);
 				if(targetBlock !== null)
 				{
 					board.markBlockAsSelectable(targetBlock);

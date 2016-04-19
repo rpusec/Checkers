@@ -12,7 +12,8 @@ rpcheckers.game.business.BoardLogic = {};
 
 	var	ns = rpcheckers.game.business.BoardLogic
 	,	AJAXCallHandler
-	,	ParticleFactory;
+	,	ParticleFactory
+	,	BlockSelectabilityLogic;
 
 	var	board
 	,	currentPawnList;
@@ -20,6 +21,7 @@ rpcheckers.game.business.BoardLogic = {};
 	ns.initialize = function(){
 		AJAXCallHandler = rpcheckers.game.ajax.AJAXCallHandler;
 		ParticleFactory = rpcheckers.game.factory.ParticleFactory;
+		BlockSelectabilityLogic = rpcheckers.game.business.BlockSelectabilityLogic;
 	}
 
 	/**
