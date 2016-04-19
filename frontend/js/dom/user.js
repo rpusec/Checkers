@@ -31,7 +31,6 @@ $(document).on('ready', function(){
 		var formData = new FormData();
 		formData.append('username', username);
 		formData.append('password', password);
-		formData.append('path', 'login-user');
 
 		$('#modal-login').find('form').find('#username').val('');
 		$('#modal-login').find('form').find('#password').val('');
@@ -55,7 +54,6 @@ $(document).on('ready', function(){
 		formData.append('username', username);
 		formData.append('password', password);
 		formData.append('passwordConfirm', passwordConfirm);
-		formData.append('path', 'register-user');
 
 		AJAXCallHandler.registerUserAJAXCall(formData);
 	});

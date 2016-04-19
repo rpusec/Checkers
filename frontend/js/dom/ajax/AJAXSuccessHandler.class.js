@@ -1,3 +1,10 @@
+/**
+ * This class contains all of the AJAX call success handler 
+ * functions used in the chat and user portions of the application.  
+ * @class
+ * @author Roman Pusec
+ * @namespace rpcheckers.dom.ajax
+ */
 rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 
 (function(){
@@ -8,10 +15,22 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 	var arrOnlineUserInfo = {};
 	var lastMessageID = -1;
 
+	/**
+	 * Inizializes the object. 
+	 * @constructor
+	 */
 	ns.initialize = function(){
 		Constants = rpcheckers.dom.config.Constants;
 	}
 
+	/**
+	 * Checks if the user is logged into the application. 
+	 * Deactivates the modal login window and initializes the game. 
+	 * Otherwise, it activates the said modal window and uninitializes 
+	 * the game. 
+	 * The AJAX for this function is executed upon loading the application. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.checkUserLoggedHandlerSuccess = function(data){
 		if(data.isLogged)
 		{
@@ -25,6 +44,13 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		}
 	}
 
+	/**
+	 * Checks whether there are any new messages that haven't been
+	 * previously displayed. 
+	 * The last message is marked by its ID in the 'lastMessageID'
+	 * variable. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.checkForNewMessagesSuccessHandler = function(data){
 		if(!data.success)
 			return;
@@ -37,10 +63,12 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 			var message = messages[i];
 
 			//checks if the current message was already displayed 
+			//if it was, continue to the next message
 			if(lastMessageID !== -1)
 				if(message.messageID <= lastMessageID)
 					continue;
 
+			//making the logged in user white
 			if(message.userID === loggedUserID)
 			{
 				message.firstName = 'You';
@@ -49,13 +77,17 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 				message.chatColorB = 255;
 			}
 
+			//creates the message bubble
 			var rgbStr = 'rgb(' + message.chatColorR + ',' + message.chatColorG + ',' + message.chatColorB + ')';
 			var msgDOM = document.createElement('div');
 			msgDOM.setAttribute('class', 'user-message');
 			msgDOM.setAttribute('style', 'background-color: ' + rgbStr + '; box-shadow: 0px 0px 15px ' + rgbStr + '; ');
 			msgDOM.innerHTML = '<span><b>' + message.firstName + ' say' + (message.userID === loggedUserID ? '' : 's') + ': </b>' + message.message + '</span>';
+			
+			//marks the last message with the current message
 			lastMessageID = message.messageID;
 
+			//appends the message to the chat
 			$('#chat-window').append(msgDOM);
 			$(msgDOM).toggleBubbleOn(function(){
 				$('#chat-window').scrollTop($('#chat-window').width());
@@ -63,6 +95,10 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		}
 	}
 
+	/**
+	 * Checks which users are online and displays them to the chat screen. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.checkWhoIsOnlineSuccessHandler = function(data){
 		if(!data.success)
 			return;
@@ -156,6 +192,11 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		});
 	}
 
+	/**
+	 * Executed upon sending a message. The only purpose 
+	 * is to display any errors after the request. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.sendMessageSuccessHandler = function(data){
 		if(!data.success)
 		{					
@@ -167,8 +208,15 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		}
 	}
 
+	/**
+	 * Executed after the user attempted to login. 
+	 * The login window is deactivated and the game is 
+	 * initialized upon success, otherwise errors are displayed. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.loginUserSuccessHandler = function(data){
-		if(data.success){
+		if(data.success)
+		{
 			deactivateModalLogin();
 			initializeGame(data.hasOwnProperty('arrUserColor') ? data.arrUserColor : null);
 		}
@@ -182,6 +230,10 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		}
 	}
 
+	/**
+	 * Executed upon user's attempt at registration. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.registerUserSuccessHandler = function(data){
 		if(data.success)
 		{
@@ -191,7 +243,6 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 			form.find('#username').val('');
 			form.find('#password').val('');
 			form.find('#passwordConfirm').val('');
-
 			$('#modal-signup').modal('hide');
 
 			BootstrapDialog.show({
@@ -202,21 +253,18 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		}
 		else
 		{
-			var errors = data.errors;
-			var errorsStr = '';
-
-			errors.forEach(function(error){
-				errorsStr += error + '<br />';
-			});
-
 			BootstrapDialog.show({
 				type: BootstrapDialog.TYPE_DANGER,
 				title: "Registration status",
-				message: errorsStr
+				message: formatLineByLine(data.errors)
 			});
 		}
 	}
 
+	/**
+	 * Executed upon user's attempt at changing their account settings. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.alterUserSettingsSuccessHandler = function(data){
 		var message = 'Account settings successfully altered. ';
 
@@ -243,6 +291,10 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 		});
 	}
 
+	/**
+	 * Executed upon user's attempt to logout. 
+	 * @param  {Object} data Data from the server. 
+	 */
 	ns.logoutUserSuccessHandler = function(data){
 		BootstrapDialog.show({
 			type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
