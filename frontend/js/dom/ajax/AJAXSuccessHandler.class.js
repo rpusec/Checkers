@@ -112,6 +112,9 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 			var connUser = connectedUsers[i];
 			var connUserDom = $('#chat-contact-list').find('#' + Constants.CONN_USER_PREFIX + connUser.userID);
 
+			//if the username is greater than Constants.USERNAME_CHATLIST_SIZE in length, then it displays only a part of the username on the chatlist
+			var usernameToDisplay = connUser.username.length > Constants.USERNAME_CHATLIST_SIZE ? connUser.username.substr(0, Constants.USERNAME_CHATLIST_SIZE) + '...' : connUser.username;
+
 			//if the target user isn't displayed on the chat list
 			if(connUserDom.length === 0)
 			{
@@ -124,7 +127,7 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 
 				arrOnlineUserInfo[Constants.CONN_USER_PREFIX + connUser.userID] = new OnlineUserInfo(connUser.firstname, connUser.lastname, connUser.username, connUser.won, connUser.lost);
 
-				var $newConnUser = $('<div><span>' + connUser.username + '</span></div>');
+				var $newConnUser = $('<div><span>' + usernameToDisplay + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', Constants.CONN_USER_PREFIX + connUser.userID);
 				var $bgColor = 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)';
@@ -155,7 +158,7 @@ rpcheckers.dom.ajax.AJAXSuccessHandler = {};
 			else
 			{
 				if($(connUserDom).find('span').text() !== connUser.username)
-					$(connUserDom).find('span').text(connUser.username);
+					$(connUserDom).find('span').text(usernameToDisplay);
 
 				var targetUserInfo = arrOnlineUserInfo[Constants.CONN_USER_PREFIX + connUser.userID];
 				targetUserInfo.firstname = connUser.firstname;

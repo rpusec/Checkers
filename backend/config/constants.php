@@ -40,8 +40,8 @@ define('TURN_DURATION', 10);
 
 define('BOARD_MAX_COL_AMOUNT', 8);
 define('BOARD_MAX_ROW_AMOUNT', 8);
-define('PLAYER_PAWNS_AMOUNT', 1);
-define('PLAYER_TWO_ROW_POSITION', 8);
+define('PLAYER_PAWNS_AMOUNT', 12);
+define('PLAYER_TWO_ROW_POSITION', 6);
 define('BOARD_BG', 0);
 
 define('BOARD_COL_SEPARATOR', ',');

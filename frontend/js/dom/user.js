@@ -14,10 +14,8 @@ $(document).on('ready', function(){
 	function loginUserKeyHandler(e){
 		var key = e.which || e.keyCode;
 		
-		if(key !== 13)
-			return;
-
-		loginUser();
+		if(key === 13)
+			loginUser();
 	}
 
 	/**

@@ -27,7 +27,7 @@ rpcheckers.game.config.Constants = {
 	POLIGON_POINT_TYPE: [4, 6, 8, 10],
 	
 	//amount of pawns
-	PAWN_AMOUNT: 1,
+	PAWN_AMOUNT: 12,
 	GAME_ROOMS_PER_ROW: 3,
 
 	//dalays
