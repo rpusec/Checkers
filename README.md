@@ -1,1 +1,2 @@
- - separate DOM into chat and user folders 
+- separate DOM into chat and user folders  
+- make a mechanism that will show which player is waiting in the game room
