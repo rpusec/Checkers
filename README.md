@@ -1,3 +1,5 @@
 - separate DOM into chat and user folders  
 - make a mechanism that will show which player is waiting in the game room  
 - make chatting available only between player and their opponent when in chat room  
+- kadgod se desi neki illegal move tjekom igre, izbaci playera van
+- kada je alert uljucen, ne updatea se playerov expartion time
