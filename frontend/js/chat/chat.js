@@ -1,6 +1,6 @@
 $(document).on('ready', function(){
-	var AJAXCallHandler = rpcheckers.dom.ajax.AJAXCallHandler;
-	var AJAXCallIntervalHandler = rpcheckers.dom.ajax.AJAXCallIntervalHandler;
+	var AJAXCallHandler = rpcheckers.chat.ajax.AJAXCallHandler;
+	var AJAXCallIntervalHandler = rpcheckers.chat.ajax.AJAXCallIntervalHandler;
 	AJAXCallHandler.initialize();
 	AJAXCallIntervalHandler.initialize();
 

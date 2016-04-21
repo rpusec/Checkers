@@ -479,7 +479,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			});
 
 			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
-				rpcheckers.dom.ajax.checkLoginStatusAJAXCall();
+				rpcheckers.user.ajax.checkLoginStatusAJAXCall();
 
 			return;
 		}

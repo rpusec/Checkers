@@ -3,13 +3,13 @@
  * in the game portion of the application. 
  * @class
  * @author Roman Pusec
- * @namespace rpcheckers.dom.ajax
+ * @namespace rpcheckers.user.ajax
  */
-rpcheckers.dom.ajax.AJAXCallHandler = {};
+rpcheckers.user.ajax.AJAXCallHandler = {};
 
 (function(){
 
-	var	ns = rpcheckers.dom.ajax.AJAXCallHandler
+	var	ns = rpcheckers.user.ajax.AJAXCallHandler
 	,	AJAXSuccessHandler;
 
 	/**
@@ -17,7 +17,7 @@ rpcheckers.dom.ajax.AJAXCallHandler = {};
 	 * @constructor
 	 */
 	ns.initialize = function(){
-		AJAXSuccessHandler = rpcheckers.dom.ajax.AJAXSuccessHandler
+		AJAXSuccessHandler = rpcheckers.user.ajax.AJAXSuccessHandler
 	}
 
 	/**
@@ -28,28 +28,6 @@ rpcheckers.dom.ajax.AJAXCallHandler = {};
 			url:'backend/view/UsersView.php',
 			data:'path=is-user-logged',
 			success: AJAXSuccessHandler.checkUserLoggedHandlerSuccess
-		});
-	}
-
-	/**
-	 * Checks for new messages. 
-	 */
-	ns.checkForNewMessagesAJAXCall = function(){
-		runAjax({
-			url:'backend/view/ChatView.php',
-			data:'path=get-message',
-			success: AJAXSuccessHandler.checkForNewMessagesSuccessHandler
-		});
-	}
-
-	/**
-	 * Checks who is online. 
-	 */
-	ns.checkWhoIsOnlineAJAXCall = function(){
-		runAjax({
-			url:'backend/view/UsersView.php',
-			data:'path=who-is-online',
-			success: AJAXSuccessHandler.checkWhoIsOnlineSuccessHandler
 		});
 	}
 
@@ -73,21 +51,6 @@ rpcheckers.dom.ajax.AJAXCallHandler = {};
 			url:'backend/view/UsersView.php',
 			data:'path=update-users-conn-stat',
 			success: AJAXSuccessHandler.updateUsersConnStateSuccessHandler
-		});
-	}
-
-	/**
-	 * Sends a message to the server. 
-	 * @param  {FormData} formData Should contain the following:
-	 *                             - message => The message to be displayed. 
-	 */
-	ns.sendMessageAJAXCall = function(formData){
-		formData.append('path', 'send-message');
-		runAjax({
-			type: 'post',
-			url: 'backend/view/ChatView.php',
-			data: formData,
-			success: AJAXSuccessHandler.sendMessageSuccessHandler
 		});
 	}
 
@@ -128,7 +91,7 @@ rpcheckers.dom.ajax.AJAXCallHandler = {};
 
 	/**
 	 * Alters user's account settings. 
-	 * @param  {[type]} formData Should contain the following: 
+	 * @param  {FormData} formData Should contain the following: 
 	 *                           - firstname => The first name of the user. 
 	 *                           - lastname => The last name of the user. 
 	 *                           - username => The username. 

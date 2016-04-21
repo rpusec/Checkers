@@ -2,79 +2,94 @@
 <html>
 <head>
 	<title>Checkers</title>
+
+	<link rel="stylesheet" href="frontend/css/style.css" />
+	<link rel="stylesheet" href="frontend/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="frontend/css/bootstrap-dialog.min.css" />
+
+	<!-- libraries -->
+	<script src="frontend/js/libs/jquery-1.12.1.min.js"></script>
+	<script src="frontend/js/libs/bootstrap.min.js"></script>
+	<script src="frontend/js/libs/bootstrap-dialog.min.js"></script>
+	<script src="frontend/js/libs/easeljs-0.8.2.min.js"></script>
+	<script src="frontend/js/libs/tweenjs-0.6.2.min.js"></script>
+	<script src="frontend/js/libs/additionalfunctions.js"></script>
+
+	<!-- jquery plugins -->
+	<script src="frontend/js/jquery-plugins/jquery-plugins.js"></script>
+
+	<!-- namespace initialization -->
+	<script src="frontend/js/namespace/namespace.js"></script>
+
+	<!-- -------------------- -->
+	<!-- user oriented scripts -->
+	<!-- -------------------- -->
+
+	<!-- constants reference -->
+	<script src="frontend/js/user/config/Constants.js"></script>
+
+	<!-- ajax files -->
+	<script src="frontend/js/user/ajax/AJAXSuccessHandler.class.js"></script>
+	<script src="frontend/js/user/ajax/AJAXCallIntervalHandler.class.js"></script>
+	<script src="frontend/js/user/ajax/AJAXCallHandler.class.js"></script>
+
+	<!-- the rest of user -->
+	<script src="frontend/js/user/user.js"></script>
+
+	<!-- -------------------- -->
+	<!-- chat oriented scripts -->
+	<!-- -------------------- -->
+
+	<!-- constants reference -->
+	<script src="frontend/js/chat/config/Constants.js"></script>
+
+	<!-- ajax files -->
+	<script src="frontend/js/chat/ajax/AJAXSuccessHandler.class.js"></script>
+	<script src="frontend/js/chat/ajax/AJAXCallIntervalHandler.class.js"></script>
+	<script src="frontend/js/chat/ajax/AJAXCallHandler.class.js"></script>
+
+	<!-- model files -->
+	<script src="frontend/js/chat/model/OnlineUserInfo.class.js"></script>
+
+	<!-- the rest of chat -->
+	<script src="frontend/js/chat/chat.js"></script>
+
+	<!-- ----------------------- -->
+	<!-- game oriented scripts -->
+	<!-- ----------------------- -->
+
+	<!-- constants reference -->
+	<script src="frontend/js/game/config/Constants.js"></script>
+
+	<!-- initialization files -->
+	<script src="frontend/js/game/initialization/initialization.js"></script>
+
+	<!-- ajax files -->
+	<script src="frontend/js/game/ajax/AJAXSuccessHandler.class.js"></script>
+	<script src="frontend/js/game/ajax/AJAXCallIntervalHandler.class.js"></script>
+	<script src="frontend/js/game/ajax/AJAXCallHandler.class.js"></script>
+
+	<!-- factory files -->
+	<script src="frontend/js/game/factory/BoardPawnFactory.class.js"></script>
+	<script src="frontend/js/game/factory/ParticleFactory.class.js"></script>
+
+	<!-- business files -->
+	<script src="frontend/js/game/business/BlockSelectabilityLogic.class.js"></script>
+	<script src="frontend/js/game/business/BoardLogic.class.js"></script>
+
+	<!-- component files -->
+	<script src="frontend/js/game/component/AppearingText.class.js"></script>
+	<script src="frontend/js/game/component/GameRoom.class.js"></script>
+	<script src="frontend/js/game/component/RotatingLine.class.js"></script>
+	<script src="frontend/js/game/component/Board.class.js"></script>
+	<script src="frontend/js/game/component/BoardPawn.class.js"></script>
+	<script src="frontend/js/game/component/Button.class.js"></script>
+	<script src="frontend/js/game/component/UserGameProfile.class.js"></script>
+	<script src="frontend/js/game/component/WaitingMessage.class.js"></script>
+	<script src="frontend/js/game/component/TurnTimer.class.js"></script>
+	<script src="frontend/js/game/component/AppearingMessage.class.js"></script>
+	<script src="frontend/js/game/component/GameStat.class.js"></script>
 </head>
-
-<link rel="stylesheet" href="frontend/css/style.css" />
-<link rel="stylesheet" href="frontend/css/bootstrap.min.css" />
-<link rel="stylesheet" href="frontend/css/bootstrap-dialog.min.css" />
-
-<!-- libraries -->
-<script src="frontend/js/libs/jquery-1.12.1.min.js"></script>
-<script src="frontend/js/libs/bootstrap.min.js"></script>
-<script src="frontend/js/libs/bootstrap-dialog.min.js"></script>
-<script src="frontend/js/libs/easeljs-0.8.2.min.js"></script>
-<script src="frontend/js/libs/tweenjs-0.6.2.min.js"></script>
-<script src="frontend/js/libs/additionalfunctions.js"></script>
-
-<!-- namespace initialization -->
-<script src="frontend/js/namespace/namespace.js"></script>
-
-<!-- -------------------- -->
-<!-- dom oriented scripts -->
-<!-- -------------------- -->
-
-<!-- constants reference -->
-<script src="frontend/js/dom/config/Constants.js"></script>
-
-<!-- ajax files -->
-<script src="frontend/js/dom/ajax/AJAXSuccessHandler.class.js"></script>
-<script src="frontend/js/dom/ajax/AJAXCallIntervalHandler.class.js"></script>
-<script src="frontend/js/dom/ajax/AJAXCallHandler.class.js"></script>
-
-<!-- model files -->
-<script src="frontend/js/dom/model/OnlineUserInfo.class.js"></script>
-
-<!-- the rest of dom -->
-<script src="frontend/js/dom/jquery-plugins.js"></script>
-<script src="frontend/js/dom/base.js"></script>
-<script src="frontend/js/dom/user.js"></script>
-<script src="frontend/js/dom/chat.js"></script>
-
-<!-- ----------------------- -->
-<!-- canvas oriented scripts -->
-<!-- ----------------------- -->
-
-<!-- constants reference -->
-<script src="frontend/js/game/config/Constants.js"></script>
-
-<!-- initialization files -->
-<script src="frontend/js/game/initialization/initialization.js"></script>
-
-<!-- ajax files -->
-<script src="frontend/js/game/ajax/AJAXSuccessHandler.class.js"></script>
-<script src="frontend/js/game/ajax/AJAXCallIntervalHandler.class.js"></script>
-<script src="frontend/js/game/ajax/AJAXCallHandler.class.js"></script>
-
-<!-- factory files -->
-<script src="frontend/js/game/factory/BoardPawnFactory.class.js"></script>
-<script src="frontend/js/game/factory/ParticleFactory.class.js"></script>
-
-<!-- business files -->
-<script src="frontend/js/game/business/BlockSelectabilityLogic.class.js"></script>
-<script src="frontend/js/game/business/BoardLogic.class.js"></script>
-
-<!-- component files -->
-<script src="frontend/js/game/component/AppearingText.class.js"></script>
-<script src="frontend/js/game/component/GameRoom.class.js"></script>
-<script src="frontend/js/game/component/RotatingLine.class.js"></script>
-<script src="frontend/js/game/component/Board.class.js"></script>
-<script src="frontend/js/game/component/BoardPawn.class.js"></script>
-<script src="frontend/js/game/component/Button.class.js"></script>
-<script src="frontend/js/game/component/UserGameProfile.class.js"></script>
-<script src="frontend/js/game/component/WaitingMessage.class.js"></script>
-<script src="frontend/js/game/component/TurnTimer.class.js"></script>
-<script src="frontend/js/game/component/AppearingMessage.class.js"></script>
-<script src="frontend/js/game/component/GameStat.class.js"></script>
 
 <body onload="init();">
 	<div id="single-user-info"></div>

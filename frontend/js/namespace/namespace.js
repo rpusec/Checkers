@@ -36,17 +36,31 @@ rpcheckers.game.factory = {};
 rpcheckers.game.config = {};
 
 /**
- * @namespace Every other part of the application except the game itself.
- * The acronym stands for Document Object Model, since the canvas is excluded. 
+ * @namespace The namespace for the user-based portion of the application. 
  */
-rpcheckers.dom = {};
+rpcheckers.user = {};
 
 /**
- * @namespace Will store all of the AJAX calls relating to dom. 
+ * @namespace Will store all of the AJAX calls relating to users. 
  */
-rpcheckers.dom.ajax = {};
+rpcheckers.user.ajax = {};
 
 /**
- * @namespace Will store all of the configuration relating to dom. 
+ * @namespace Will store all of the configuration relating to users. 
  */
-rpcheckers.dom.config = {};
+rpcheckers.user.config = {};
+
+/**
+ * @namespace The namespace for chat-based portion of the application. 
+ */
+rpcheckers.chat = {};
+
+/**
+ * @namespace Will store all of the AJAX calls relating to chat. 
+ */
+rpcheckers.chat.ajax = {};
+
+/**
+ * @namespace Will store all of the configuration relating to chat. 
+ */
+rpcheckers.chat.config = {};
