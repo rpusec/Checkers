@@ -94,7 +94,7 @@ class BaseController
 	 */
 	public static function destroySession(){
 		session_destroy();
-		unset($_SESSION['userID']);
-		unset($_SESSION['playerNumber']);
+		#unset($_SESSION['userID']);
+		#unset($_SESSION['playerNumber']);
 	}
 }

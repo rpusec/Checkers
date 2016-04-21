@@ -24,11 +24,15 @@
 		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
 		rpcheckers.game.ajax.AJAXCallHandler.initialize();
 
-		rpcheckers.dom.ajax.AJAXCallIntervalHandler.initialize();
-		rpcheckers.dom.ajax.AJAXCallHandler.initialize();
-		rpcheckers.dom.ajax.AJAXSuccessHandler.initialize();
+		rpcheckers.chat.ajax.AJAXCallIntervalHandler.initialize();
+		rpcheckers.chat.ajax.AJAXCallHandler.initialize();
+		rpcheckers.chat.ajax.AJAXSuccessHandler.initialize();
 
-		rpcheckers.dom.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
+		rpcheckers.user.ajax.AJAXCallIntervalHandler.initialize();
+		rpcheckers.user.ajax.AJAXCallHandler.initialize();
+		rpcheckers.user.ajax.AJAXSuccessHandler.initialize();
+
+		rpcheckers.user.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
 	}
 
 	/**

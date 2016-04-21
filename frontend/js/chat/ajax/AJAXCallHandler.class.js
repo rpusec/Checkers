@@ -5,11 +5,11 @@
  * @author Roman Pusec
  * @namespace rpcheckers.chat.ajax
  */
-rpcheckers.dom.ajax.AJAXCallHandler = {};
+rpcheckers.chat.ajax.AJAXCallHandler = {};
 
 (function(){
 
-	var	ns = rpcheckers.dom.ajax.AJAXCallHandler
+	var	ns = rpcheckers.chat.ajax.AJAXCallHandler
 	,	AJAXSuccessHandler;
 
 	/**
