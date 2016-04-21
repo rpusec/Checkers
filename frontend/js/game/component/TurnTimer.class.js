@@ -6,6 +6,7 @@
 	 * Represents the turn timer, the timer that measures how long a single player turn lasts. 
 	 * @param {Object} options Represents parameters. 
 	 *                         - {Integer}  startTime => Represents the start time (e.g. if value of 10 is inserted, then the timer will start from 10). 
+	 *                         - {Integer}  endTime => Represents the end time (e.g. if value of 1 is inserted, then the timer will end at 1). 
 	 *                         - {Function} onEndHandler => Function which is executed when the count down is over. 
 	 *                         - {Decimal}   scaleDecrAmount => Represents how fast the timer shrinks after each options.delay value. 
 	 *                         - {String}   onRunOutText => Text to be displayed when the timer runs out. 
@@ -32,6 +33,7 @@
 
 		options = $.extend({
 			startTime: 10,
+			endTime: 1,
 			onEndHandler: null,
 			scaleDecrAmount: 0.25,
 			onRunOutText: 'Over',
@@ -63,7 +65,7 @@
 			createjs.Tween.get(this).to({y: this.y - options.popDistance, alpha: 1}, 250).call(function(){
 				this.endTimer("" + initialStartTime, false);
 				createjs.Tween.get(this, {loop:true}).to({scaleX: this.scaleX-options.scaleDecrAmount, scaleY: this.scaleY-options.scaleDecrAmount}, options.delay).call(function(){
-					if(options.startTime > 0)
+					if(options.startTime > options.endTime)
 					{
 						options.startTime--;
 						this.setText("" + options.startTime);
