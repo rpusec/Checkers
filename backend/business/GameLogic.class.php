@@ -206,7 +206,7 @@ class GameLogic
     	if(($timeInSeconds - GameLogic::getBeginningTurnTime()) > TURN_DURATION)
 		{
 			UsersController::logoutUser(false);
-			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . ($timeInSeconds - GameLogic::getBeginningTurnTime()), 'errorType' => 'turnDurationError');
+			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . ($timeInSeconds - GameLogic::getBeginningTurnTime()));
 		}
 
 		return null;

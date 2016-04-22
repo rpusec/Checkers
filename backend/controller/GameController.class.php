@@ -69,9 +69,16 @@ class GameController extends BaseController
 		$nextCoor = GameLogic::isCoordinateInitializedAppropriately($newX, $newY, 2);
 
 		if(is_array($prevCoor))
+		{
+			parent::destroySession();
 			return $prevCoor;
+		}
+		
 		if(is_array($nextCoor))
+		{
+			parent::destroySession();
 			return $nextCoor;
+		}
 
 		parent::startConnection();
 		$targetRoom = GameLogic::getAllRoomInfoByUserID(parent::getLoggedUserID());
@@ -101,13 +108,28 @@ class GameController extends BaseController
 		$checkIfNewPosRepresentsAPawn = GameLogic::checkIfNewPosRepresentsAPawn($newPosition);
 		
 		if(is_array($checkIfPrevPosIsNotAPawn))
+		{
+			parent::destroySession();
 			return $checkIfPrevPosIsNotAPawn;
+		}
+
 		if(is_array($checkIfActualUserPawn))
+		{
+			parent::destroySession();
 			return $checkIfActualUserPawn;
+		}
+
 		if(is_array($checkIfPrevPosEqualToNewOne))
+		{
+			parent::destroySession();
 			return $checkIfPrevPosEqualToNewOne;
+		}
+
 		if(is_array($checkIfNewPosRepresentsAPawn))
+		{
+			parent::destroySession();
 			return $checkIfNewPosRepresentsAPawn;
+		}
 
 		//checks if opponent's pawns should be removed and also whether the player 
 		//chose an illegal position when searching for opponent's pawns
@@ -117,7 +139,10 @@ class GameController extends BaseController
 		$diagonallyDissOppErrorMsg = "";
 		GameLogic::diagonallyDismissOpponentsAllSides($prevX, $prevY, $newX, $newY, parent::getPlayerNumber(), $boardRows, $removedPawnIds, $diagonallyDissOppErrorMsg);
 		if($diagonallyDissOppErrorMsg !== "")
+		{
+			parent::destroySession();
 			return array('success' => false, 'error' => $diagonallyDissOppErrorMsg);
+		}
 
 		//setting the previous position to zero, indicating that the pawn has moved from that position
 		$boardRows[$prevY][$prevX] = 0;

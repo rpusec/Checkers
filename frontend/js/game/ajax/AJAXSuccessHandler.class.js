@@ -478,9 +478,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				message: data.error
 			});
 
-			if(data.hasOwnProperty('errorType') && data.errorType === 'turnDurationError')
-				rpcheckers.user.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
-
+			rpcheckers.user.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
 			return;
 		}
 
