@@ -5,6 +5,8 @@
 	/**
 	 * Represents a single game room icon on the start of the game. 
 	 * @param {Object} options A plain object which represents parameters for the class. Includes:
+	 *                         - {Integer} roomNum => Room number to display. 
+	 *                         - {Integer} roomID => ID of the room from the database. 
 	 *                         - {Integer} numrectsX => Number of rectangles from the horizontal perspective. 
 	 *                         - {Integer} numrectsY => Number of rectangles from the vertical perspective. 
 	 *                         - {Number} width => Width of the display object. 
@@ -27,6 +29,7 @@
 			options = {};
 
 		this._options = $.extend({
+			roomNum: -1,
 			roomID: -1,
 			numrectsX: 3,
 			numrectsY: 3,
@@ -70,7 +73,7 @@
 			this.addChild(line);
 		}
 
-		var txtRoomNum = new createjs.Text(this._options.roomID, '30px Arial', '#fff');
+		var txtRoomNum = new createjs.Text(this._options.roomNum, '30px Arial', '#fff');
 		txtRoomNum.textAlign = 'center';
 		txtRoomNum.textBaseline = 'middle';
 		txtRoomNum.x = this.getBounds().width/2;		

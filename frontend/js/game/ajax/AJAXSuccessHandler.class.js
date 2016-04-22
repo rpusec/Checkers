@@ -102,7 +102,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			if(col !== Constants.GAME_ROOMS_PER_ROW)
 			{
 				//creates a new GameRoom display object
-				var newGameRoom = new GameRoom({roomID: rooms[i].roomID});
+				var newGameRoom = new GameRoom({roomNum: i+1, roomID: rooms[i].roomID});
 				newGameRoom.x = (newGameRoom.getBounds().width + Constants.GAME_ROOM_PADDING) * col;
 				newGameRoom.y = (newGameRoom.getBounds().height + Constants.GAME_ROOM_PADDING) * row;
 				contGameRoom.addChild(newGameRoom);
