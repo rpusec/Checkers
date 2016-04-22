@@ -1,6 +1,7 @@
 <?php
 
 require_once('../config/constants.php');
+require_once('../config/ErrorMessage.class.php');
 require_once('../controller/UsersController.class.php');
 require_once('../business/RoomLogic.class.php');
 require_once('dbhandler/RoomDBHandler.php');
@@ -61,12 +62,12 @@ class GameLogic
     	if($playerNumber === FIRST_PLAYER)
 		{
 			if($prevPosition > PLAYER_PAWNS_AMOUNT)
-				return array('success' => false, 'error' => 'The pawn is not yours. ');
+				return array('success' => false, 'error' => PAWN_NOT_YOURS_ERROR_MSG);
 		}
 		else if($playerNumber === SECOND_PLAYER)
 		{
 			if($prevPosition <= PLAYER_PAWNS_AMOUNT)
-				return array('success' => false, 'error' => 'The pawn is not yours. ');
+				return array('success' => false, 'error' => PAWN_NOT_YOURS_ERROR_MSG);
 		}
     }
 
@@ -76,7 +77,7 @@ class GameLogic
      */
     public static function checkIfPrevPosEqualToNewOne($newPosition, $prevPosition){
     	if($newPosition === $prevPosition)
-			return array('success' => false, 'error' => 'Previous position should not be equivalent to the new position. ');
+			return array('success' => false, 'error' => PREV_NEW_POS_INEQUALITY_ERROR_MSG);
 		return null;
     }
 
@@ -88,7 +89,7 @@ class GameLogic
      */
     public static function checkIfNewPosRepresentsAPawn($newPosition){
     	if($newPosition > 0)
-			return array('success' => false, 'error' => 'New position should not be a pawn, but an empty field. ');
+			return array('success' => false, 'error' => NEW_POS_NOT_A_PAWN_ERROR_MSG);
 		return null;
     }
 
@@ -100,14 +101,14 @@ class GameLogic
      */
     public static function checkIfPrevPosIsNotAPawn($prevPosition){
     	if($prevPosition === 0)
-			return array('success' => false, 'error' => 'Illegally supplied previous position. ');
+			return array('success' => false, 'error' => ILLEGAL_PREV_POSITION_ERROR_MSG);
 		return null;
     }
 
     public static function checkIfPlayerTurn($targetRoom, $loggedUserID){
     	$whoseTurn = $targetRoom['whoseTurn'];
 		if($whoseTurn !== $loggedUserID)
-			return array('success' => false, 'error' => 'It\'s not your turn. ');
+			return array('success' => false, 'error' => NOT_YOUR_TURN_ERROR_MSG);
 		return null;
     }
 
@@ -206,7 +207,7 @@ class GameLogic
     	if(($timeInSeconds - GameLogic::getBeginningTurnTime()) > TURN_DURATION)
 		{
 			UsersController::logoutUser(false);
-			return array('success' => false, 'error' => 'Your turn time is longer than ' . TURN_DURATION . ' seconds. It was: ' . ($timeInSeconds - GameLogic::getBeginningTurnTime()));
+			return array('success' => false, 'error' => ErrorMessage::createNoLongerYourTurnErrorMsg($timeInSeconds - GameLogic::getBeginningTurnTime()));
 		}
 
 		return null;
