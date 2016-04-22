@@ -207,7 +207,7 @@ class GameLogic
     	if(($timeInSeconds - GameLogic::getBeginningTurnTime()) > TURN_DURATION)
 		{
 			UsersController::logoutUser(false);
-			return array('success' => false, 'error' => ErrorMessage::createNoLongerYourTurnErrorMsg($timeInSeconds - GameLogic::getBeginningTurnTime()));
+			return array('success' => false, 'error' => ErrorMessage::createInvalidTurnDurationErrorMsg($timeInSeconds - GameLogic::getBeginningTurnTime()), TURN_DURATION);
 		}
 
 		return null;
@@ -333,16 +333,16 @@ class GameLogic
 	 * @param  [Integer]  $numToDiviseBy The number to divide by. 
 	 * @return Array                  If it was an illegal move, it'll return an array with a success flag and the error message, otherwise it'll return null.  
 	 */
-	public static function isCoordinateInitializedAppropriately($xAxis, $yAxis, $numToDiviseBy){
+	public static function isCoordinateInitializedAppropriately($xAxis, $yAxis, $numToDiviseBy, $isNew){
 		if(($yAxis % $numToDiviseBy) === 0)
 		{
 			if(($xAxis % $numToDiviseBy) !== 0)
-				return array('success' => false, 'error' => 'The initial position [x='.$xAxis.',y='.$yAxis.'] should be divisable by ' . $numToDiviseBy . '. ');
+				return array('success' => false, 'error' => ErrorMessage::createPosErrorMsg($xAxis, $yAxis, $numToDiviseBy, true, $isNew));
 		}
 		else
 		{
 			if(($xAxis % $numToDiviseBy) === 0)
-				return array('success' => false, 'error' => 'The initial position [x='.$xAxis.',y='.$yAxis.'] should not be divisable by ' . $numToDiviseBy . '. ');
+				return array('success' => false, 'error' => ErrorMessage::createPosErrorMsg($xAxis, $yAxis, $numToDiviseBy, false, $isNew));
 		}
 
 		return null;

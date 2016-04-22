@@ -65,8 +65,8 @@ class GameController extends BaseController
 		if(!parent::isUserLogged())
 			return array('success' => false);
 
-		$prevCoor = GameLogic::isCoordinateInitializedAppropriately($prevX, $prevY, 2);
-		$nextCoor = GameLogic::isCoordinateInitializedAppropriately($newX, $newY, 2);
+		$prevCoor = GameLogic::isCoordinateInitializedAppropriately($prevX, $prevY, 2, false);
+		$nextCoor = GameLogic::isCoordinateInitializedAppropriately($newX, $newY, 2, true);
 
 		if(is_array($prevCoor))
 		{
@@ -89,8 +89,11 @@ class GameController extends BaseController
 		$checkIfPlayerTurn = GameLogic::checkIfPlayerTurn($targetRoom, parent::getLoggedUserID());
 		
 		if(is_array($checkIfPlayerTurn))
+		{
+			parent::destroySession();
 			return $checkIfPlayerTurn;
-
+		}
+		
 		$boardStr = $targetRoom['stringifiedBoard'];
 		$boardRowsExpl = explode(BOARD_ROW_SEPARATOR, $boardStr);
 		$boardRows = array();
