@@ -90,7 +90,7 @@ class UserDBHandler
 	 * @param  [Integer] $userID The target user ID. 
 	 */
 	public static function updateUserAsNotInARoom($userID){
-		DB::update('user', array('ROOM_roomID' => 0), 'userID=%i', $userID);
+		DB::update('user', array('ROOM_roomID' => null), 'userID=%i', $userID);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class UserDBHandler
 	public static function updateUserAsDisconnected($userID){
 		DB::update('user', array(
 			'connected' => 0,
-			'ROOM_roomID' => 0
+			'ROOM_roomID' => null
 		), 'userID=%i', $userID);
 	}
 
@@ -122,7 +122,7 @@ class UserDBHandler
 	 * @param  [type] $searchBy      The credential to search by. If value not specified, it won't search by any credential.
 	 */
 	public static function markAppropriateUsersAsDisconnected($timeInSeconds, $credential = null, $searchBy = self::SEARCH_BY_ID){
-		DB::update('user', array('connected' => 0, 'ROOM_roomID' => 0), 'connexparation<%i' . ($credential !== null ? ' AND ' . ($searchBy === self::SEARCH_BY_ID ? 'userID=%i' : 'username=%s') : ''), $timeInSeconds, $credential);
+		DB::update('user', array('connected' => 0, 'ROOM_roomID' => null), 'connexparation<%i' . ($credential !== null ? ' AND ' . ($searchBy === self::SEARCH_BY_ID ? 'userID=%i' : 'username=%s') : ''), $timeInSeconds, $credential);
 	}
 
 	/**

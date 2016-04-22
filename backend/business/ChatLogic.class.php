@@ -3,6 +3,7 @@
 require_once('../config/constants.php');
 require_once('validation/UserValidator.class.php');
 require_once('dbhandler/MessageDBHandler.php');
+require_once('dbhandler/RoomDBHandler.php');
 
 /**
  * Offers all of the business rules 
@@ -35,15 +36,17 @@ class ChatLogic
 	 * @param  [Number] $currentTimeInSec The current time in seconds. 
 	 */
 	public static function insertMessage($userID, $message, $currentTimeInSec){
-		MessageDBHandler::insertMessage($userID, $message, $currentTimeInSec);
+		$room = RoomDBHandler::getRoomIDFromUser($userID));
+		MessageDBHandler::insertMessage($userID, $room !== null ? $room['roomID'] : null, htmlspecialchars($message), $currentTimeInSec);
 	}
 
 	/**
 	 * Returns message information alongside user information. 
 	 * @return [Array] Array of messages and users. 
 	 */
-	public static function getMessagesWithUsers(){
-		return MessageDBHandler::getMessagesWithUsers();
+	public static function getMessagesWithUsers($userID){
+		$room = RoomDBHandler::getRoomIDFromUser($userID));
+		return MessageDBHandler::getMessagesWithUsers($room !== null ? $room['roomID'] : null);
 	}
 
 	/**

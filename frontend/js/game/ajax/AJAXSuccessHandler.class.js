@@ -394,6 +394,11 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				});
 			});
 		});
+
+		//removes all of the chat bubbles in the chat window
+		$.each($('#chat-window').children(), function(childKey, childVal){
+			$(childVal).toggleBubbleOff();
+		});
 	}
 
 	/**
@@ -461,6 +466,11 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				gameStat = null;
 			});
 		}
+
+		//removes all of the chat bubbles in the chat window
+		$.each($('#chat-window').children(), function(childKey, childVal){
+			$(childVal).toggleBubbleOff();
+		});
 	}
 
 	/**

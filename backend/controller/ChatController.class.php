@@ -46,7 +46,7 @@ class ChatController extends BaseController
 
 		return array(
 			'success' => true, 
-			'messages' => ChatLogic::getMessagesWithUsers(),
+			'messages' => ChatLogic::getMessagesWithUsers(parent::getLoggedUserID()),
 			'loggedUserID' => parent::getLoggedUserID()
 		);
 	}

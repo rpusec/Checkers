@@ -21,7 +21,7 @@ class MessageDBHandler
 	 * Returns message information alongside user information. 
 	 * @return [Array] Array of messages and users. 
 	 */
-	public static function getMessagesWithUsers(){
+	public static function getMessagesWithUsers($roomID = null){
 		return DB::query(
 			'SELECT messageID, ' .
 			'user.userID as userID, ' .
@@ -32,7 +32,8 @@ class MessageDBHandler
 			'user.chatColorR as chatColorR, ' . 
 			'user.chatColorG as chatColorG, ' . 
 			'user.chatColorB as chatColorB ' . 
-			'FROM message JOIN user ON (user.userID = message.USER_UserID)');
+			'FROM message JOIN user ON (user.userID = message.USER_UserID)' . 
+			($roomID !== null ? ' WHERE message.ROOM_roomID=%i ' : ' WHERE message.ROOM_roomID IS NULL '), $roomID);
 	}
 
 	/**
@@ -41,10 +42,11 @@ class MessageDBHandler
 	 * @param  [String] $message          The message itself.
 	 * @param  [Number] $currentTimeInSec The current time in seconds. 
 	 */
-	public static function insertMessage($userID, $message, $currentTimeInSec){
+	public static function insertMessage($userID, $roomID, $message, $currentTimeInSec){
 		DB::insert('message', array(
 			'USER_userID' => $userID, 
-			'message' => htmlspecialchars($message),
+			'message' => $message,
+			'ROOM_roomID' => $roomID,
 			'exparation' => '' . ($currentTimeInSec + MESSAGE_EXPARATION_TIME)
 		));
 	}
