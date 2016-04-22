@@ -622,6 +622,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		GameAJAXCallIntervalHandler.setCheckIfOpponentIsDoneInterval();
 
 		BoardLogic.makePawnsUnselectable();
+		BlockSelectabilityLogic.makeBoardBlocksUnselectable();
 	}
 
 	/**
