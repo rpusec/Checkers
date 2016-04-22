@@ -41,10 +41,10 @@ class RoomDBHandler
 	 * @param  [Integer] $userID The ID of the player, NOT the opponent. 
 	 * @return [Array]           The opponent. 
 	 */
-	public static function checkForOpponent($userID){
+	public static function checkForOpponent($userID, $roomID){
 		return DB::queryFirstRow('SELECT ROOM_roomID as roomID, userID, fname as firstname, lname as lastname, username '
 			.'FROM user JOIN room ON (user.ROOM_roomID = room.roomID) '
-			.'WHERE userID <> %i', $userID);
+			.'WHERE userID <> %i AND roomID=%i', $userID, $roomID);
 	}
 
 	/**

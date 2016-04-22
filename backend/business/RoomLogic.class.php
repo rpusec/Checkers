@@ -60,6 +60,10 @@ class RoomLogic
 		return $resultStr;
 	}
 
+	public static function getRoomIDFromUser($userID){
+		return RoomDBHandler::getRoomIDFromUser($userID);
+	}
+
 	/**
 	 * Determines whether the user should be marked as 
 	 * the first or the second player in the game. 
@@ -105,8 +109,8 @@ class RoomLogic
 	 * @param  [Integer] $userID The ID of the player, NOT the opponent. 
 	 * @return [Array]           The opponent. 
 	 */
-	public static function checkForOpponent($userID){
-		return RoomDBHandler::checkForOpponent($userID);
+	public static function checkForOpponent($userID, $roomID){
+		return RoomDBHandler::checkForOpponent($userID, $roomID);
 	}
 
 	/**

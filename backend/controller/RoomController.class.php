@@ -95,7 +95,8 @@ class RoomController extends BaseController
 			return array('success' => false, 'errors' => array(USER_NOT_LOGGED_MSG));
 
 		parent::startConnection();
-		$opponent = RoomLogic::checkForOpponent(parent::getLoggedUserID());
+		$room = RoomLogic::getRoomIDFromUser(parent::getLoggedUserID());
+		$opponent = RoomLogic::checkForOpponent(parent::getLoggedUserID(), $room['roomID']);
 		$lastMove = RoomLogic::getLastMove($opponent['roomID']);
 
 		return array('success' => true, 'opponent' => $opponent, 'lastMove' => $lastMove, 'playerNumber' => parent::getPlayerNumber());
