@@ -36,7 +36,7 @@ class ChatLogic
 	 * @param  [Number] $currentTimeInSec The current time in seconds. 
 	 */
 	public static function insertMessage($userID, $message, $currentTimeInSec){
-		$room = RoomDBHandler::getRoomIDFromUser($userID));
+		$room = RoomDBHandler::getRoomIDFromUser($userID);
 		MessageDBHandler::insertMessage($userID, $room !== null ? $room['roomID'] : null, htmlspecialchars($message), $currentTimeInSec);
 	}
 
@@ -45,7 +45,7 @@ class ChatLogic
 	 * @return [Array] Array of messages and users. 
 	 */
 	public static function getMessagesWithUsers($userID){
-		$room = RoomDBHandler::getRoomIDFromUser($userID));
+		$room = RoomDBHandler::getRoomIDFromUser($userID);
 		return MessageDBHandler::getMessagesWithUsers($room !== null ? $room['roomID'] : null);
 	}
 
