@@ -1,3 +1,2 @@
 - make a mechanism that will show which player is waiting in the game room  
-- make chatting available only between player and their opponent when in chat room  
 - kada je alert uljucen, ne updatea se playerov expartion time
