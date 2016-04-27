@@ -38,8 +38,9 @@
 			colorO: Constants.COLOR_ONE,
 			colorE: Constants.COLOR_TWO,
 			unavailableAlpha: 0.25,
-                        lineNum: 3,
-			unavailable: false
+			lineNum: 3,
+			unavailable: false,
+			isWaitingMsg: 'is waiting to play...'
 		}, options);
 
 		this.setBounds(0, 0, this._options.width, this._options.height);
@@ -90,6 +91,41 @@
 		unavailableText.x = this._options.width/2;
 		unavailableText.y = this._options.height/2;
 		this.addChild(unavailableText);
+
+		var userWaitingText = new createjs.Text('', '15px Arial', '#fff');
+		userWaitingText.textAlign = 'center';
+		userWaitingText.textBaseline = 'middle';
+	
+		var userWaitingTextBorder = userWaitingText.clone();
+		userWaitingTextBorder.outline = 3;
+		userWaitingTextBorder.color = "#000";
+		
+		userWaitingCont = new createjs.Container();
+		userWaitingCont.addChild(userWaitingTextBorder, userWaitingText);
+		
+		this.addChild(userWaitingCont);
+
+		userWaitingCont.x = this._options.width/2;
+		userWaitingCont.y = this._options.height/2;
+
+		userWaitingCont.scaleX = 0;
+		userWaitingCont.scaleY = 0;
+
+		this.announceWaitingUser = function(username){
+			userWaitingText.text = username + this._options.isWaitingMsg;
+			userWaitingTextBorder.text = username + this._options.isWaitingMsg;
+			createjs.Tween.removeTweens(userWaitingCont);		
+			userWaitingCont.scaleX = 0;
+			userWaitingCont.scaleY = 0;			
+			createjs.Tween.get(userWaitingCont).to({scaleX: 1, scaleY: 1}, 1000, createjs.Ease.elasticOut);
+		}
+
+		this.unannounceWaitingUser = function(){
+			createjs.Tween.removeTweens(userWaitingCont);
+			userWaitingCont.scaleX = 1;
+			userWaitingCont.scaleY = 1;	
+			createjs.Tween.get(userWaitingCont).to({scaleX: 0, scaleY: 0}, 1500, createjs.Ease.elasticOut);
+		}
 
 		/**
 		 * Marks the room as unavailable. 

@@ -53,10 +53,10 @@ class RoomDBHandler
 	 * @return [Array]           The list of rooms, or a single room if the ID is specified. 
 	 */
 	public static function getRoomsWithUserCount($roomID = null){
+		$userCountQuery = "(SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID)";
 		$rooms = DB::query(
-			"SELECT room.roomID as targetRoomID, " . 
-			"(SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID) as userCount " . 
-			"FROM room" . ($roomID !== null ? " WHERE roomID=%i" : ""), $roomID);
+			"SELECT DISTINCT(user.username) as username, room.roomID as targetRoomID, $userCountQuery as userCount " . 
+			"FROM user LEFT JOIN room ON(room.roomID = user.ROOM_roomID) " . ($roomID !== null ? " WHERE roomID=%i" : ""), $roomID);
 
 		if($roomID !== null && !empty($rooms))
 			return $rooms[0];

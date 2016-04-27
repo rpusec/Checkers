@@ -120,6 +120,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 				col++;
 				waitTime += Constants.GAME_ROOM_WAIT_TIME;
+
+				window.roomRef = newGameRoom;
 			}
 			else
 			{
