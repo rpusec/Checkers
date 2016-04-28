@@ -111,20 +111,30 @@
 		userWaitingCont.scaleX = 0;
 		userWaitingCont.scaleY = 0;
 
+		var waitingUserAnnounced = false;
+
 		this.announceWaitingUser = function(username){
-			userWaitingText.text = username + this._options.isWaitingMsg;
-			userWaitingTextBorder.text = username + this._options.isWaitingMsg;
+			if(waitingUserAnnounced)
+				return;
+
+			userWaitingText.text = username + ' ' + this._options.isWaitingMsg;
+			userWaitingTextBorder.text = username + ' ' + this._options.isWaitingMsg;
 			createjs.Tween.removeTweens(userWaitingCont);		
 			userWaitingCont.scaleX = 0;
 			userWaitingCont.scaleY = 0;			
 			createjs.Tween.get(userWaitingCont).to({scaleX: 1, scaleY: 1}, 1000, createjs.Ease.elasticOut);
+			waitingUserAnnounced = true;
 		}
 
 		this.unannounceWaitingUser = function(){
+			if(!waitingUserAnnounced)
+				return;
+
 			createjs.Tween.removeTweens(userWaitingCont);
 			userWaitingCont.scaleX = 1;
 			userWaitingCont.scaleY = 1;	
 			createjs.Tween.get(userWaitingCont).to({scaleX: 0, scaleY: 0}, 1500, createjs.Ease.elasticOut);
+			waitingUserAnnounced = false;
 		}
 
 		/**

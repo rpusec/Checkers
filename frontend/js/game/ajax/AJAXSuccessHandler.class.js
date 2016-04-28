@@ -120,8 +120,6 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 				col++;
 				waitTime += Constants.GAME_ROOM_WAIT_TIME;
-
-				window.roomRef = newGameRoom;
 			}
 			else
 			{
@@ -247,6 +245,11 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				contGameRoom.children.forEach(function(room){
 					if(room.getRoomID() == roomInfo.targetRoomID)
 					{
+						if(roomInfo.username !== null && typeof roomInfo.username === 'string' && parseInt(roomInfo.userCount) === 1)
+							room.announceWaitingUser(roomInfo.username);
+						else
+							room.unannounceWaitingUser();
+
 						room.setAsUnavailable(parseInt(roomInfo.userCount) === Constants.MAX_USERS_PER_ROOM);
 						return false;
 					}

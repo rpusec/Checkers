@@ -50,6 +50,7 @@ class RoomController extends BaseController
 		parent::startConnection();
 
 		$targetRoom = RoomLogic::getRoomsWithUserCount($roomID);
+
 		if($targetRoom !== null && $targetRoom['userCount'] == ROOM_MAX_AMOUNT_OF_USERS)
 			return array('success' => false, 'errors' => array(ROOM_MAX_NUM_OF_USERS_MSG));
 

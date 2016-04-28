@@ -54,13 +54,14 @@ class RoomDBHandler
 	 */
 	public static function getRoomsWithUserCount($roomID = null){
 		$userCountQuery = "(SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID)";
-		$rooms = DB::query(
-			"SELECT DISTINCT(user.username) as username, room.roomID as targetRoomID, $userCountQuery as userCount " . 
-			"FROM user LEFT JOIN room ON(room.roomID = user.ROOM_roomID) " . ($roomID !== null ? " WHERE roomID=%i" : ""), $roomID);
+		
+		$query = "SELECT user.username as username, room.roomID as targetRoomID, $userCountQuery as userCount " . 
+			"FROM user LEFT JOIN room ON(room.roomID = user.ROOM_roomID) " . ($roomID !== null ? " WHERE roomID=%i" : "");
 
-		if($roomID !== null && !empty($rooms))
-			return $rooms[0];
-		return $rooms;
+		if($roomID === null)
+			return DB::query($query, $roomID);
+		else
+			return DB::queryFirstRow($query, $roomID);
 	}
 
 	/**
