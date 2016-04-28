@@ -59,7 +59,7 @@ class RoomDBHandler
 			"FROM user LEFT JOIN room ON(room.roomID = user.ROOM_roomID) " . ($roomID !== null ? " WHERE roomID=%i" : "");
 
 		if($roomID === null)
-			return DB::query($query, $roomID);
+			return DB::query($query);
 		else
 			return DB::queryFirstRow($query, $roomID);
 	}

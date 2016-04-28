@@ -100,7 +100,7 @@
 		userWaitingTextBorder.outline = 3;
 		userWaitingTextBorder.color = "#000";
 		
-		userWaitingCont = new createjs.Container();
+		var userWaitingCont = new createjs.Container();
 		userWaitingCont.addChild(userWaitingTextBorder, userWaitingText);
 		
 		this.addChild(userWaitingCont);
@@ -129,7 +129,7 @@
 		this.unannounceWaitingUser = function(){
 			if(!waitingUserAnnounced)
 				return;
-
+			
 			createjs.Tween.removeTweens(userWaitingCont);
 			userWaitingCont.scaleX = 1;
 			userWaitingCont.scaleY = 1;	

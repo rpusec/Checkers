@@ -59,6 +59,9 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		BoardLogic = gameNS.business.BoardLogic;
 		BlockSelectabilityLogic = gameNS.business.BlockSelectabilityLogic;
 		Constants = gameNS.config.Constants;
+
+
+		window.contGameRoom = contGameRoom;
 	}
 
 	/**
