@@ -60,20 +60,30 @@
 		this.regX = calcWidth/2;
 		this.regY = calcHeight/2;
 
-		this.on('mouseover', function(){
-			btnText.color = options.textColorHovered;
-			changeGraphics(options.borderColorHovered, options.bgColorHovered);
-		});
+		this.addMouseEvents = function(){
+			this.removeMouseEvents();
 
-		this.on('mouseout', function(){
-			btnText.color = options.textColor;
-			changeGraphics(options.borderColor, options.bgColor);
-		});
+			this.on('mouseover', function(){
+				btnText.color = options.textColorHovered;
+				changeGraphics(options.borderColorHovered, options.bgColorHovered);
+			});
 
-		this.on('click', function(){
-			if(typeof onClickFunct === 'function' && !animating && this.visible)
-				onClickFunct();
-		});
+			this.on('mouseout', function(){
+				btnText.color = options.textColor;
+				changeGraphics(options.borderColor, options.bgColor);
+			});
+
+			this.on('click', function(){
+				if(typeof onClickFunct === 'function' && !animating && this.visible)
+					onClickFunct(this);
+			});
+		}
+
+		this.removeMouseEvents = function(){
+			this.removeAllEventListeners('mouseover');
+			this.removeAllEventListeners('mouseout');
+			this.removeAllEventListeners('click');
+		}
 
 		/**
 		 * Displays the button. 
@@ -96,7 +106,7 @@
 					animating = false;
 
 					if(typeof callFunct === 'function')
-						callFunct();
+						callFunct(this);
 				});
 			}
 			else
@@ -127,7 +137,9 @@
 
 				createjs.Tween.get(this).to({scaleX: 0, scaleY: 0}, options.appearSpeed, createjs.Ease.bounceOut).call(function(){
 					this.visible = false;
-					animating = false;	
+					animating = false;
+					btnText.color = options.textColor;
+					changeGraphics(options.borderColor, options.bgColor);
 				});
 			}
 			else
@@ -154,6 +166,8 @@
 					calcWidth, 
 					calcHeight);
 		}
+
+		this.addMouseEvents();
 	}
 
 	var p = createjs.extend(Button, createjs.Container);

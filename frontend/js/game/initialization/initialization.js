@@ -62,7 +62,8 @@
 			textAlign: 'center'
 		});
 
-		var btnLeaveGame = new Button({text: 'Leave game...'}, function(){
+		var btnLeaveGame = new Button({text: 'Leave game...'}, function(evt){
+			evt.removeMouseEvents();
 			rpcheckers.game.ajax.AJAXCallHandler.offGameRoomAJAXCall();
 		});
 
@@ -127,9 +128,9 @@
 
 		if(typeof stage !== 'undefined')
 			stage.update();
-
-		gameInitialized = false;
+		
 		rpcheckers.game.ajax.AJAXCallIntervalHandler.clearAllAJAXCallIntervals();
+		gameInitialized = false;
 	}
 
 }());

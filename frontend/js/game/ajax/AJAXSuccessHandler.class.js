@@ -111,14 +111,15 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				contGameRoom.addChild(newGameRoom);
 				newGameRoom.alpha = 0;
 
-				//when a GameRoom icon is clicked 
-				newGameRoom.on('click', function(){
-					GameAJAXCallHandler.toGameRoomAJAXCall(this.getRoomID());
-				});
-
 				//each next GameRoom icon appears [GAME_ROOM_WAIT_TIME] milliseconds before the previous one 
 				createjs.Tween.get(newGameRoom).wait(waitTime).to({y: newGameRoom.y+GAME_ROOM_TO_BOTTOM, alpha: 1}, 500).call(function(){
 					this.addMouseEvents();
+
+					//when a GameRoom icon is clicked 
+					this.on('click', function(){
+						this.removeMouseEvents();
+						GameAJAXCallHandler.toGameRoomAJAXCall(this.getRoomID());
+					});
 				});
 
 				col++;
@@ -309,6 +310,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				BoardPawnFactory.resetSides();
 				var pawnInfo = createAndSetupPawns();
 				btnLeaveGame.appear(null, function(){
+					btnLeaveGame.addMouseEvents();
+
 					var playerOneProps = {
 						side: UserGameProfile.RIGHT_SIDE, 
 						avatar: pawnInfo.pOnePawns.avatar

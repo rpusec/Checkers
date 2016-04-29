@@ -183,6 +183,8 @@
 		var ON_MOUSE_MOVE_AMOUNT = 10;
 		var ON_MOUSE_SPEED_AMOUNT = 100;
 
+		this.removeMouseEvents();
+
 		this.on('mouseover', function(){
 			mouseOverHandler(this, ON_MOUSE_MOVE_AMOUNT, ON_MOUSE_SPEED_AMOUNT);
 		});
@@ -209,9 +211,9 @@
 	 * Removes mouse listeners from the game room. 
 	 */
 	p.removeMouseEvents = function(){
-		this.off('mouseover');
-		this.off('mouseout');
-		this.off('click');
+		this.removeAllEventListeners('mouseover');
+		this.removeAllEventListeners('mouseout');
+		this.removeAllEventListeners('click');
 	}
 
 	window.GameRoom = createjs.promote(GameRoom, 'Container');
