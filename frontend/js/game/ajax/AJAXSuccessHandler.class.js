@@ -573,15 +573,17 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			playerTwoProfile.understate();
 		}
 
+		var removedPawns = null;
+
 		if(data.lastMove !== null)
 		{
 			var lastMove = JSON.parse(data.lastMove);
 			var targetPawn = BlockSelectabilityLogic.findBoardPawnsByCoordinates(data.playerNumber === Constants.FIRST_PLAYER ? Constants.SECOND_PLAYER : Constants.FIRST_PLAYER, new createjs.Point(lastMove.prevX, lastMove.prevY));
 
-			movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){
-				var removedPawnsIds = JSON.parse(data.removedPawns);
-				var removedPawns = BlockSelectabilityLogic.findBoardPawnsByIds(removedPawnsIds);
-				
+			var removedPawnsIds = JSON.parse(data.removedPawns);
+			removedPawns = BlockSelectabilityLogic.findBoardPawnsByIds(removedPawnsIds);
+
+			movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){				
 				if(removedPawns !== null)
 					removePawnsFromBoard(removedPawns);
 
@@ -589,13 +591,13 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				{
 					announceWinner(data.winner);
 					createAndSetupPawns(data.playerNumber);
-					BoardLogic.makePawnsSelectable();
+					BoardLogic.makePawnsSelectable(null, removedPawns);
 				}
 			});
 		}
 
 		if(data.winner === null)
-			BoardLogic.makePawnsSelectable();
+			BoardLogic.makePawnsSelectable(null, removedPawns);
 
 		GameAJAXCallIntervalHandler.clearCheckIfOpponentIsDoneInterval();
 		turnTimer.startTimer();
@@ -667,7 +669,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		var moveTween = createjs.Tween.get(targetPawn).to({
 			x: newCoordinate.x*board.getRectDimensions().width+board.x+board.getRectDimensions().width/2, 
 			y: newCoordinate.y*board.getRectDimensions().height+board.y+board.getRectDimensions().height/2
-		}, 500, createjs.Ease.circOut);
+		}, 1500, createjs.Ease.elasticOut);
 
 		if(typeof onCompleteFunct === 'function')
 			moveTween.call(onCompleteFunct);

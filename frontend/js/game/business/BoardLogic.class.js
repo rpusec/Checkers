@@ -49,12 +49,34 @@ rpcheckers.game.business.BoardLogic = {};
 	 * Makes the pawns selectable. 
 	 * @param  {Array<BoardPawn>} arrPawns The target array of pawns, if not specified, the currentPawnList will be used. 
 	 */
-	ns.makePawnsSelectable = function(arrPawns){
+	ns.makePawnsSelectable = function(arrPawns, pawnsToIgnore){
 		if(!Array.isArray(arrPawns))
 			arrPawns = currentPawnList;
 
+		if(!Array.isArray(pawnsToIgnore))
+			if(typeof pawnsToIgnore === 'object' && pawnsToIgnore !== null && pawnsToIgnore.__proto__.constructor.name === 'BoardPawn')
+				pawnsToIgnore = [pawnsToIgnore];
+			else
+				pawnsToIgnore = null;
+
 		arrPawns.forEach(function(pawn){
-			makePawnSelectable(pawn);
+			if(pawnsToIgnore !== null)
+			{
+				var makeSelectable = true;
+
+				pawnsToIgnore.forEach(function(ignoredPawn){
+					if(ignoredPawn.getID() === pawn.getID())
+					{
+						makeSelectable = false;
+						return false;
+					}
+				});
+
+				if(makeSelectable)
+					makePawnSelectable(pawn);
+			}
+			else
+				makePawnSelectable(pawn);
 		});
 	}
 
@@ -149,6 +171,7 @@ rpcheckers.game.business.BoardLogic = {};
 
 		turnTimer.endTimer();
 		ParticleFactory.spawnParticles(new createjs.Point(evt.stageX, evt.stageY));
+		BlockSelectabilityLogic.makeBoardBlocksUnselectable();
 
 		AJAXCallHandler.evaluatePlayerMoveAJAXCall(
 			currentlySelectedPawn.point.x,

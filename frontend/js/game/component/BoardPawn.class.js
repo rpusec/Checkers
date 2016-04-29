@@ -29,8 +29,6 @@
 		if(typeof options !== 'object')
 			options = {};
 
-		var pawnList = null;
-
 		options = $.extend({
 			strokeStyle: 3,
 			strokeColor: '#000',
