@@ -25,6 +25,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	,	wmSecondPlayer
 	,	contGameRoom
 	,	turnTimer
+	,	wmLoading
 	,	gameStat
 	,	playerOnePawns
 	,	playerTwoPawns
@@ -51,6 +52,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		wmSecondPlayer = props.wmSecondPlayer;
 		contGameRoom = new createjs.Container();
 		turnTimer = props.turnTimer;
+		wmLoading = props.wmLoading;
 
 		var gameNS = rpcheckers.game;
 		GameAJAXCallIntervalHandler = gameNS.ajax.AJAXCallIntervalHandler;
@@ -89,6 +91,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 *                      if the user's state is appropriate for this request, and the array of rooms. 
 	 */
 	ns.displayAllRoomsSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 			return;
 
@@ -149,6 +153,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data from the server. 
 	 */
 	ns.checkForOpponentSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 			return;
 
@@ -183,6 +189,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
 	ns.checkWhoseTurnSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 			return;
 
@@ -240,9 +248,11 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data from the server. 
 	 */
 	ns.checkGameRoomAvailabilitySuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 			return;
-		
+
 		if(stage.contains(contGameRoom) && contGameRoom.numChildren !== 0)
 		{
 			data.rooms.forEach(function(roomInfo){
@@ -276,6 +286,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
 	ns.toGameRoomSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 		{
 			BootstrapDialog.show({
@@ -419,6 +431,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data retrieved from the server. 
 	 */
 	ns.offGameSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 			return;
 
@@ -491,6 +505,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data from the server. 
 	 */
 	ns.evaluatePlayerMoveSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 		{
 			BootstrapDialog.show({
@@ -557,6 +573,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data from the server. 
 	 */
 	ns.checkIfOpponentIsDoneSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success || !data.isDone)
 			return;
 
@@ -610,6 +628,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data from the server. 
 	 */
 	ns.checkIfAPlayerLeftSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success || !data.shouldExitRoom)
 			return;
 
@@ -627,6 +647,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * @param  {Object} data Data from the server. 
 	 */
 	ns.notifyTimeOutSuccessHandler = function(data){
+		hideWMLoading();
+
 		if(!data.success)
 			return;
 
@@ -782,5 +804,10 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 		stage.addChildAt(gameStat, stage.getChildIndex(board));
 		createjs.Tween.get(gameStat).to({y: gameStat.y - gameStat.getBounds().height*2}, 1000, createjs.Ease.circOut);
+	}
+
+	function hideWMLoading(){
+		createjs.Tween.removeTweens(wmLoading);
+		createjs.Tween.get(wmLoading).to({alpha: 0}, 500);
 	}
 }());

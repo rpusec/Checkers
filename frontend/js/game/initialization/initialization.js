@@ -20,10 +20,6 @@
 		createjs.Ticker.addEventListener('tick', function(){stage.update();});
 		stage.enableMouseOver(Constants.MOUSE_OVER_FREQ);
 
-		rpcheckers.game.business.BoardLogic.initialize();
-		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
-		rpcheckers.game.ajax.AJAXCallHandler.initialize();
-
 		rpcheckers.chat.ajax.AJAXCallIntervalHandler.initialize();
 		rpcheckers.chat.ajax.AJAXCallHandler.initialize();
 		rpcheckers.chat.ajax.AJAXSuccessHandler.initialize();
@@ -68,6 +64,11 @@
 		});
 
 		var wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
+		var wmLoading = new WaitingMessage({text: 'Loading... ', radius: 15, font: '13px Arial', lineWidth: 7});
+		wmLoading.alpha = 0;
+
+		wmLoading.x = stage.canvas.width - wmLoading.getRadius()*2;
+		wmLoading.y = wmLoading.getRadius()*2;
 
 		btnLeaveGame.disappear(false);
 		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.TEXT_PADDING);
@@ -94,6 +95,12 @@
 
 		window.turnTimer = turnTimer;
 
+		rpcheckers.game.business.BoardLogic.initialize();
+		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
+		rpcheckers.game.ajax.AJAXCallHandler.initialize({
+			wmLoading: wmLoading
+		});
+
 		rpcheckers.game.factory.ParticleFactory.initialize({stage: stage});
 		rpcheckers.game.ajax.AJAXSuccessHandler.initializeAllProperties({
 			stage: stage,
@@ -102,11 +109,12 @@
 			board: board,
 			btnLeaveGame: btnLeaveGame,
 			wmSecondPlayer: wmSecondPlayer,
-			turnTimer: turnTimer
+			turnTimer: turnTimer,
+			wmLoading: wmLoading
 		});
 
 		gameInitialized = true;
-		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board, turnTimer);
+		stage.addChild(gameNameText, selARoomText, btnLeaveGame, board, turnTimer, wmLoading);
 		rpcheckers.game.ajax.AJAXCallHandler.displayAllRoomsAJAXCall();
 	}
 

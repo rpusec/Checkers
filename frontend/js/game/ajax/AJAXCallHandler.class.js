@@ -12,7 +12,10 @@ rpcheckers.game.ajax.AJAXCallHandler = {};
 	var	ns = rpcheckers.game.ajax.AJAXCallHandler
 	,	AJAXSuccessHandler;
 
-	ns.initialize = function(){
+	var wmLoading;
+
+	ns.initialize = function(props){
+		wmLoading = props.wmLoading;
 		AJAXSuccessHandler = rpcheckers.game.ajax.AJAXSuccessHandler
 	}
 
@@ -147,6 +150,7 @@ rpcheckers.game.ajax.AJAXCallHandler = {};
 	 * @see jQuery AJAX documentation for param clarifications. 
 	 */
 	function runAjax(options){
+		displayWMLoading();
 		$.ajax($.extend({
 			type: 'get',
 			processData: false,
@@ -154,6 +158,11 @@ rpcheckers.game.ajax.AJAXCallHandler = {};
 			dataType: 'json',
 			error: function(data){console.log(data);}
 		}, options));
+	}
+
+	function displayWMLoading(){
+		createjs.Tween.removeTweens(wmLoading);
+		createjs.Tween.get(wmLoading).to({alpha: 1}, 500);
 	}
 
 }());
