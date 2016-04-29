@@ -56,7 +56,7 @@ class RoomDBHandler
 		$userCountQuery = "(SELECT count(*) FROM room JOIN user ON (room.roomID = user.ROOM_roomID) WHERE room.roomID = targetRoomID)";
 		
 		$query = "SELECT user.username as username, room.roomID as targetRoomID, $userCountQuery as userCount " . 
-			"FROM user LEFT JOIN room ON(room.roomID = user.ROOM_roomID) " . ($roomID !== null ? " WHERE roomID=%i" : "");
+			"FROM room LEFT JOIN user ON(room.roomID = user.ROOM_roomID) " . ($roomID !== null ? " WHERE roomID=%i" : "");
 
 		if($roomID === null)
 			return DB::query($query);
