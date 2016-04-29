@@ -806,6 +806,9 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 		createjs.Tween.get(gameStat).to({y: gameStat.y - gameStat.getBounds().height*2}, 1000, createjs.Ease.circOut);
 	}
 
+	/**
+	 * Hides the loading icon. 
+	 */
 	function hideWMLoading(){
 		createjs.Tween.removeTweens(wmLoading);
 		createjs.Tween.get(wmLoading).to({alpha: 0}, 500);

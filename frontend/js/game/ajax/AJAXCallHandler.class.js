@@ -160,6 +160,9 @@ rpcheckers.game.ajax.AJAXCallHandler = {};
 		}, options));
 	}
 
+	/**
+	 * Displays the loading icon. 
+	 */
 	function displayWMLoading(){
 		createjs.Tween.removeTweens(wmLoading);
 		createjs.Tween.get(wmLoading).to({alpha: 1}, 500);
