@@ -1,2 +1,1 @@
-- make a mechanism that will show which player is waiting in the game room  
-- kada je alert uljucen, ne updatea se playerov expartion time
+- no todos atm  
