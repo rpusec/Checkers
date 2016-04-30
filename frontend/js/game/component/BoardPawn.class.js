@@ -108,11 +108,13 @@
 				createjs.Tween.get(particleContainer).to({alpha: 1}, 500);
 				createjs.Ticker.removeEventListener('tick', onRotation);
 				createjs.Ticker.addEventListener('tick', onRotation);
+				this.cursor = 'pointer';
 			}
 			else
 			{
 				createjs.Tween.get(particleContainer).to({alpha: 0}, 500);
 				createjs.Ticker.removeEventListener('tick', onRotation);
+				this.cursor = null;
 			}
 		}
 

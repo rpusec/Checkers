@@ -609,7 +609,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				{
 					announceWinner(data.winner);
 					createAndSetupPawns(data.playerNumber);
-					BoardLogic.makePawnsSelectable(null, removedPawns);
+					BoardLogic.makePawnsSelectable();
 				}
 			});
 		}

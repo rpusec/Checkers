@@ -42,6 +42,8 @@
 			appearSpeed: 1000
 		}, options);
 
+		this.cursor = 'pointer';
+
 		var btnText = new createjs.Text(options.text, options.font, options.textColor);
 		btnText.textAlign = 'center';
 		btnText.textBaseline = 'middle';

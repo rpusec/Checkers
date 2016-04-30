@@ -74,6 +74,8 @@
 			this.addChild(line);
 		}
 
+		this.cursor = 'pointer';
+
 		var txtRoomNum = new createjs.Text(this._options.roomNum, '30px Arial', '#fff');
 		txtRoomNum.textAlign = 'center';
 		txtRoomNum.textBaseline = 'middle';

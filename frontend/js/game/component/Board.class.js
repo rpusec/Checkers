@@ -74,6 +74,7 @@
 			targetBlock.graphics.clear().beginFill(options.selectableBlockColor).drawRect(rectWidth*targetBlock.col, rectHeight*targetBlock.row, rectWidth, rectHeight);
 			this.updateCache();
 			targetBlock.selectable = true;
+			targetBlock.cursor = 'pointer';
 		}
 
 		/**
@@ -84,6 +85,7 @@
 			targetBlock.graphics.clear().beginFill(targetBlock.unselectableColor).drawRect(rectWidth*targetBlock.col, rectHeight*targetBlock.row, rectWidth, rectHeight);
 			this.updateCache();
 			targetBlock.selectable = false;
+			targetBlock.cursor = null;
 		}
 
 		/**
