@@ -16,7 +16,8 @@ rpcheckers.game.business.BoardLogic = {};
 	,	BlockSelectabilityLogic;
 
 	var	board
-	,	currentPawnList;
+	,	currentPawnList
+	,	turnTimer;
 
 	ns.initialize = function(){
 		AJAXCallHandler = rpcheckers.game.ajax.AJAXCallHandler;
@@ -43,6 +44,14 @@ rpcheckers.game.business.BoardLogic = {};
 	 */
 	ns.setCurrentPawnList = function(_currentPawnList){
 		currentPawnList = _currentPawnList;
+	}
+
+	/**
+	 * Sets the turn timer. 
+	 * @param {TurnTimer} _turnTimer The turn timer. 
+	 */
+	ns.setTurnTimer = function(_turnTimer){
+		turnTimer = _turnTimer;
 	}
 
 	/**
