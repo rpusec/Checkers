@@ -552,7 +552,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 				var removedPawns = BlockSelectabilityLogic.findBoardPawnsByIds(data.removedPawns);
 				if(removedPawns !== null)
-					removePawnsFromBoard(removedPawns);
+					removePawnsFromBoard(removedPawns, data.playerNumber);
 
 				if(data.winner !== null)
 				{
@@ -604,7 +604,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 			movePawn(targetPawn, new createjs.Point(lastMove.newX, lastMove.newY), function(){				
 				if(removedPawns !== null)
-					removePawnsFromBoard(removedPawns);
+					removePawnsFromBoard(removedPawns, data.playerNumber);
 
 				if(data.winner !== null)
 				{
@@ -704,7 +704,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 * Removes a list of pawns from the board. 
 	 * @param  {[Array<BoardPawn>|BoardPawn]} targetPawns The pawns to remove. Can be a single pawn or an array of Pawns. 
 	 */
-	function removePawnsFromBoard(targetPawns){
+	function removePawnsFromBoard(targetPawns, playerNumber){
 		if(!Array.isArray(targetPawns))
 			targetPawns = [targetPawns];
 
@@ -712,6 +712,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			var targetPawnArray = pawn.getWhichPlayer() === Constants.FIRST_PLAYER ? playerOnePawns : playerTwoPawns;
 			targetPawnArray.splice(targetPawnArray.indexOf(pawn), 1);
 			pawn.killOff(stage, Constants.PAWN_KILL_OFF_ROTATION_AMOUNT, Constants.PAWN_KILL_OFF_DELAY);
+
+			playerNumber === Constants.FIRST_PLAYER ? playerTwoProfile.shake() : playerOneProfile.shake();
 
 			if(pawn.getWhichPlayer() === Constants.FIRST_PLAYER)
 				gameStat.decrPlayerOnePawns();

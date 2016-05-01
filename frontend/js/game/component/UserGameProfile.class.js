@@ -47,7 +47,10 @@
 			pFrameAlpha: 0.25,
 			avatar: new BoardPawn(),
 			lineAmount: 4,
-			lineRadius: 10
+			lineRadius: 10,
+			shakeAmount: 4,
+			shakeDistance: 6,
+			shakeSpeed: 100
 		}, options);
 
 		var highlight = false;
@@ -202,6 +205,25 @@
 				createjs.Tween.get(rotatingLine).to({alpha: 0}, 500);
 			});
 			highlight = false;
+		}
+
+		var shaking = false;
+
+		this.shake = function(){
+			if(shaking)
+				return;
+
+			shaking = true;
+
+			var tween = createjs.Tween.get(this);
+			var initialX = this.x;
+
+			for(var i = 0; i < options.shakeAmount; i++)
+				tween.to({x: initialX + options.shakeDistance}, options.shakeSpeed).to({x: initialX}, options.shakeSpeed);
+
+			tween.call(function(){
+				shaking = false;
+			});
 		}
 	}
 
