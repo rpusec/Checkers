@@ -15,7 +15,10 @@
 	 *                         - {String} colorE => Color of the boxes that are positioned even. 
 	 *                         - {String} colorOUnavailable => The same purpose as colorO, but it's only applied when the GameRoom is set as unavailable. 
 	 *                         - {Integer} lineNum => The number of rotating lines. 
-         *                         - {Boolean} available => Boolean which indicates whether this GameRoom should be considered as unavailable. 
+	 *                         - {Boolean} available => Boolean which indicates whether this GameRoom should be considered as unavailable. 
+	 *                         - {String} isWaitingMsg => The message displayed when a user is waiting their opponent. 
+	 *                         - {Number} minRotationSpeed => The minimum rotation speed. 
+	 *                         - {Number} maxRotationSpeed => The maximum rotation speed. 
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
@@ -40,13 +43,22 @@
 			unavailableAlpha: 0.25,
 			lineNum: 3,
 			unavailable: false,
-			isWaitingMsg: 'is waiting to play...'
+			isWaitingMsg: 'is waiting to play...',
+			minRotationSpeed: 25000,
+			maxRotationSpeed: 40000
 		}, options);
+
+		var rotationMin = this._options.minRotationSpeed;
+		var rotationMax = this._options.maxRotationSpeed;
+		var calculatedRotationSpeed = (rotationMax-rotationMin)*Math.random()+rotationMin;
+		var calculatedRotationDir = (Math.random() < 0.5 ? -1 : 1);
 
 		this.setBounds(0, 0, this._options.width, this._options.height);
 		
 		var rectWidth = this._options.width / this._options.numrectsX;
 		var rectHeight = this._options.height / this._options.numrectsY;
+
+		var rectCont = new createjs.Container();
 
 		for(var col = 0; col < this._options.numrectsY; col++)
 		{
@@ -56,9 +68,16 @@
 				newRect.graphics.beginFill(((col+row+1) % 2) == 0 ? this._options.colorE : this._options.colorO);
 				newRect.graphics.drawRect(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
 				newRect.cache(col*rectWidth, row*rectHeight, rectWidth, rectHeight);
-				this.addChild(newRect);
+				rectCont.addChild(newRect);
 			}
 		}
+
+		rectCont.regX = this._options.width/2;
+		rectCont.regY = this._options.height/2;
+		rectCont.x += this._options.width/2;
+		rectCont.y += this._options.height/2;
+
+		this.addChild(rectCont);
 
 		for(var i = 0; i < this._options.lineNum; i++)
 		{
@@ -115,12 +134,17 @@
 
 		var waitingUserAnnounced = false;
 
+		/**
+		 * Displays the username of the user who's 
+		 * waiting for their opponent. 
+		 * @param  {String} username The username of the user. 
+		 */
 		this.announceWaitingUser = function(username){
 			if(waitingUserAnnounced)
 				return;
 
 			userWaitingText.text = username + ' ' + this._options.isWaitingMsg;
-			userWaitingTextBorder.text = username + ' ' + this._options.isWaitingMsg;
+			userWaitingTextBorder.text = userWaitingText.text;
 			createjs.Tween.removeTweens(userWaitingCont);		
 			userWaitingCont.scaleX = 0;
 			userWaitingCont.scaleY = 0;			
@@ -128,6 +152,10 @@
 			waitingUserAnnounced = true;
 		}
 
+		/**
+		 * Hides the username of the user who's 
+		 * waiting for their opponent. 
+		 */
 		this.unannounceWaitingUser = function(){
 			if(!waitingUserAnnounced)
 				return;
@@ -165,6 +193,10 @@
 
 				unavailableText.alpha = 0;
 			}
+		}
+
+		this.startBoardRotation = function(){
+			createjs.Tween.get(rectCont, {loop: true}).to({rotation: 360 * calculatedRotationDir}, calculatedRotationSpeed);
 		}
 	}
 

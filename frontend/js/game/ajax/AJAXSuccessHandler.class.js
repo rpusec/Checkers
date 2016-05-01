@@ -114,6 +114,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 				newGameRoom.y = (newGameRoom.getBounds().height + Constants.GAME_ROOM_PADDING) * row;
 				contGameRoom.addChild(newGameRoom);
 				newGameRoom.alpha = 0;
+				newGameRoom.startBoardRotation();
 
 				//each next GameRoom icon appears [GAME_ROOM_WAIT_TIME] milliseconds before the previous one 
 				createjs.Tween.get(newGameRoom).wait(waitTime).to({y: newGameRoom.y+GAME_ROOM_TO_BOTTOM, alpha: 1}, 500).call(function(){
