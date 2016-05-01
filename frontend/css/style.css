@@ -102,6 +102,10 @@ html, body{
 	background-color: #fff;
 }
 
+#single-user-info span{
+	font-size: 30px;
+}
+
 #footer{
 	position: absolute;
 	margin:0px auto;

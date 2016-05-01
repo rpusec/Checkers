@@ -93,8 +93,6 @@
 			y: stage.canvas.height
 		});
 
-		window.turnTimer = turnTimer;
-
 		rpcheckers.game.business.BoardLogic.initialize();
 		rpcheckers.game.ajax.AJAXCallIntervalHandler.initialize();
 		rpcheckers.game.ajax.AJAXCallHandler.initialize({

@@ -109,11 +109,15 @@ rpcheckers.chat.ajax.AJAXSuccessHandler = {};
 
 			//if the username is greater than Constants.USERNAME_CHATLIST_SIZE in length, then it displays only a part of the username on the chatlist
 			var usernameToDisplay = connUser.username.length > Constants.USERNAME_CHATLIST_SIZE ? connUser.username.substr(0, Constants.USERNAME_CHATLIST_SIZE) + '...' : connUser.username;
+			var isConnUserLoggedUser = connUser.userID === loggedUserID;
+
+			if(isConnUserLoggedUser)
+				usernameToDisplay = 'You';
 
 			//if the target user isn't displayed on the chat list
 			if(connUserDom.length === 0)
 			{
-				if(connUser.userID === loggedUserID)
+				if(isConnUserLoggedUser)
 				{
 					connUser.chatColorR = 255;
 					connUser.chatColorG = 255;
@@ -122,19 +126,19 @@ rpcheckers.chat.ajax.AJAXSuccessHandler = {};
 
 				arrOnlineUserInfo[Constants.CONN_USER_PREFIX + connUser.userID] = new OnlineUserInfo(connUser.firstname, connUser.lastname, connUser.username, connUser.won, connUser.lost);
 
-				var $newConnUser = $('<div><span>' + usernameToDisplay + '</span></div>');
+				var $newConnUser = $('<div><span ' + (isConnUserLoggedUser ? 'style="font-weight: bold;"' : '') + '>' + usernameToDisplay + '</span></div>');
 				$newConnUser.attr('class', 'user-connected');
 				$newConnUser.attr('id', Constants.CONN_USER_PREFIX + connUser.userID);
 				var $bgColor = 'rgba(' + connUser.chatColorR + ',' + connUser.chatColorG + ',' + connUser.chatColorB + ', 1)';
 				$newConnUser.css('background-color', $bgColor);
 				$newConnUser.css('box-shadow', '0px 0px 20px ' + $bgColor);
-				$('#chat-contact-list').append($newConnUser);
+				$('#chat-contact-list')[(isConnUserLoggedUser ? 'prepend' : 'append')]($newConnUser);
 				$($newConnUser).toggleBubbleOn();
 				$($newConnUser).hover(
 					function(){
 						var targetUserInfo = arrOnlineUserInfo[this.id];
 						$('#single-user-info').html(
-							'<span style="font-size: 30px;">' + targetUserInfo.firstname + ' ' + targetUserInfo.lastname + '</span>' + 
+							'<span>' + targetUserInfo.firstname + ' ' + targetUserInfo.lastname + '</span>' + 
 							'<br />' + targetUserInfo.username + 
 							'<br />Won ' + targetUserInfo.won + ' time' + (targetUserInfo.won === 1 ? '' : 's') + ', ' +
 							'lost ' + targetUserInfo.lost + ' time' + (targetUserInfo.lost === 1 ? '' : 's') + '. ');
