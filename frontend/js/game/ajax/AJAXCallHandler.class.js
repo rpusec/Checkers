@@ -4,6 +4,7 @@
  * @class
  * @author Roman Pusec
  * @namespace rpcheckers.game.ajax
+ * @requires SharedFuncts object. 
  */
 rpcheckers.game.ajax.AJAXCallHandler = {};
 
@@ -151,13 +152,7 @@ rpcheckers.game.ajax.AJAXCallHandler = {};
 	 */
 	function runAjax(options){
 		displayWMLoading();
-		$.ajax($.extend({
-			type: 'get',
-			processData: false,
-			contentType: false,
-			dataType: 'json',
-			error: function(data){console.log(data);}
-		}, options));
+		SharedFuncts.runAjax(options);
 	}
 
 	/**

@@ -20,7 +20,7 @@
 	 *                         - {Number} minRotationSpeed => The minimum rotation speed. 
 	 *                         - {Number} maxRotationSpeed => The maximum rotation speed. 
 	 *                         - {Number} excludedScale => The scale value when the game room was excluded.  
-	 *                         - {Number} excludedAlpha => The alpha value when the game room was excluded 
+	 *                         - {Number} excludedAlpha => The alpha value when the game room was excluded. 
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
@@ -199,15 +199,25 @@
 			}
 		}
 
+		/**
+		 * Starts rotating the mini board on the game room icon. 
+		 */
 		this.startBoardRotation = function(){
 			createjs.Tween.get(rectCont, {loop: true}).to({rotation: 360 * calculatedRotationDir}, calculatedRotationSpeed);
 		}
 
+		/**
+		 * Marks the game room as selected, when the game room was clicked. 
+		 */
 		this.markAsSelected = function(){
 			createjs.Tween.removeTweens(rectCont);
 			createjs.Tween.get(rectCont).to({rotation: rectCont.rotation + 360 * calculatedRotationDir}, 1000, createjs.Ease.backOut);
 		}
 
+		/**
+		 * Marks the game room as excluded. Excluded game room is any
+		 * game room that was not selected. 
+		 */
 		this.markAsExcluded = function(){
 			createjs.Tween.get(this).to({
 				alpha: this._options.excludedAlpha, 

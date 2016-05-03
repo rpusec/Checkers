@@ -4,6 +4,7 @@
  * @class
  * @author Roman Pusec
  * @namespace rpcheckers.chat.ajax
+ * @requires SharedFuncts object. 
  */
 rpcheckers.chat.ajax.AJAXCallHandler = {};
 
@@ -24,7 +25,7 @@ rpcheckers.chat.ajax.AJAXCallHandler = {};
 	 * Checks for new messages. 
 	 */
 	ns.checkForNewMessagesAJAXCall = function(){
-		runAjax({
+		SharedFuncts.runAjax({
 			url:'backend/view/ChatView.php',
 			data:'path=get-message',
 			success: AJAXSuccessHandler.checkForNewMessagesSuccessHandler
@@ -38,7 +39,7 @@ rpcheckers.chat.ajax.AJAXCallHandler = {};
 	 */
 	ns.sendMessageAJAXCall = function(formData){
 		formData.append('path', 'send-message');
-		runAjax({
+		SharedFuncts.runAjax({
 			type: 'post',
 			url: 'backend/view/ChatView.php',
 			data: formData,
@@ -50,27 +51,11 @@ rpcheckers.chat.ajax.AJAXCallHandler = {};
 	 * Checks who is online. 
 	 */
 	ns.checkWhoIsOnlineAJAXCall = function(){
-		runAjax({
+		SharedFuncts.runAjax({
 			url:'backend/view/UsersView.php',
 			data:'path=who-is-online',
 			success: AJAXSuccessHandler.checkWhoIsOnlineSuccessHandler
 		});
-	}
-
-	/**
-	 * Runs an AJAX call. Includes default properties that are shared among
-	 * all AJAX requests. 
-	 * @param  {Object} options Represents parameters. 
-	 * @see jQuery AJAX documentation for param clarifications. 
-	 */
-	function runAjax(options){
-		$.ajax($.extend({
-			type: 'get',
-			processData: false,
-			contentType: false,
-			dataType: 'json',
-			error: function(data){console.log(data);}
-		}, options));
 	}
 
 }());

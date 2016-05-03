@@ -4,6 +4,7 @@
  * @class
  * @author Roman Pusec
  * @namespace rpcheckers.game.ajax
+ * @requires SharedFuncts object. 
  */
 rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
@@ -304,7 +305,7 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 			BootstrapDialog.show({
 				type: BootstrapDialog.TYPE_DANGER,
 				title: "Error",
-				message: formatLineByLine(data.errors)
+				message: SharedFuncts.formatLineByLine(data.errors)
 			});
 
 			return;

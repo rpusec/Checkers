@@ -4,6 +4,7 @@
  * @class
  * @author Roman Pusec
  * @namespace rpcheckers.user.ajax
+ * @requires SharedFuncts object. 
  */
 rpcheckers.user.ajax.AJAXCallHandler = {};
 
@@ -24,7 +25,7 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 * Checks whether the user is logged in or not. 
 	 */
 	ns.checkLoginStatusAJAXCall = function(){
-		runAjax({
+		SharedFuncts.runAjax({
 			url:'backend/view/UsersView.php',
 			data:'path=is-user-logged',
 			success: AJAXSuccessHandler.checkUserLoggedHandlerSuccess
@@ -35,7 +36,7 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 * Updates the connection exparation date of the authenticated user. 
 	 */
 	ns.updateConnTimeAJAXCall = function(){
-		runAjax({
+		SharedFuncts.runAjax({
 			url:'backend/view/UsersView.php',
 			data:'path=update-conn-time',
 			success: AJAXSuccessHandler.updateConnTimeSuccessHandler
@@ -47,7 +48,7 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 * connected or disconnected) of the authenticated user. 
 	 */
 	ns.updateUsersConnStateAJAXCall = function(){
-		runAjax({
+		SharedFuncts.runAjax({
 			url:'backend/view/UsersView.php',
 			data:'path=update-users-conn-stat',
 			success: AJAXSuccessHandler.updateUsersConnStateSuccessHandler
@@ -62,7 +63,7 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 */
 	ns.loginUserAJAXCall = function(formData){
 		formData.append('path', 'login-user');
-		runAjax({
+		SharedFuncts.runAjax({
 			type: 'post',
 			url:'backend/view/UsersView.php',
 			data: formData,
@@ -81,7 +82,7 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 */
 	ns.registerUserAJAXCall = function(formData){
 		formData.append('path', 'register-user');
-		runAjax({
+		SharedFuncts.runAjax({
 			type: 'post',
 			url:'backend/view/UsersView.php',
 			data: formData,
@@ -99,7 +100,7 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 *                           - passwordConfirm => Confirmation of the user's password. 
 	 */
 	ns.alterUserSettingsAJAXCall = function(formData){
-		runAjax({
+		SharedFuncts.runAjax({
 			type: 'post',
 			url:'backend/view/UsersView.php',
 			data: formData,
@@ -111,27 +112,11 @@ rpcheckers.user.ajax.AJAXCallHandler = {};
 	 * Logs the user out of the application. 
 	 */
 	ns.logoutUserAJAXCall = function(){
-		runAjax({
+		SharedFuncts.runAjax({
 			url:'backend/view/UsersView.php',
 			data:'path=log-user-out',
 			success: AJAXSuccessHandler.logoutUserSuccessHandler
 		});
-	}
-
-	/**
-	 * Runs an AJAX call. Includes default properties that are shared among
-	 * all AJAX requests. 
-	 * @param  {Object} options Represents parameters. 
-	 * @see jQuery AJAX documentation for param clarifications. 
-	 */
-	function runAjax(options){
-		$.ajax($.extend({
-			type: 'get',
-			processData: false,
-			contentType: false,
-			dataType: 'json',
-			error: function(data){console.log(data);}
-		}, options));
 	}
 
 }());

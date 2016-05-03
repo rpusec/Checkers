@@ -4,6 +4,7 @@
  * @class
  * @author Roman Pusec
  * @namespace rpcheckers.chat.ajax
+ * @requires SharedFuncts object. 
  */
 rpcheckers.chat.ajax.AJAXSuccessHandler = {};
 
@@ -85,7 +86,7 @@ rpcheckers.chat.ajax.AJAXSuccessHandler = {};
 			BootstrapDialog.show({
 				type: BootstrapDialog.TYPE_DANGER,
 				title: "Error",
-				message: formatLineByLine(data.errors)
+				message: SharedFuncts.formatLineByLine(data.errors)
 			});
 		}
 	}

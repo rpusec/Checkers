@@ -4,6 +4,7 @@
  * @class
  * @author Roman Pusec
  * @namespace rpcheckers.user.ajax
+ * @requires SharedFuncts object. 
  */
 rpcheckers.user.ajax.AJAXSuccessHandler = {};
 
@@ -58,7 +59,7 @@ rpcheckers.user.ajax.AJAXSuccessHandler = {};
 			BootstrapDialog.show({
 				type: BootstrapDialog.TYPE_DANGER,
 				title: "Error",
-				message: data.hasOwnProperty('errors') ? formatLineByLine(data.errors) : 'Wrong username / password. '
+				message: data.hasOwnProperty('errors') ? SharedFuncts.formatLineByLine(data.errors) : 'Wrong username / password. '
 			});
 		}
 	}
@@ -89,7 +90,7 @@ rpcheckers.user.ajax.AJAXSuccessHandler = {};
 			BootstrapDialog.show({
 				type: BootstrapDialog.TYPE_DANGER,
 				title: "Registration status",
-				message: formatLineByLine(data.errors)
+				message: SharedFuncts.formatLineByLine(data.errors)
 			});
 		}
 	}
@@ -115,7 +116,7 @@ rpcheckers.user.ajax.AJAXSuccessHandler = {};
 			$('#modal-account-settings').modal('hide');
 		}
 		else
-			message = formatLineByLine(data.errors);
+			message = SharedFuncts.formatLineByLine(data.errors);
 
 		BootstrapDialog.show({
 			type: data.success ? BootstrapDialog.TYPE_SUCCESS : BootstrapDialog.TYPE_DANGER,
