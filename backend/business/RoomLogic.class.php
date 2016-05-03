@@ -139,6 +139,11 @@ class RoomLogic
 		UserDBHandler::updateUser(array('ROOM_roomID' => $roomID), $userID);
 	}
 
+	/**
+	 * Returns the last move made by a player. 
+	 * @param  [Integer] $roomID The ID of the room. 
+	 * @return [Array]           The room associated with this ID. 
+	 */
 	public static function getLastMove($roomID){
 		return RoomDBHandler::getLastMove($roomID);
 	}

@@ -42,7 +42,8 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 *                        - {Board}          board => The board reference. 
 	 *                        - {Button}         btnLeaveGame => The leave game button reference. 
 	 *                        - {WaitingMessage} wmSecondPlayer => The second player waiting message reference. 
-	 *                        - {TurnTimer}      turnTimer => The turnTimer reference.  
+	 *                        - {TurnTimer}      turnTimer => The turnTimer reference. 
+	 *                        - {WaitingMessage} wmLoading => References the loading icon. 
 	 */
 	ns.initializeAllProperties = function(props){
 		stage = props.stage;

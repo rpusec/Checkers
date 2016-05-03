@@ -21,6 +21,7 @@
 	 *                         - {Number} maxRotationSpeed => The maximum rotation speed. 
 	 *                         - {Number} excludedScale => The scale value when the game room was excluded.  
 	 *                         - {Number} excludedAlpha => The alpha value when the game room was excluded. 
+	 *                         - {Integer} numOfRotations => The number of times the mini board rotates when the game room was selected. 
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
@@ -49,7 +50,8 @@
 			minRotationSpeed: 25000,
 			maxRotationSpeed: 40000,
 			excludedScale: 0.75,
-			excludedAlpha: 0.5
+			excludedAlpha: 0.5,
+			numOfRotations: 1
 		}, options);
 
 		var rotationMin = this._options.minRotationSpeed;
@@ -211,7 +213,7 @@
 		 */
 		this.markAsSelected = function(){
 			createjs.Tween.removeTweens(rectCont);
-			createjs.Tween.get(rectCont).to({rotation: rectCont.rotation + 360 * calculatedRotationDir}, 1000, createjs.Ease.backOut);
+			createjs.Tween.get(rectCont).to({rotation: rectCont.rotation + 360 * this._options.numOfRotations * calculatedRotationDir}, 1000, createjs.Ease.backOut);
 		}
 
 		/**
