@@ -19,6 +19,8 @@
 	 *                         - {String} isWaitingMsg => The message displayed when a user is waiting their opponent. 
 	 *                         - {Number} minRotationSpeed => The minimum rotation speed. 
 	 *                         - {Number} maxRotationSpeed => The maximum rotation speed. 
+	 *                         - {Number} excludedScale => The scale value when the game room was excluded.  
+	 *                         - {Number} excludedAlpha => The alpha value when the game room was excluded 
 	 * 
 	 * @author Roman Pusec
 	 * @augments {createjs.Container}
@@ -45,7 +47,9 @@
 			unavailable: false,
 			isWaitingMsg: 'is waiting to play...',
 			minRotationSpeed: 25000,
-			maxRotationSpeed: 40000
+			maxRotationSpeed: 40000,
+			excludedScale: 0.75,
+			excludedAlpha: 0.5
 		}, options);
 
 		var rotationMin = this._options.minRotationSpeed;
@@ -197,6 +201,19 @@
 
 		this.startBoardRotation = function(){
 			createjs.Tween.get(rectCont, {loop: true}).to({rotation: 360 * calculatedRotationDir}, calculatedRotationSpeed);
+		}
+
+		this.markAsSelected = function(){
+			createjs.Tween.removeTweens(rectCont);
+			createjs.Tween.get(rectCont).to({rotation: rectCont.rotation + 360 * calculatedRotationDir}, 1000, createjs.Ease.backOut);
+		}
+
+		this.markAsExcluded = function(){
+			createjs.Tween.get(this).to({
+				alpha: this._options.excludedAlpha, 
+				scaleX: this._options.excludedScale, 
+				scaleY: this._options.excludedScale
+			}, 250);
 		}
 	}
 

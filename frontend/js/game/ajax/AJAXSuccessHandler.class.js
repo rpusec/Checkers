@@ -122,7 +122,17 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 
 					//when a GameRoom icon is clicked 
 					this.on('click', function(){
-						this.removeMouseEvents();
+						this.markAsSelected();
+
+						var currRoom = this;
+
+						contGameRoom.children.forEach(function(gr){
+							gr.removeMouseEvents();
+
+							if(gr.getRoomID() !== currRoom.getRoomID())
+								gr.markAsExcluded();
+						});
+
 						GameAJAXCallHandler.toGameRoomAJAXCall(this.getRoomID());
 					});
 				});
@@ -814,6 +824,6 @@ rpcheckers.game.ajax.AJAXSuccessHandler = {};
 	 */
 	function hideWMLoading(){
 		createjs.Tween.removeTweens(wmLoading);
-		createjs.Tween.get(wmLoading).to({alpha: 0}, 500);
+		createjs.Tween.get(wmLoading).to({alpha: 0}, 250);
 	}
 }());

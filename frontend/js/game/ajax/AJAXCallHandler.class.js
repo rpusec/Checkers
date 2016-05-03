@@ -165,7 +165,7 @@ rpcheckers.game.ajax.AJAXCallHandler = {};
 	 */
 	function displayWMLoading(){
 		createjs.Tween.removeTweens(wmLoading);
-		createjs.Tween.get(wmLoading).to({alpha: 1}, 500);
+		createjs.Tween.get(wmLoading).wait(100).to({alpha: 1}, 250);
 	}
 
 }());

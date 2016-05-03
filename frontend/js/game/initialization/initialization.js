@@ -64,11 +64,11 @@
 		});
 
 		var wmSecondPlayer = new WaitingMessage({text: 'Waiting for second player...'});
-		var wmLoading = new WaitingMessage({text: 'Loading... ', radius: 15, font: '13px Arial', lineWidth: 7});
+		var wmLoading = new WaitingMessage({text: 'Loading... ', radius: 30, font: '13px Arial', lineWidth: 7});
 		wmLoading.alpha = 0;
 
-		wmLoading.x = stage.canvas.width - wmLoading.getRadius()*2;
-		wmLoading.y = wmLoading.getRadius()*2;
+		wmLoading.x = stage.canvas.width - wmLoading.getRadius()*1.5;
+		wmLoading.y = wmLoading.getRadius()*1.5;
 
 		btnLeaveGame.disappear(false);
 		btnLeaveGame.x = Math.floor(btnLeaveGame.getBounds().width/2 + Constants.TEXT_PADDING);
