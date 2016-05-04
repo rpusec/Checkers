@@ -1,1 +1,3 @@
-- no todos atm  
+- hash passwords upon registration and editing user settings (with a salt)  
+- add another constant that will reference the location of the dbinfo.php file  
+- figure out how to kick out the user if their session was destroyed somehow  
