@@ -42,7 +42,7 @@ var SharedFuncts = {};
 	 * @param  {jqXHR} jqXHR 
 	 */
 	function onError(jqXHR){
-		var err = 'An error occured during processing a request. ';
+		var err = 'An error occured during processing a request. Contact the administrator. ';
 		$.notify(err, {position: 'left top', className: 'error'});
 	}
 

@@ -1,5 +1,8 @@
 <?php
 
+#dirs
+define('DBINFO_PATH', '../../dbinfo.php');
+
 #exparation time
 define('MESSAGE_EXPARATION_TIME', 20);
 define('CONN_EXPARATION_TIME', 5);

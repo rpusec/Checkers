@@ -1,8 +1,8 @@
 <?php
 
-require_once('../../dbinfo.php');
 require_once('../libs/meekrodb.2.3.class.php');
 require_once('../config/constants.php');
+require_once(DBINFO_PATH);
 
 /**
  * Class which offers functions shared by all controller subtypes. 
