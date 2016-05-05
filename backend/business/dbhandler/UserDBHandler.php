@@ -136,7 +136,7 @@ class UserDBHandler
 	}
 
 	public static function getUserByID($userID){
-		return DB::queryFirstRow('SELECT fname as firstname, lname as lastname, username FROM user WHERE userID = %i', $userID);
+		return DB::queryFirstRow('SELECT fname as firstname, lname as lastname, username, connected FROM user WHERE userID = %i', $userID);
 	}
 
 	/**

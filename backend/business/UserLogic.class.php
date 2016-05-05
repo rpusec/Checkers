@@ -250,4 +250,12 @@ class UserLogic
 	public static function getConnStatAndColorsFromUser($userID){
 		return UserDBHandler::getConnStatAndColorsFromUser($userID);
 	}
+
+	public static function getConnStatFromUser($userID){
+		$user = UserDBHandler::getUserByID($userID);
+
+		if($user !== null)
+			return $user['connected'];
+		return null;
+	}
 }

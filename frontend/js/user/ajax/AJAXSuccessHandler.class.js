@@ -143,4 +143,13 @@ rpcheckers.user.ajax.AJAXSuccessHandler = {};
 		}
 	}
 
+	ns.updateUsersConnStateSuccessHandler = function(data){
+		if(!data.success)
+			return;
+
+		if(parseInt(data.loggedUserConnStat) === 0){
+			rpcheckers.user.ajax.AJAXCallHandler.checkLoginStatusAJAXCall();
+		}
+	}
+
 }());

@@ -192,6 +192,6 @@ class UsersController extends BaseController
 	{
 		parent::startConnection();
 		UserLogic::markAppropriateUsersAsDisconnected(parent::getTimeInSec(), $credential, $searchBy);
-		return array('success' => true);
+		return array('success' => true, 'loggedUserConnStat' => UserLogic::getConnStatFromUser(parent::getLoggedUserID()));
 	}
 }
