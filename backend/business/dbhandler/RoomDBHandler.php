@@ -165,6 +165,11 @@ class RoomDBHandler
 		return DB::queryFirstRow("SELECT roomID, stringifiedBoard, whoseTurn, lastMove, removedPawns FROM user JOIN room ON(room.roomID = user.ROOM_roomID) WHERE userID=%i", $userID);
 	}
 
+	/**
+	 * Returns the last move from a room. 
+	 * @param  [Integer] $roomID The target room. 
+	 * @return [String]          Last move. 
+	 */
 	public static function getLastMove($roomID){
 		$room = DB::queryFirstRow("SELECT lastMove FROM room WHERE roomID=%i", $roomID);
 		return $room['lastMove'];
