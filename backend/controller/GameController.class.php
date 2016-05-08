@@ -159,11 +159,11 @@ class GameController extends BaseController
 
 		$newWhoseTurn = GameLogic::setOpponentTurn($targetRoom, parent::getLoggedUserID());
 
-		$checkTurnDuration = GameLogic::checkTurnDuration(parent::getTimeInSec());
-		if(is_array($checkTurnDuration))
+		$turnDuration = GameLogic::checkTurnDuration(parent::getTimeInSec());
+		if(is_array($turnDuration))
 		{
 			parent::destroySession();
-			return $checkTurnDuration;
+			return $turnDuration;
 		}
 
 		$winner = GameLogic::checkForWinner($playerOnePawns, $playerTwoPawns);
@@ -175,7 +175,14 @@ class GameController extends BaseController
 			'removedPawns' => json_encode($removedPawnIds)
 		), $targetRoom['roomID']);
 		
-		return array('success' => true, 'prevCoordinate' => "$prevX|$prevY", 'newCoordinate' => "$newX|$newY", 'playerNumber' => parent::getPlayerNumber(), 'removedPawns' => $removedPawnIds, 'winner' => $winner);
+		return array(
+			'success' => true, 
+			'prevCoordinate' => "$prevX|$prevY", 
+			'newCoordinate' => "$newX|$newY", 
+			'playerNumber' => parent::getPlayerNumber(), 
+			'removedPawns' => $removedPawnIds, 
+			'winner' => $winner
+		);
 	}
 
 	/**
