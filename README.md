@@ -1,2 +1,1 @@
-- hash passwords upon registration and editing user settings (with a salt)  
-- figure out how to kick out the user if their session was destroyed somehow  
+all done
