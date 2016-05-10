@@ -106,7 +106,6 @@ rpcheckers.game.business.BlockSelectabilityLogic = {};
 	 * @param  {Integer} whichSide               Represents the side from which to look. See the appropriate constants above. 
 	 */
 	function makeBoardBlocksSelectableFrom(targetCoordinate, playerNumber, whichSide){
-
 		if(typeof targetCoordinate === 'undefined' || targetCoordinate === null)
 			return;
 
@@ -125,7 +124,6 @@ rpcheckers.game.business.BlockSelectabilityLogic = {};
 				makeBoardBlocksSelectableFromCase(targetCoordinate, playerNumber, whichSide, createPointForRightDown);
 				break;
 		}
-
 	}
 
 	/**
